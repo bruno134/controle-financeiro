@@ -1,19 +1,24 @@
 package br.com.mcf.controlefinanceiro.service;
 
+import br.com.mcf.controlefinanceiro.entity.DespesaEntity;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class CadastroDespesaServiceTests {
@@ -85,15 +90,34 @@ class CadastroDespesaServiceTests {
 	}
 
 	@Test
-	void despesaASerApagadaNaoPodeSerMaiorQueUm(){
-		inicializaListDeDespesa();
+	void despesaPorIdDeveSerApagada(){
 		try {
-			service.apagarDespesa(2);
+			inicializaListDeDespesa();
+
+			final List<Despesa> todasDespesas = service.consultasTodasDespesas();
+			service.apagarDespesa(todasDespesas.get(0).getId());
+			final Optional<Despesa> optionalDespesa = service.consultaDespesa(todasDespesas.get(0).getId());
+			assertTrue(optionalDespesa.isEmpty());
+
 		} catch (DespesaNaoEncontradaException e) {
-			e.printStackTrace();
+			fail();
 		}
-		final List<Despesa> todasDespesas = service.consultasTodasDespesas();
-		assertEquals(4,todasDespesas.size());
+	}
+
+	@Test
+	void despesaNaoDeveSerApagadaQuandoNaoInformada(){
+		try {
+			inicializaListDeDespesa();
+
+			final List<Despesa> todasDespesas = service.consultasTodasDespesas();
+			service.apagarDespesa(todasDespesas.get(0).getId());
+			for (int i = 1; i < todasDespesas.size(); i++) {
+				Optional<Despesa> optionalDespesa = service.consultaDespesa(todasDespesas.get(1).getId());
+				assertFalse(optionalDespesa.isEmpty());
+			}
+		} catch (DespesaNaoEncontradaException e) {
+			fail();
+		}
 	}
 
 	@Test
@@ -116,15 +140,30 @@ class CadastroDespesaServiceTests {
 				tipo);
 
 		try {
-			Despesa despesaAlterada = service.alterarDespesa(despesa);
-			assertEquals(new BigDecimal(4), despesaAlterada.getValor());
-			assertEquals("Compra na Coop", despesaAlterada.getDescricao());
-			assertEquals("SuperMercado", despesaAlterada.getClassificacao());
-			assertEquals("Conta Corrente", despesaAlterada.getOrigem());
-			assertEquals("Particular", despesaAlterada.getTipo());
+			Optional<Despesa> despesaAlterada = service.alterarDespesa(despesa);
+			if(despesaAlterada.isPresent()) {
+				assertEquals(new BigDecimal(4), despesaAlterada.get().getValor());
+				assertEquals("Compra na Coop", despesaAlterada.get().getDescricao());
+				assertEquals("SuperMercado", despesaAlterada.get().getClassificacao());
+				assertEquals("Conta Corrente", despesaAlterada.get().getOrigem());
+				assertEquals("Particular", despesaAlterada.get().getTipo());
+			}else{
+				Assertions.fail();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	@Test
+	void buscaDespesaPorMes(){
+		//TODO montar o teste
+		inicializaListDeDespesa();
+		final List<Despesa> despesas = service.buscaPorMesEAno(9, 2021);
+
+
+		despesas.forEach(despesa -> System.out.println(despesa.getData()));
 
 	}
 
@@ -132,9 +171,10 @@ class CadastroDespesaServiceTests {
 		service.apagarTodasDespesas();
 		for (int i = 0; i < 5; i++) {
 			Despesa despesa = new Despesa(i,
-										  LocalDate.now(),
+//										  LocalDate.now(),
+					LocalDate.of(2021,7+i,11),
 					 						new BigDecimal(i*12),
-											"Descrição de Compra " + String.valueOf(i),
+											"Descrição de Compra " + i,
 											"Compras",
 											"Cartão de Crédito",
 											"Compartilhada"

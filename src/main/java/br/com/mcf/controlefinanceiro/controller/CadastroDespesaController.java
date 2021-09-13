@@ -44,11 +44,25 @@ public class CadastroDespesaController {
     @GetMapping("/consultatodas")
     public ResponseEntity<List<DespesaDTO>> buscaTodasDespesas(){
 
-        List<Despesa> despesas = new ArrayList<>();
+        List<Despesa> despesas;
 
         try{
             //TODO Deve retornar 404 para lista vazia?
             despesas = service.consultasTodasDespesas();
+            return ResponseEntity.ok().body(DespesaDTO.listaDto(despesas));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @GetMapping("/consultapordata")
+    public ResponseEntity<List<DespesaDTO>> buscaDespesaPorMes(@RequestParam int mes, int ano){
+
+        List<Despesa> despesas;
+
+        try{
+            despesas = service.buscaPorMesEAno(mes,ano);
             return ResponseEntity.ok().body(DespesaDTO.listaDto(despesas));
         }catch (Exception e){
             e.printStackTrace();
@@ -74,9 +88,12 @@ public class CadastroDespesaController {
 
         try {
             despesaDTO.setId(id);
-            final Despesa despesaAlterada = service.alterarDespesa(despesaDTO.toDespesa());
-            final DespesaDTO despesaRespostaDTO = new DespesaDTO(despesaAlterada);
-            return ResponseEntity.ok(despesaRespostaDTO);
+            final Optional<Despesa> despesaAlterada = service.alterarDespesa(despesaDTO.toDespesa());
+
+            if(despesaAlterada.isPresent()) {
+                final DespesaDTO despesaRespostaDTO = new DespesaDTO(despesaAlterada.get());
+                return ResponseEntity.ok(despesaRespostaDTO);
+            }
         }catch (DespesaNaoEncontradaException e){
             return ResponseEntity.notFound().build();
         }catch (Exception e){
@@ -91,8 +108,6 @@ public class CadastroDespesaController {
         try {
             service.apagarDespesa(id);
             return ResponseEntity.ok().build();
-        } catch (DespesaNaoEncontradaException e) {
-            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             e.printStackTrace();
         }

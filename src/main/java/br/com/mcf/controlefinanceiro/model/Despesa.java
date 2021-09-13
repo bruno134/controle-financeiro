@@ -40,20 +40,4 @@ public class Despesa {
                   this.origem,
                   this.tipo);
      }
-
-     public static List toList(List<DespesaEntity> listaDespesa){
-          final List<Despesa> list = new ArrayList<>();
-          listaDespesa.forEach(itemDespesa -> {
-
-               Despesa despesa = new Despesa(itemDespesa.getId().intValue(),
-                       itemDespesa.getData(),
-                       itemDespesa.getValor(),
-                       itemDespesa.getDescricao(),
-                       itemDespesa.getClassificacao(),
-                       itemDespesa.getTipo(),
-                       itemDespesa.getOrigem());
-               list.add(despesa);
-          });
-          return list;
-     }
 }

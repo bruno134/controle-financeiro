@@ -1,10 +1,13 @@
 package br.com.mcf.controlefinanceiro.entity;
 
+import br.com.mcf.controlefinanceiro.model.Despesa;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -14,6 +17,7 @@ public class DespesaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
 
     @Column(name = "data", nullable = false)
     private LocalDate data;
@@ -40,5 +44,42 @@ public class DespesaEntity {
         this.tipo = tipo;
     }
 
+    public DespesaEntity(Despesa despesa){
+        this.data = despesa.getData();
+        this.valor = despesa.getValor();
+        this.descricao = despesa.getDescricao();
+        this.classificacao = despesa.getClassificacao();
+        this.origem = despesa.getOrigem();
+        this.tipo = despesa.getTipo();
+    }
+
+    public Despesa toDespesa(){
+        return  new Despesa(this.id.intValue(),
+                this.data,
+                this.valor,
+                this.descricao,
+                this.classificacao,
+                this.origem,
+                this.tipo);
+
+
+    }
+
+    public static List<Despesa> toDespesaList(List<DespesaEntity> list){
+        final List<Despesa> listaDespesa = new ArrayList<>();
+
+        list.forEach(itemDespesa -> {
+            Despesa despesa = new Despesa(itemDespesa.getId().intValue(),
+                    itemDespesa.getData(),
+                    itemDespesa.getValor(),
+                    itemDespesa.getDescricao(),
+                    itemDespesa.getClassificacao(),
+                    itemDespesa.getTipo(),
+                    itemDespesa.getOrigem());
+            listaDespesa.add(despesa);
+        });
+
+        return listaDespesa;
+    }
 
 }
