@@ -1,10 +1,12 @@
 package br.com.mcf.controlefinanceiro.service;
 
+import br.com.mcf.controlefinanceiro.entity.DespesaEntity;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.repository.DespesaRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import com.sun.istack.NotNull;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,11 +19,9 @@ import java.util.stream.Collectors;
 @Service
 public class CadastroDespesaService {
 
-    private List<Despesa> despesas;
     private DespesaRepository repository;
 
     public CadastroDespesaService(DespesaRepository despesaRepository){
-        this.despesas   = new ArrayList<>();
         this.repository = despesaRepository;
     }
 
@@ -44,7 +44,7 @@ public class CadastroDespesaService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        despesas.add(despesa);
+
     }
 
     public void cadastrarDespesa(Despesa despesa){
@@ -57,41 +57,80 @@ public class CadastroDespesaService {
     }
 
     public List<Despesa> consultasTodasDespesas(){
-        return Despesa.toList(repository.findAll());
+        return DespesaEntity.toDespesaList(repository.findAll());
     }
 
     public Optional<Despesa> consultaDespesa(Integer idDespesa){
+        Despesa despesaEncontrada = null;
 
-        final List<Despesa> lista = despesas.stream()
-                .filter(despesa -> despesa.getId().equals(idDespesa))
-                .collect(Collectors.toList());
-        if (lista.size()>0)
-            return Optional.of(lista.get(0));
+        try {
+            final Optional<DespesaEntity> despesaEntity = repository.findById(idDespesa.longValue());
+            if(despesaEntity.isPresent()){
+                despesaEncontrada = despesaEntity.get().toDespesa();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        return Optional.ofNullable(null);
+        return Optional.ofNullable(despesaEncontrada);
     }
 
     public void apagarDespesa(Integer id) throws DespesaNaoEncontradaException {
-        final Optional<Despesa> despesa = this.consultaDespesa(id);
-        if(despesa.isPresent())
-            this.despesas.remove(despesa.get());
-        else{
-            throw new DespesaNaoEncontradaException(ConstantMessages.NAO_ENCONTRADO_MSG);
+        if(id>0) {
+            try {
+                repository.deleteById(id.longValue());
+            } catch (EmptyResultDataAccessException e) {
+                throw new DespesaNaoEncontradaException(ConstantMessages.NAO_ENCONTRADO_MSG);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
+        //TODO deveria ter um ELSE?
     }
 
     public void apagarTodasDespesas(){
-        this.despesas.clear();
+        try {
+            repository.deleteAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private Integer proximoId(){
-        return this.despesas.size() + 1;
+    public Optional<Despesa> alterarDespesa(Despesa despesa) throws DespesaNaoEncontradaException {
+
+        Despesa despesaSalva = null;
+        try {
+            if (repository.existsById(despesa.getId().longValue())){
+
+                despesaSalva = repository.saveAndFlush(new DespesaEntity(despesa)).toDespesa();
+            }else{
+                throw new DespesaNaoEncontradaException(ConstantMessages.NAO_ENCONTRADO_MSG);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Optional.ofNullable(despesaSalva);
     }
 
-
-    public Despesa alterarDespesa(Despesa despesa) throws DespesaNaoEncontradaException {
-        apagarDespesa(despesa.getId());
-        this.despesas.add(despesa);
-        return despesa;
+    //TODO deixar private após criar os testes
+    public List<DespesaEntity> buscarPeriodo(LocalDate dataInicio, LocalDate dataFim){
+       List<DespesaEntity> listaResultado = new ArrayList<>();
+        try {
+            listaResultado = repository.findAllByDataBetweenOrderByDataAsc(dataInicio,dataFim);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listaResultado;
     }
+
+    public List<Despesa> buscaPorMesEAno(int mes, int ano){
+
+        final LocalDate dataInicial = LocalDate.of(ano,mes,1);
+        final LocalDate dataFinal = LocalDate.of(ano,mes,dataInicial.lengthOfMonth());
+
+        return DespesaEntity.toDespesaList(buscarPeriodo(dataInicial,dataFinal));
+
+    }
+
 }
