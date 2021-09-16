@@ -2,6 +2,9 @@ package br.com.mcf.controlefinanceiro.entity;
 
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,10 +12,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name="despesas")
+@Table(name="tb_despesas")
 public class DespesaEntity {
+
+    //TODO deixar os campos no padrão qualificador/idenficador
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -53,7 +59,7 @@ public class DespesaEntity {
         this.tipo = despesa.getTipo();
     }
 
-    public Despesa toDespesa(){
+    public Despesa toObject(){
         return  new Despesa(this.id.intValue(),
                 this.data,
                 this.valor,
@@ -65,7 +71,7 @@ public class DespesaEntity {
 
     }
 
-    public static List<Despesa> toDespesaList(List<DespesaEntity> list){
+    public static List<Despesa> toList(List<DespesaEntity> list){
         final List<Despesa> listaDespesa = new ArrayList<>();
 
         list.forEach(itemDespesa -> {

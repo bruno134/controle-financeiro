@@ -1,14 +1,11 @@
 package br.com.mcf.controlefinanceiro.model;
 
-import br.com.mcf.controlefinanceiro.controller.dto.DespesaDTO;
 import br.com.mcf.controlefinanceiro.entity.DespesaEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @AllArgsConstructor
 @Getter

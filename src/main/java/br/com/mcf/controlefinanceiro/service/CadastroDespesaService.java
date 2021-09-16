@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CadastroDespesaService {
@@ -40,7 +39,7 @@ public class CadastroDespesaService {
                                       tipoDespesa);
 
         try {
-            repository.save(despesa.toEntity());
+            repository.save(new DespesaEntity(despesa));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,7 +56,7 @@ public class CadastroDespesaService {
     }
 
     public List<Despesa> consultasTodasDespesas(){
-        return DespesaEntity.toDespesaList(repository.findAll());
+        return DespesaEntity.toList(repository.findAll());
     }
 
     public Optional<Despesa> consultaDespesa(Integer idDespesa){
@@ -66,7 +65,7 @@ public class CadastroDespesaService {
         try {
             final Optional<DespesaEntity> despesaEntity = repository.findById(idDespesa.longValue());
             if(despesaEntity.isPresent()){
-                despesaEncontrada = despesaEntity.get().toDespesa();
+                despesaEncontrada = despesaEntity.get().toObject();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +79,7 @@ public class CadastroDespesaService {
             try {
                 repository.deleteById(id.longValue());
             } catch (EmptyResultDataAccessException e) {
-                throw new DespesaNaoEncontradaException(ConstantMessages.NAO_ENCONTRADO_MSG);
+                throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -100,11 +99,21 @@ public class CadastroDespesaService {
 
         Despesa despesaSalva = null;
         try {
-            if (repository.existsById(despesa.getId().longValue())){
+            var despesaEncontrada = repository.findById(despesa.getId().longValue());
+            if (despesaEncontrada.isPresent()){
 
-                despesaSalva = repository.saveAndFlush(new DespesaEntity(despesa)).toDespesa();
+                //setando os atributos
+                despesaEncontrada.get().setValor(despesa.getValor());
+                despesaEncontrada.get().setData(despesa.getData());
+                despesaEncontrada.get().setDescricao(despesa.getDescricao());
+                despesaEncontrada.get().setClassificacao(despesa.getClassificacao());
+                despesaEncontrada.get().setOrigem(despesa.getOrigem());
+                despesaEncontrada.get().setTipo(despesa.getTipo());
+
+                despesaSalva = repository.saveAndFlush(despesaEncontrada.get()).toObject();
+
             }else{
-                throw new DespesaNaoEncontradaException(ConstantMessages.NAO_ENCONTRADO_MSG);
+                throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,7 +138,7 @@ public class CadastroDespesaService {
         final LocalDate dataInicial = LocalDate.of(ano,mes,1);
         final LocalDate dataFinal = LocalDate.of(ano,mes,dataInicial.lengthOfMonth());
 
-        return DespesaEntity.toDespesaList(buscarPeriodo(dataInicial,dataFinal));
+        return DespesaEntity.toList(buscarPeriodo(dataInicial,dataFinal));
 
     }
 
