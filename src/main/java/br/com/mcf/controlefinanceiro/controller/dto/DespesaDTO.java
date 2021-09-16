@@ -1,6 +1,7 @@
 package br.com.mcf.controlefinanceiro.controller.dto;
 
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import br.com.mcf.controlefinanceiro.util.ConstantFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,6 +13,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,9 +34,6 @@ public class DespesaDTO implements BaseDespesaDTO{
     private String origem;
     @JsonProperty("tipo")
     private String tipo;
-
-    @JsonIgnore
-    private final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public DespesaDTO() {
     }

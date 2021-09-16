@@ -1,5 +1,6 @@
 package br.com.mcf.controlefinanceiro.util;
 
 public class ConstantMessages {
-    public static final String NAO_ENCONTRADO_MSG = "Despesa não encontrada";
+    public static final String DESPESA_NAO_ENCONTRADA = "Despesa não encontrada";
+    public static final String CLASSIFICACAO_NAO_ENCONTRADA = "Classificação não encontrada";
 }
