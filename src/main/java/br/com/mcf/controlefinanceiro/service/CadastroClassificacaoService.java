@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class CadastroClassificacaoService {
 
-    private ClassificacaoRepository repository;
+    private final ClassificacaoRepository repository;
 
     //TODO criar testes automatizados
 
@@ -60,25 +60,22 @@ public class CadastroClassificacaoService {
 
     public Optional<Classificacao> alterarClassificacao(Classificacao classificacao) throws ClassificacaoNaoEncontradaException {
 
-        Classificacao classificacaoAlterada = null;
+        Classificacao classificacaoAlterada;
+        Optional<ClassificacaoEntity> record = Optional.empty();
         try {
-            var record = repository.findById(classificacao.getId());
-            if (record.isPresent()){
-
-                var classificacaoEntity = record.get();
-
-                //Incluindo novo nome da classificação
-                classificacaoEntity.setNomeClassificacao(classificacao.getNome());
-                //Alterando a data para a nova data de alteração
-                classificacaoEntity.setDataCriacao(LocalDate.now());
-                classificacaoEntity.setAtivo(classificacao.isAtivo());
-
-                classificacaoAlterada = repository.saveAndFlush(classificacaoEntity).toObject();
-            }else{
-                throw new ClassificacaoNaoEncontradaException(ConstantMessages.CLASSIFICACAO_NAO_ENCONTRADA);
-            }
+            record = repository.findByIdAndAtivo(classificacao.getId(),true);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (record.isPresent()){
+            var classificacaoEntity = record.get();
+            classificacaoEntity.setNomeClassificacao(classificacao.getNome());
+            //Alterando a data para a nova data de alteração
+            classificacaoEntity.setDataCriacao(LocalDate.now());
+            classificacaoEntity.setAtivo(classificacao.isAtivo());
+            classificacaoAlterada = repository.saveAndFlush(classificacaoEntity).toObject();
+        }else{
+            throw new ClassificacaoNaoEncontradaException(ConstantMessages.CLASSIFICACAO_NAO_ENCONTRADA);
         }
 
         return Optional.ofNullable(classificacaoAlterada);
