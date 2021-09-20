@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,7 +72,7 @@ public class CadastroDespesaController {
 
         try {
 
-            service.cadastrarDespesa(despesaDTO.toDespesa());
+            service.cadastrarDespesa(despesaDTO.toObject());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }catch (Exception e){
             e.printStackTrace();
@@ -88,7 +85,7 @@ public class CadastroDespesaController {
 
         try {
             despesaDTO.setId(id);
-            final Optional<Despesa> despesaAlterada = service.alterarDespesa(despesaDTO.toDespesa());
+            final Optional<Despesa> despesaAlterada = service.alterarDespesa(despesaDTO.toObject());
 
             if(despesaAlterada.isPresent()) {
                 final DespesaDTO despesaRespostaDTO = new DespesaDTO(despesaAlterada.get());

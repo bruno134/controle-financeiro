@@ -5,13 +5,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
