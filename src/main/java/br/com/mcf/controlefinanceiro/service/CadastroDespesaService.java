@@ -55,11 +55,11 @@ public class CadastroDespesaService {
                 despesa.getTipo());
     }
 
-    public List<Despesa> consultasTodasDespesas(){
+    public List<Despesa> buscarTodasDespesas(){
         return DespesaEntity.toList(repository.findAll());
     }
 
-    public Optional<Despesa> consultaDespesa(Integer idDespesa){
+    public Optional<Despesa> buscaDespesaPorID(Integer idDespesa){
         Despesa despesaEncontrada = null;
 
         try {
@@ -97,49 +97,61 @@ public class CadastroDespesaService {
 
     public Optional<Despesa> alterarDespesa(Despesa despesa) throws DespesaNaoEncontradaException {
 
-        Despesa despesaSalva = null;
+        Despesa despesaSalva;
+        Optional<DespesaEntity> despesaEncontrada = Optional.empty();
+
         try {
-            var despesaEncontrada = repository.findById(despesa.getId().longValue());
-            if (despesaEncontrada.isPresent()){
-
-                //setando os atributos
-                despesaEncontrada.get().setValor(despesa.getValor());
-                despesaEncontrada.get().setData(despesa.getData());
-                despesaEncontrada.get().setDescricao(despesa.getDescricao());
-                despesaEncontrada.get().setClassificacao(despesa.getClassificacao());
-                despesaEncontrada.get().setOrigem(despesa.getOrigem());
-                despesaEncontrada.get().setTipo(despesa.getTipo());
-
-                despesaSalva = repository.saveAndFlush(despesaEncontrada.get()).toObject();
-
-            }else{
-                throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
-            }
+            despesaEncontrada = repository.findById(despesa.getId().longValue());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        if (despesaEncontrada.isPresent()){
+
+            //setando os atributos
+            despesaEncontrada.get().setValor(despesa.getValor());
+            despesaEncontrada.get().setData(despesa.getData());
+            despesaEncontrada.get().setDescricao(despesa.getDescricao());
+            despesaEncontrada.get().setClassificacao(despesa.getClassificacao());
+            despesaEncontrada.get().setOrigem(despesa.getOrigem());
+            despesaEncontrada.get().setTipo(despesa.getTipo());
+
+            despesaSalva = repository.saveAndFlush(despesaEncontrada.get()).toObject();
+
+        }else{
+            throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
         }
 
         return Optional.ofNullable(despesaSalva);
     }
 
-    //TODO deixar private após criar os testes
-    public List<DespesaEntity> buscarPeriodo(LocalDate dataInicio, LocalDate dataFim){
-       List<DespesaEntity> listaResultado = new ArrayList<>();
-        try {
-            listaResultado = repository.findAllByDataBetweenOrderByDataAsc(dataInicio,dataFim);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return listaResultado;
-    }
-
-    public List<Despesa> buscaPorMesEAno(int mes, int ano){
+    private List<Despesa> buscaDespesaPorMesEAno(int mes, int ano){
 
         final LocalDate dataInicial = LocalDate.of(ano,mes,1);
         final LocalDate dataFinal = LocalDate.of(ano,mes,dataInicial.lengthOfMonth());
 
-        return DespesaEntity.toList(buscarPeriodo(dataInicial,dataFinal));
+        List<Despesa> listaResultado = new ArrayList<>();
 
+        try {
+            listaResultado = DespesaEntity.toList(
+                    repository.findAllByDataBetweenOrderByDataAsc(dataInicial,dataFinal)
+            );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return listaResultado;
+
+    }
+
+    public List<Despesa> buscaDespesaPorParametros(int mes, int ano){
+        if(mes>0 && ano>0){
+            return buscaDespesaPorMesEAno(mes,ano);
+        }else
+        {
+            return buscarTodasDespesas();
+        }
     }
 
 }
