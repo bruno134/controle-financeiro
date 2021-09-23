@@ -28,7 +28,7 @@ public class CadastroOrigemController {
     }
 
 
-    @GetMapping("/consulta")
+    @GetMapping("/consultar")
     public ResponseEntity buscar(){
         List<Origem> lista;
         try{
@@ -44,7 +44,7 @@ public class CadastroOrigemController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PostMapping("/novo")
+    @PostMapping("/inserir")
     public ResponseEntity inserir(@RequestBody OrigemDTO origemDTO){
 
         try {

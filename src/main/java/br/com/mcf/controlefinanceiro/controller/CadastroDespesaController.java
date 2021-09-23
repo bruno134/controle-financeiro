@@ -38,7 +38,7 @@ public class CadastroDespesaController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @GetMapping("/consultatodas")
+    @GetMapping("/consultartodas")
     public ResponseEntity<List<DespesaDTO>> buscaTodasDespesas(){
 
         List<Despesa> despesas;
@@ -53,7 +53,7 @@ public class CadastroDespesaController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @GetMapping("/consultapordata")
+    @GetMapping("/consultarpordata")
     public ResponseEntity<List<DespesaDTO>> buscaDespesaPorMes(@RequestParam int mes, int ano){
 
         List<Despesa> despesas;
@@ -67,7 +67,7 @@ public class CadastroDespesaController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PostMapping("/novo")
+    @PostMapping("/inserir")
     public ResponseEntity cadastrarDespesa(@RequestBody DespesaDTO despesaDTO){
 
         try {

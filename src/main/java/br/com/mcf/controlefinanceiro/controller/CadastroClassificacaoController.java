@@ -27,7 +27,7 @@ public class CadastroClassificacaoController {
     }
 
 
-    @GetMapping("/consulta")
+    @GetMapping("/consultar")
     public ResponseEntity<List<ClassificacaoDTO>> buscaTodasClassificacoes(){
 
         List<Classificacao> lista;
@@ -42,7 +42,7 @@ public class CadastroClassificacaoController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PostMapping("/novo")
+    @PostMapping("/inserir")
     public ResponseEntity cadastrarClassificacao(@RequestBody ClassificacaoDTO classificacaoDTO){
 
         try {
