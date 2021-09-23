@@ -1,6 +1,5 @@
 package br.com.mcf.controlefinanceiro.service;
 
-import br.com.mcf.controlefinanceiro.entity.DespesaEntity;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import org.junit.jupiter.api.Assertions;
@@ -9,12 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +40,7 @@ class CadastroDespesaServiceTests {
 								 origem,
 								 tipo);
 
-		final List<Despesa> list = service.consultasTodasDespesas();
+		final List<Despesa> list = service.buscarTodasDespesas();
 		assertEquals(1,list.size());
 	}
 
@@ -69,7 +65,7 @@ class CadastroDespesaServiceTests {
 		service.apagarTodasDespesas();
 		service.cadastrarDespesa(despesa);
 
-		final List<Despesa> list = service.consultasTodasDespesas();
+		final List<Despesa> list = service.buscarTodasDespesas();
 		assertEquals(1,list.size());
 
 	}
@@ -78,14 +74,14 @@ class CadastroDespesaServiceTests {
 	void deveApagarTodosElementosDaLista(){
 		inicializaListDeDespesa();
 		service.apagarTodasDespesas();
-		final List<Despesa> list = service.consultasTodasDespesas();
+		final List<Despesa> list = service.buscarTodasDespesas();
 		assertEquals(0,list.size());
 	}
 
 	@Test
 	void consultaDeveRetornarListaPreenchidaComCincoElementos(){
 		inicializaListDeDespesa();
-		final List<Despesa> despesas = service.consultasTodasDespesas();
+		final List<Despesa> despesas = service.buscarTodasDespesas();
 		assertEquals(5,despesas.size());
 	}
 
@@ -94,9 +90,9 @@ class CadastroDespesaServiceTests {
 		try {
 			inicializaListDeDespesa();
 
-			final List<Despesa> todasDespesas = service.consultasTodasDespesas();
+			final List<Despesa> todasDespesas = service.buscarTodasDespesas();
 			service.apagarDespesa(todasDespesas.get(0).getId());
-			final Optional<Despesa> optionalDespesa = service.consultaDespesa(todasDespesas.get(0).getId());
+			final Optional<Despesa> optionalDespesa = service.buscaDespesaPorID(todasDespesas.get(0).getId());
 			assertTrue(optionalDespesa.isEmpty());
 
 		} catch (DespesaNaoEncontradaException e) {
@@ -109,10 +105,10 @@ class CadastroDespesaServiceTests {
 		try {
 			inicializaListDeDespesa();
 
-			final List<Despesa> todasDespesas = service.consultasTodasDespesas();
+			final List<Despesa> todasDespesas = service.buscarTodasDespesas();
 			service.apagarDespesa(todasDespesas.get(0).getId());
 			for (int i = 1; i < todasDespesas.size(); i++) {
-				Optional<Despesa> optionalDespesa = service.consultaDespesa(todasDespesas.get(1).getId());
+				Optional<Despesa> optionalDespesa = service.buscaDespesaPorID(todasDespesas.get(1).getId());
 				assertFalse(optionalDespesa.isEmpty());
 			}
 		} catch (DespesaNaoEncontradaException e) {
@@ -160,7 +156,7 @@ class CadastroDespesaServiceTests {
 	void buscaDespesaPorMes(){
 		//TODO montar o teste
 		inicializaListDeDespesa();
-		final List<Despesa> despesas = service.buscaPorMesEAno(9, 2021);
+		final List<Despesa> despesas = service.buscaDespesaPorParametros(9, 2021);
 
 
 		despesas.forEach(despesa -> System.out.println(despesa.getData()));

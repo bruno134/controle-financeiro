@@ -22,9 +22,9 @@ public class CadastroDespesaController {
         this.service = service;
     }
 
-    @GetMapping("/consulta/{id}")
+    @GetMapping("/consultar/{id}")
     public ResponseEntity buscaDespesa(@PathVariable Integer id){
-        final Optional<Despesa> despesaEncontrada = service.consultaDespesa(id);
+        final Optional<Despesa> despesaEncontrada = service.buscaDespesaPorID(id);
 
         try {
             if(despesaEncontrada.isPresent())
@@ -38,28 +38,14 @@ public class CadastroDespesaController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @GetMapping("/consultartodas")
-    public ResponseEntity<List<DespesaDTO>> buscaTodasDespesas(){
+    @GetMapping("/consultar")
+    public ResponseEntity<List<DespesaDTO>> buscaDespesaPorMes(@RequestParam(value = "mes", required = false, defaultValue = "0") int mes,
+                                                               @RequestParam(value = "ano", required = false, defaultValue = "0")int ano){
 
         List<Despesa> despesas;
 
         try{
-            //TODO Deve retornar 404 para lista vazia?
-            despesas = service.consultasTodasDespesas();
-            return ResponseEntity.ok().body(DespesaDTO.listaDto(despesas));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return ResponseEntity.internalServerError().build();
-    }
-
-    @GetMapping("/consultarpordata")
-    public ResponseEntity<List<DespesaDTO>> buscaDespesaPorMes(@RequestParam int mes, int ano){
-
-        List<Despesa> despesas;
-
-        try{
-            despesas = service.buscaPorMesEAno(mes,ano);
+            despesas = service.buscaDespesaPorParametros(mes,ano);
             return ResponseEntity.ok().body(DespesaDTO.listaDto(despesas));
         }catch (Exception e){
             e.printStackTrace();
