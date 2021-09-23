@@ -22,7 +22,7 @@ public class CadastroTipoController {
     }
 
 
-    @GetMapping("/consulta")
+    @GetMapping("/consultar")
     public ResponseEntity buscar(){
         List<Tipo> lista;
         try{
@@ -38,7 +38,7 @@ public class CadastroTipoController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PostMapping("/novo")
+    @PostMapping("/inserir")
     public ResponseEntity inserir(@RequestBody TipoDTO tipoDTO){
 
         try {
