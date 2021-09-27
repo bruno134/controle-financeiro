@@ -33,12 +33,13 @@ class CadastroDespesaServiceTests {
 		final String origem = "Cartão de Crédito";
 		final String tipo = "Compartilhada";
 
-		service.cadastrarDespesa(data,
-								 valor,
-								 descricao,
-								 classificacao,
-								 origem,
-								 tipo);
+
+			service.insere(data,
+					valor,
+					descricao,
+					classificacao,
+					origem,
+					tipo);
 
 		final List<Despesa> list = service.buscarTodasDespesas();
 		assertEquals(1,list.size());
@@ -63,7 +64,8 @@ class CadastroDespesaServiceTests {
 				origem,
 				tipo);
 		service.apagarTodasDespesas();
-		service.cadastrarDespesa(despesa);
+
+		service.insere(despesa);
 
 		final List<Despesa> list = service.buscarTodasDespesas();
 		assertEquals(1,list.size());
@@ -175,7 +177,8 @@ class CadastroDespesaServiceTests {
 											"Cartão de Crédito",
 											"Compartilhada"
 										   );
-			service.cadastrarDespesa(despesa);
+
+			service.insere(despesa);
 		}
 	}
 

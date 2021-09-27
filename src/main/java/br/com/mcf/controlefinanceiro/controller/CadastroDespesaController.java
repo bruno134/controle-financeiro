@@ -1,6 +1,9 @@
 package br.com.mcf.controlefinanceiro.controller;
 
+import br.com.fluentvalidator.Validator;
+import br.com.fluentvalidator.context.ValidationResult;
 import br.com.mcf.controlefinanceiro.controller.dto.DespesaDTO;
+import br.com.mcf.controlefinanceiro.controller.validator.InsereDespesaValidator;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.service.CadastroDespesaService;
@@ -17,9 +20,12 @@ import java.util.Optional;
 public class CadastroDespesaController {
 
     final CadastroDespesaService service;
+    final Validator<DespesaDTO> validator;
 
-    public CadastroDespesaController(CadastroDespesaService service){
+    public CadastroDespesaController(CadastroDespesaService service,
+                                     Validator<DespesaDTO> validator){
         this.service = service;
+        this.validator = validator;
     }
 
     @GetMapping("/consultar/{id}")
@@ -54,35 +60,47 @@ public class CadastroDespesaController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity cadastrarDespesa(@RequestBody DespesaDTO despesaDTO){
+    public ResponseEntity insereNovaDespesa(@RequestBody DespesaDTO despesaDTO){
+        var validate = validator.validate(despesaDTO);
 
-        try {
-
-            service.cadastrarDespesa(despesaDTO.toObject());
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        }catch (Exception e){
-            e.printStackTrace();
+        if(validate.isValid()){
+            try {
+                service.insere(despesaDTO.toObject());
+                return ResponseEntity.status(HttpStatus.CREATED).build();
+            }catch (Exception e){
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().build();
+            }
+        }else{
+            return ResponseEntity.unprocessableEntity().body(validate.getErrors());
         }
-        return ResponseEntity.internalServerError().build();
     }
 
     @PutMapping("/alterar/{id}")
     public ResponseEntity alterarDespesa(@PathVariable("id") Integer id,@RequestBody DespesaDTO despesaDTO){
 
-        try {
-            despesaDTO.setId(id);
-            final Optional<Despesa> despesaAlterada = service.alterarDespesa(despesaDTO.toObject());
+        var validate = validator.validate(despesaDTO);
 
-            if(despesaAlterada.isPresent()) {
-                final DespesaDTO despesaRespostaDTO = new DespesaDTO(despesaAlterada.get());
-                return ResponseEntity.ok(despesaRespostaDTO);
+        if(validate.isValid()){
+            try {
+                despesaDTO.setId(id);
+                final Optional<Despesa> despesaAlterada = service.alterarDespesa(despesaDTO.toObject());
+
+                if(despesaAlterada.isPresent()) {
+                    final DespesaDTO despesaRespostaDTO = new DespesaDTO(despesaAlterada.get());
+                    return ResponseEntity.ok(despesaRespostaDTO);
+                }else{
+                    return ResponseEntity.notFound().build();
+                }
+            }catch (DespesaNaoEncontradaException e){
+                return ResponseEntity.notFound().build();
+            }catch (Exception e){
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().build();
             }
-        }catch (DespesaNaoEncontradaException e){
-            return ResponseEntity.notFound().build();
-        }catch (Exception e){
-            e.printStackTrace();
+        }else{
+            return ResponseEntity.unprocessableEntity().body(validate.getErrors());
         }
-        return ResponseEntity.internalServerError().build();
     }
 
     @DeleteMapping("/apagar/{id}")
