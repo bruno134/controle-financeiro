@@ -53,7 +53,12 @@
             <version>4.5.13</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.github.mvallim</groupId>
+			<artifactId>java-fluent-validator</artifactId>
+			<version>1.9.3</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>

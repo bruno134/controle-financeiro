@@ -24,12 +24,12 @@ public class CadastroDespesaService {
         this.repository = despesaRepository;
     }
 
-    public void cadastrarDespesa(LocalDate dataDespesa,
-                                 @NotNull BigDecimal valorDespesa,
-                                 @NotNull String descricaoDespesa,
-                                 String classificacaoDespesa,
-                                 String origemDespesa,
-                                 String tipoDespesa){
+    public void insere(LocalDate dataDespesa,
+                       @NotNull BigDecimal valorDespesa,
+                       @NotNull String descricaoDespesa,
+                       String classificacaoDespesa,
+                       String origemDespesa,
+                       String tipoDespesa) {
 
         Despesa despesa = new Despesa(dataDespesa==null? LocalDate.now():dataDespesa,
                                       valorDespesa,
@@ -37,17 +37,15 @@ public class CadastroDespesaService {
                                       classificacaoDespesa,
                                       origemDespesa,
                                       tipoDespesa);
-
-        try {
-            repository.save(new DespesaEntity(despesa));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+            try {
+                repository.save(new DespesaEntity(despesa));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
-    public void cadastrarDespesa(Despesa despesa){
-        cadastrarDespesa(despesa.getData(),
+    public void insere(Despesa despesa) {
+        insere(despesa.getData(),
                 despesa.getValor(),
                 despesa.getDescricao(),
                 despesa.getClassificacao(),
@@ -152,6 +150,14 @@ public class CadastroDespesaService {
         {
             return buscarTodasDespesas();
         }
+    }
+
+    public BigDecimal retornaTotalDespesa(List<Despesa> listaDespesa){
+        BigDecimal totalDespesa = BigDecimal.ZERO;
+        for (Despesa despesa : listaDespesa)
+            totalDespesa = totalDespesa.add(despesa.getValor());
+
+        return totalDespesa;
     }
 
 }
