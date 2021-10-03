@@ -2,11 +2,12 @@ package br.com.mcf.controlefinanceiro.controller.validator;
 
 import br.com.fluentvalidator.AbstractValidator;
 import br.com.mcf.controlefinanceiro.controller.dto.DespesaDTO;
+import org.springframework.stereotype.Component;
 
-import static br.com.fluentvalidator.predicate.ObjectPredicate.nullValue;
 import static br.com.fluentvalidator.predicate.LogicalPredicate.not;
 import static br.com.fluentvalidator.predicate.StringPredicate.*;
 
+@Component
 public class InsereDespesaValidator extends AbstractValidator <DespesaDTO> {
 
 
@@ -18,13 +19,15 @@ public class InsereDespesaValidator extends AbstractValidator <DespesaDTO> {
         ruleFor(DespesaDTO::getData)
                 .must(not(stringEmptyOrNull()))
                 .withMessage("Uma data deve ser informada")
-//                .must(isDate("dd/MM/yyyy"))
-//                .withMessage("Data deve ser informada no formato 'dd/mm/aaaa'")
+                .must(isDate("dd/MM/uuuu"))
+                .withFieldName("data")
+                .withMessage("Data valida deve ser informada no formado dd/MM/aaaa")
                 .withFieldName("data")
                 .withCode("001");
 
+
         ruleFor(DespesaDTO::getValor)
-                .must(isNumber().and(not(stringEmptyOrNull())))
+                .must(isNumber())
                 .withMessage("Valor informado inválido")
                 .withFieldName("valor")
                 .withCode("002")
