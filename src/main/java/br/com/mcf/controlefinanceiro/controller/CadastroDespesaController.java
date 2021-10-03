@@ -1,16 +1,24 @@
 package br.com.mcf.controlefinanceiro.controller;
 
 import br.com.fluentvalidator.Validator;
+import br.com.fluentvalidator.context.Error;
 import br.com.fluentvalidator.context.ValidationResult;
+import br.com.mcf.controlefinanceiro.controller.dto.DadosConsultaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.dto.DespesaDTO;
+import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
+import br.com.mcf.controlefinanceiro.controller.validator.ConsultaDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.validator.InsereDespesaValidator;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.service.CadastroDespesaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.NumberUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,12 +28,13 @@ import java.util.Optional;
 public class CadastroDespesaController {
 
     final CadastroDespesaService service;
-    final Validator<DespesaDTO> validator;
+    @Autowired
+    Validator<DespesaDTO> validator;
+    @Autowired
+    ConsultaDespesaValidator consultaValidator;
 
-    public CadastroDespesaController(CadastroDespesaService service,
-                                     Validator<DespesaDTO> validator){
+    public CadastroDespesaController(CadastroDespesaService service){
         this.service = service;
-        this.validator = validator;
     }
 
     @GetMapping("/consultar/{id}")
@@ -45,14 +54,20 @@ public class CadastroDespesaController {
     }
 
     @GetMapping("/consultar")
-    public ResponseEntity<List<DespesaDTO>> buscaDespesaPorMes(@RequestParam(value = "mes", required = false, defaultValue = "0") int mes,
-                                                               @RequestParam(value = "ano", required = false, defaultValue = "0")int ano){
+    public ResponseEntity buscaDespesaPorMes(@RequestParam(value = "mes", required = false, defaultValue = "0") String mes,
+                                                               @RequestParam(value = "ano", required = false, defaultValue = "0") String ano){
 
-        List<Despesa> despesas;
+        try {
+            List<Despesa> despesas;
+            final var dadosConsultaDespesaDTO = new DadosConsultaDespesaDTO(ano, mes, null);
+            final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
 
-        try{
-            despesas = service.buscaDespesaPorParametros(mes,ano);
-            return ResponseEntity.ok().body(DespesaDTO.listaDto(despesas));
+            if(validate.isValid()) {
+                despesas = service.buscaDespesaPorParametros(Integer.parseInt(mes), Integer.parseInt(ano));
+                return ResponseEntity.ok().body(DespesaDTO.listaDto(despesas));
+            }else{
+                return ResponseEntity.badRequest().body(validate.getErrors());
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -72,13 +87,14 @@ public class CadastroDespesaController {
                 return ResponseEntity.internalServerError().build();
             }
         }else{
-            return ResponseEntity.unprocessableEntity().body(validate.getErrors());
+            return ResponseEntity.unprocessableEntity().body(new ErrorsDTO(validate.getErrors()));
         }
     }
 
     @PutMapping("/alterar/{id}")
     public ResponseEntity alterarDespesa(@PathVariable("id") Integer id,@RequestBody DespesaDTO despesaDTO){
 
+    //TODO incluir validaçao de ID numerico
         var validate = validator.validate(despesaDTO);
 
         if(validate.isValid()){
