@@ -25,7 +25,7 @@ public class CadastroDespesaService {
     }
 
     public void insere(LocalDate dataDespesa,
-                       @NotNull BigDecimal valorDespesa,
+                       @NotNull Double valorDespesa,
                        @NotNull String descricaoDespesa,
                        String classificacaoDespesa,
                        String origemDespesa,
@@ -150,14 +150,6 @@ public class CadastroDespesaService {
         {
             return buscarTodasDespesas();
         }
-    }
-
-    public BigDecimal retornaTotalDespesa(List<Despesa> listaDespesa){
-        BigDecimal totalDespesa = BigDecimal.ZERO;
-        for (Despesa despesa : listaDespesa)
-            totalDespesa = totalDespesa.add(despesa.getValor());
-
-        return totalDespesa;
     }
 
 }

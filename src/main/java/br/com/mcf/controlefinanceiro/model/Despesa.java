@@ -13,13 +13,13 @@ public class Despesa {
 
      private Integer id;
      private LocalDate data;
-     private BigDecimal valor;
+     private Double valor;
      private String descricao;
      private String classificacao;
      private String origem;
      private String tipo;
 
-     public Despesa(LocalDate data, BigDecimal valor, String descricao, String classificacao, String origem, String tipo) {
+     public Despesa(LocalDate data, Double valor, String descricao, String classificacao, String origem, String tipo) {
           this.data = data;
           this.valor = valor;
           this.descricao = descricao;
