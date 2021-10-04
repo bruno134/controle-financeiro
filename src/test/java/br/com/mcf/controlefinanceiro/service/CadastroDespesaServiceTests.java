@@ -27,7 +27,7 @@ class CadastroDespesaServiceTests {
 
 		service.apagarTodasDespesas();
 		final LocalDate data = LocalDate.now();
-		final BigDecimal valor = BigDecimal.TEN;
+		final Double valor = Double.valueOf(10d);
 		final String descricao = "Compra na loja Americanas";
 		final String classificacao = "Compras";
 		final String origem = "Cartão de Crédito";
@@ -50,7 +50,7 @@ class CadastroDespesaServiceTests {
 
 		service.apagarTodasDespesas();
 		final LocalDate data = LocalDate.now();
-		final BigDecimal valor = BigDecimal.TEN;
+		final Double valor = Double.valueOf(10d);
 		final String descricao = "Compra na loja Americanas";
 		final String classificacao = "Compras";
 		final String origem = "Cartão de Crédito";
@@ -123,7 +123,7 @@ class CadastroDespesaServiceTests {
 		inicializaListDeDespesa();
 
 		final LocalDate data = LocalDate.now();
-		final BigDecimal valor = new BigDecimal(4);
+		final Double valor = Double.valueOf(4d);
 		final String descricao = "Compra na Coop";
 		final String classificacao = "SuperMercado";
 		final String origem = "Conta Corrente";
@@ -140,7 +140,7 @@ class CadastroDespesaServiceTests {
 		try {
 			Optional<Despesa> despesaAlterada = service.alterarDespesa(despesa);
 			if(despesaAlterada.isPresent()) {
-				assertEquals(new BigDecimal(4), despesaAlterada.get().getValor());
+				assertEquals(Double.valueOf(4d), despesaAlterada.get().getValor());
 				assertEquals("Compra na Coop", despesaAlterada.get().getDescricao());
 				assertEquals("SuperMercado", despesaAlterada.get().getClassificacao());
 				assertEquals("Conta Corrente", despesaAlterada.get().getOrigem());
@@ -171,7 +171,7 @@ class CadastroDespesaServiceTests {
 			Despesa despesa = new Despesa(i,
 //										  LocalDate.now(),
 					LocalDate.of(2021,7+i,11),
-					 						new BigDecimal(i*12),
+					 						Double.valueOf(i*12),
 											"Descrição de Compra " + i,
 											"Compras",
 											"Cartão de Crédito",

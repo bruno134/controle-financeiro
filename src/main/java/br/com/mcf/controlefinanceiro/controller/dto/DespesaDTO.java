@@ -82,7 +82,7 @@ public class DespesaDTO{
 
         return new Despesa( getId(),
                 dataDespesa,
-                new BigDecimal(getValor()),
+                Double.valueOf(getValor()),
                 getDescricao(),
                 getClassificacao(),
                 getOrigem(),

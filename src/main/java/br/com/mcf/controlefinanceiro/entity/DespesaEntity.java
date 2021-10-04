@@ -28,7 +28,7 @@ public class DespesaEntity {
     @Column(name = "data", nullable = false)
     private LocalDate data;
     @Column(name = "valor", nullable = false)
-    private BigDecimal valor;
+    private Double valor;
     @Column(name = "descricao")
     private String descricao;
     @Column(name = "classificacao")
@@ -41,7 +41,7 @@ public class DespesaEntity {
     public DespesaEntity() {
     }
 
-    public DespesaEntity(LocalDate data, BigDecimal valor, String descricao, String classificacao, String origem, String tipo) {
+    public DespesaEntity(LocalDate data, Double valor, String descricao, String classificacao, String origem, String tipo) {
         this.data = data;
         this.valor = valor;
         this.descricao = descricao;
