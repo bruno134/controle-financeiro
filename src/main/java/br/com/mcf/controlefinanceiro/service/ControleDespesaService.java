@@ -3,6 +3,7 @@ package br.com.mcf.controlefinanceiro.service;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import org.springframework.stereotype.Service;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,12 +19,13 @@ public class ControleDespesaService {
         return totalDespesa;
     }
 
-    public Map<String, Double>  retornaTotalDespesaPorCategoria(List<Despesa> despesas) {
+    public Map<String, DoubleSummaryStatistics>  retornaTotalDespesaPorCategoria(List<Despesa> despesas) {
 
         return despesas.stream().collect(
                 Collectors.groupingBy(
                         Despesa::getClassificacao
-                        ,Collectors.summingDouble(Despesa::getValor)
+                       // ,Collectors.summingDouble(Despesa::getValor)
+                        , Collectors.summarizingDouble(Despesa::getValor)
                 )
         );
     }

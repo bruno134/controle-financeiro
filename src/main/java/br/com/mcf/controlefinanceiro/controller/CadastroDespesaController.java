@@ -1,24 +1,18 @@
 package br.com.mcf.controlefinanceiro.controller;
 
 import br.com.fluentvalidator.Validator;
-import br.com.fluentvalidator.context.Error;
-import br.com.fluentvalidator.context.ValidationResult;
 import br.com.mcf.controlefinanceiro.controller.dto.DadosConsultaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.dto.DespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
 import br.com.mcf.controlefinanceiro.controller.validator.ConsultaDespesaValidator;
-import br.com.mcf.controlefinanceiro.controller.validator.InsereDespesaValidator;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.service.CadastroDespesaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.NumberUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
