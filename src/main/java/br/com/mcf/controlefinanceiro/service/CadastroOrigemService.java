@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class CadastroOrigemService{
 
-    private OrigemRepository repository;
+    private final OrigemRepository repository;
 
     public CadastroOrigemService(OrigemRepository repository) {
         this.repository = repository;

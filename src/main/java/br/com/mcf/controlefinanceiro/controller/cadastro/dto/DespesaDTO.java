@@ -1,11 +1,10 @@
-package br.com.mcf.controlefinanceiro.controller.dto;
+package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +23,8 @@ public class DespesaDTO{
     private String valor;
     @JsonProperty("descricao")
     private String descricao;
-    @JsonProperty("classificacao")
-    private String classificacao;
+    @JsonProperty("categoria")
+    private String categoria;
     @JsonProperty("origem")
     private String origem;
     @JsonProperty("tipo")
@@ -34,22 +33,22 @@ public class DespesaDTO{
     public DespesaDTO() {
     }
 
-    public DespesaDTO(Integer id, String data, String valor, String descricao, String classificacao, String origem, String tipo) {
+    public DespesaDTO(Integer id, String data, String valor, String descricao, String categoria, String origem, String tipo) {
         this.id = id;
         this.data = data;
         this.valor = valor;
         this.descricao = descricao;
-        this.classificacao = classificacao;
+        this.categoria = categoria;
         this.origem = origem;
         this.tipo = tipo;
     }
 
-    public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String classificacao, String origem, String tipo) {
+    public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String categoria, String origem, String tipo) {
         this.id = id;
         setData(data);
         this.valor = valor;
         this.descricao = descricao;
-        this.classificacao = classificacao;
+        this.categoria = categoria;
         this.origem = origem;
         this.tipo = tipo;
     }
@@ -59,7 +58,7 @@ public class DespesaDTO{
         this.data = despesa.getData().format(format);
         this.valor = String.valueOf(despesa.getValor());
         this.descricao = despesa.getDescricao();
-        this.classificacao = despesa.getClassificacao();
+        this.categoria = despesa.getCategoria();
         this.origem = despesa.getOrigem();
         this.tipo = despesa.getTipo();
     }
@@ -84,7 +83,7 @@ public class DespesaDTO{
                 dataDespesa,
                 Double.valueOf(getValor()),
                 getDescricao(),
-                getClassificacao(),
+                getCategoria(),
                 getOrigem(),
                 getTipo());
     }
@@ -97,7 +96,7 @@ public class DespesaDTO{
                     despesa.getData(),
                     String.valueOf(despesa.getValor()),
                     despesa.getDescricao(),
-                    despesa.getClassificacao(),
+                    despesa.getCategoria(),
                     despesa.getTipo(),
                     despesa.getOrigem());
             list.add(despesaDTO);

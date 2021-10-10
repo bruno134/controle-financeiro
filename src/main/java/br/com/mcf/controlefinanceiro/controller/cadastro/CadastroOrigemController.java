@@ -1,20 +1,14 @@
-package br.com.mcf.controlefinanceiro.controller;
+package br.com.mcf.controlefinanceiro.controller.cadastro;
 
-import br.com.mcf.controlefinanceiro.controller.dto.ClassificacaoDTO;
-import br.com.mcf.controlefinanceiro.controller.dto.OrigemDTO;
-import br.com.mcf.controlefinanceiro.exceptions.ClassificacaoNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.controller.cadastro.dto.OrigemDTO;
 import br.com.mcf.controlefinanceiro.exceptions.OrigemNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.model.BaseDominio;
-import br.com.mcf.controlefinanceiro.model.Classificacao;
 import br.com.mcf.controlefinanceiro.model.Origem;
-import br.com.mcf.controlefinanceiro.service.CadastroClassificacaoService;
 import br.com.mcf.controlefinanceiro.service.CadastroOrigemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController

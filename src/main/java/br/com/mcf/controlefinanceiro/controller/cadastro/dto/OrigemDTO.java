@@ -1,4 +1,4 @@
-package br.com.mcf.controlefinanceiro.controller.dto;
+package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
 import br.com.mcf.controlefinanceiro.model.Origem;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -10,7 +10,7 @@ import java.util.List;
 
 import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 
-public class OrigemDTO extends BaseDominioDTO implements BaseDTO{
+public class OrigemDTO extends BaseDominioDTO implements BaseDTO {
     public OrigemDTO(Integer id, String nome, String data) {
         super(id, nome, data);
     }

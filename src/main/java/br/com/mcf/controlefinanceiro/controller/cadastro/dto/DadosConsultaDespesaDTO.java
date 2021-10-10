@@ -1,4 +1,4 @@
-package br.com.mcf.controlefinanceiro.controller.dto;
+package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

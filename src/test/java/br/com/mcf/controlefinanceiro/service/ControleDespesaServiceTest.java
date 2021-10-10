@@ -18,7 +18,7 @@ public class ControleDespesaServiceTest {
     private CadastroDespesaService cadastroService;
 
     @Autowired
-    private ControleDespesaService controleService;
+    private DashDespesaService controleService;
 
     @Test
     void deveSomarDespesasPorCategoria(){
@@ -39,15 +39,15 @@ public class ControleDespesaServiceTest {
 
     private void inicializaListDeDespesa(){
         cadastroService.apagarTodasDespesas();
-        List<String> listaClassificacao = Arrays.asList("Supermercado", "Farmacia", "Educação","Lazer", "Viagem");
-       for (int d=0;d<listaClassificacao.size();d++) {
+        List<String> listaCategoria = Arrays.asList("Supermercado", "Farmacia", "Educação","Lazer", "Viagem");
+       for (int d=0;d<listaCategoria.size();d++) {
            for (int i = 0; i < 5; i++) {
                Despesa despesa = new Despesa(i,
 //										  LocalDate.now(),
                        LocalDate.of(2021, 7 + i, 11),
                        Double.valueOf(i * 12 * (d+1)),
-                       "Descrição de " + listaClassificacao.get(d) + " "+ i,
-                       listaClassificacao.get(d),
+                       "Descrição de " + listaCategoria.get(d) + " "+ i,
+                       listaCategoria.get(d),
                        "Cartão de Crédito",
                        "Compartilhada"
                );

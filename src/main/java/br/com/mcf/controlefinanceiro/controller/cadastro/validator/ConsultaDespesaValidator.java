@@ -1,10 +1,9 @@
-package br.com.mcf.controlefinanceiro.controller.validator;
+package br.com.mcf.controlefinanceiro.controller.cadastro.validator;
 
 import br.com.fluentvalidator.AbstractValidator;
-import br.com.mcf.controlefinanceiro.controller.dto.DadosConsultaDespesaDTO;
+import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
 import org.springframework.stereotype.Component;
 
-import static br.com.fluentvalidator.predicate.ComparablePredicate.*;
 import static br.com.fluentvalidator.predicate.StringPredicate.isNumber;
 import static br.com.fluentvalidator.predicate.LogicalPredicate.not;
 import static br.com.fluentvalidator.predicate.StringPredicate.stringEmptyOrNull;

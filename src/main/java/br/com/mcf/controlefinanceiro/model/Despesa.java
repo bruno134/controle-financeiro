@@ -4,7 +4,6 @@ import br.com.mcf.controlefinanceiro.entity.DespesaEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -15,15 +14,15 @@ public class Despesa {
      private LocalDate data;
      private Double valor;
      private String descricao;
-     private String classificacao;
+     private String categoria;
      private String origem;
      private String tipo;
 
-     public Despesa(LocalDate data, Double valor, String descricao, String classificacao, String origem, String tipo) {
+     public Despesa(LocalDate data, Double valor, String descricao, String categoria, String origem, String tipo) {
           this.data = data;
           this.valor = valor;
           this.descricao = descricao;
-          this.classificacao = classificacao;
+          this.categoria = categoria;
           this.origem = origem;
           this.tipo = tipo;
      }
@@ -33,7 +32,7 @@ public class Despesa {
                   this.data,
                   this.valor,
                   this.descricao,
-                  this.classificacao,
+                  this.categoria,
                   this.origem,
                   this.tipo);
      }

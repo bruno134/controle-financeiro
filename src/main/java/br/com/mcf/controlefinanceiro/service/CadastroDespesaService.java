@@ -9,32 +9,29 @@ import com.sun.istack.NotNull;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CadastroDespesaService {
 
-    private DespesaRepository repository;
+    private final DespesaRepository repository;
 
     public CadastroDespesaService(DespesaRepository despesaRepository){
         this.repository = despesaRepository;
     }
 
-    public void insere(LocalDate dataDespesa,
+    public Despesa insere(LocalDate dataDespesa,
                        @NotNull Double valorDespesa,
                        @NotNull String descricaoDespesa,
-                       String classificacaoDespesa,
+                       String categoriaDespesa,
                        String origemDespesa,
                        String tipoDespesa) {
 
         Despesa despesa = new Despesa(dataDespesa==null? LocalDate.now():dataDespesa,
                                       valorDespesa,
                                       descricaoDespesa,
-                                      classificacaoDespesa,
+                                      categoriaDespesa,
                                       origemDespesa,
                                       tipoDespesa);
             try {
@@ -42,15 +39,25 @@ public class CadastroDespesaService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+        return despesa;
     }
 
-    public void insere(Despesa despesa) {
-        insere(despesa.getData(),
+    public Despesa insere(Despesa despesa) {
+      return insere(despesa.getData(),
                 despesa.getValor(),
                 despesa.getDescricao(),
-                despesa.getClassificacao(),
+                despesa.getCategoria(),
                 despesa.getOrigem(),
                 despesa.getTipo());
+    }
+
+
+    public List<Despesa> insereEmLista(List<Despesa> listaDespesaEntrada){
+
+        List<Despesa> listaDespesaIncluida = new ArrayList<>();
+        listaDespesaEntrada.forEach(d -> listaDespesaIncluida.add(insere(d)));
+        return listaDespesaIncluida;
     }
 
     public List<Despesa> buscarTodasDespesas(){
@@ -110,7 +117,7 @@ public class CadastroDespesaService {
             despesaEncontrada.get().setValor(despesa.getValor());
             despesaEncontrada.get().setData(despesa.getData());
             despesaEncontrada.get().setDescricao(despesa.getDescricao());
-            despesaEncontrada.get().setClassificacao(despesa.getClassificacao());
+            despesaEncontrada.get().setCategoria(despesa.getCategoria());
             despesaEncontrada.get().setOrigem(despesa.getOrigem());
             despesaEncontrada.get().setTipo(despesa.getTipo());
 

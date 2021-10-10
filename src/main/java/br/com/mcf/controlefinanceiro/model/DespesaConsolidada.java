@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DespesaConsolidada {
-    private String classificacao;
+    private String categoria;
     private BigDecimal valorTotal;
     private Integer quantidade;
 }

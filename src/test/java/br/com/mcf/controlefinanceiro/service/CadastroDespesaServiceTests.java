@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ class CadastroDespesaServiceTests {
 		final LocalDate data = LocalDate.now();
 		final Double valor = Double.valueOf(10d);
 		final String descricao = "Compra na loja Americanas";
-		final String classificacao = "Compras";
+		final String categoria = "Compras";
 		final String origem = "Cartão de Crédito";
 		final String tipo = "Compartilhada";
 
@@ -37,7 +36,7 @@ class CadastroDespesaServiceTests {
 			service.insere(data,
 					valor,
 					descricao,
-					classificacao,
+					categoria,
 					origem,
 					tipo);
 
@@ -52,7 +51,7 @@ class CadastroDespesaServiceTests {
 		final LocalDate data = LocalDate.now();
 		final Double valor = Double.valueOf(10d);
 		final String descricao = "Compra na loja Americanas";
-		final String classificacao = "Compras";
+		final String categoria = "Compras";
 		final String origem = "Cartão de Crédito";
 		final String tipo = "Compartilhada";
 
@@ -60,7 +59,7 @@ class CadastroDespesaServiceTests {
 				data,
 				valor,
 				descricao,
-				classificacao,
+				categoria,
 				origem,
 				tipo);
 		service.apagarTodasDespesas();
@@ -125,7 +124,7 @@ class CadastroDespesaServiceTests {
 		final LocalDate data = LocalDate.now();
 		final Double valor = Double.valueOf(4d);
 		final String descricao = "Compra na Coop";
-		final String classificacao = "SuperMercado";
+		final String categoria = "SuperMercado";
 		final String origem = "Conta Corrente";
 		final String tipo = "Particular";
 
@@ -133,7 +132,7 @@ class CadastroDespesaServiceTests {
 				data,
 				valor,
 				descricao,
-				classificacao,
+				categoria,
 				origem,
 				tipo);
 
@@ -142,7 +141,7 @@ class CadastroDespesaServiceTests {
 			if(despesaAlterada.isPresent()) {
 				assertEquals(Double.valueOf(4d), despesaAlterada.get().getValor());
 				assertEquals("Compra na Coop", despesaAlterada.get().getDescricao());
-				assertEquals("SuperMercado", despesaAlterada.get().getClassificacao());
+				assertEquals("SuperMercado", despesaAlterada.get().getCategoria());
 				assertEquals("Conta Corrente", despesaAlterada.get().getOrigem());
 				assertEquals("Particular", despesaAlterada.get().getTipo());
 			}else{

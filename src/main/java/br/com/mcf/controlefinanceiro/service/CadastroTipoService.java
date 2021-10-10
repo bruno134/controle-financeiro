@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class CadastroTipoService {
 
-    private TipoRepository repository;
+    private final TipoRepository repository;
 
     public CadastroTipoService(TipoRepository repository) {
 
