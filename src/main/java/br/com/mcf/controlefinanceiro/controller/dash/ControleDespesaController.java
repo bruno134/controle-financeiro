@@ -1,11 +1,11 @@
-package br.com.mcf.controlefinanceiro.controller;
+package br.com.mcf.controlefinanceiro.controller.dash;
 
-import br.com.mcf.controlefinanceiro.controller.dto.DadosConsultaDespesaDTO;
-import br.com.mcf.controlefinanceiro.controller.dto.DespesaConsolidadaDTO;
-import br.com.mcf.controlefinanceiro.controller.validator.ConsultaDespesaValidator;
+import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
+import br.com.mcf.controlefinanceiro.controller.dash.dto.DashDTO;
+import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.service.CadastroDespesaService;
-import br.com.mcf.controlefinanceiro.service.ControleDespesaService;
+import br.com.mcf.controlefinanceiro.service.DashDespesaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("controle")
+@RequestMapping("dash")
 public class ControleDespesaController {
 
-    private ControleDespesaService controleDespesaService;
-    private CadastroDespesaService cadastroDespesaService;
-    private ConsultaDespesaValidator consultaValidator;
+    private final DashDespesaService controleDespesaService;
+    private final CadastroDespesaService cadastroDespesaService;
+    private final ConsultaDespesaValidator consultaValidator;
 
-    public ControleDespesaController(ControleDespesaService controleDespesaService,
+    public ControleDespesaController(DashDespesaService controleDespesaService,
                                      CadastroDespesaService cadastroDespesaService,
                                      ConsultaDespesaValidator consultaValidator) {
 
@@ -32,8 +32,8 @@ public class ControleDespesaController {
     }
 
     @GetMapping("/consultar")
-    public ResponseEntity consultaConsolidadoCategoria(@RequestParam(value = "mes", required = false, defaultValue = "0") String mes,
-                                                       @RequestParam(value = "ano", required = false, defaultValue = "0") String ano){
+    public ResponseEntity consultaDadosDash(@RequestParam(value = "mes", required = false, defaultValue = "0") String mes,
+                                            @RequestParam(value = "ano", required = false, defaultValue = "0") String ano){
 
 
         try {
@@ -43,9 +43,10 @@ public class ControleDespesaController {
 
             if(validate.isValid()) {
                 List<Despesa> despesas = cadastroDespesaService.buscaDespesaPorParametros(Integer.parseInt(mes), Integer.parseInt(ano));
-                final var valoresConsolidados = controleDespesaService.retornaTotalDespesaPorCategoria(despesas);
-                final var despesaConsolidadaDTO = new DespesaConsolidadaDTO();
-                despesaConsolidadaDTO.setItens(valoresConsolidados);
+                final var valoresConsolidados = controleDespesaService.retornaDadosDespesaDash(despesas);
+                final var despesaConsolidadaDTO = new DashDTO();
+                despesaConsolidadaDTO.setItensPorCategoria(valoresConsolidados.get(0));
+                despesaConsolidadaDTO.setItensPorTipo(valoresConsolidados.get(2));
                 return ResponseEntity.ok().body(despesaConsolidadaDTO);
             }else{
                 return ResponseEntity.badRequest().body(validate.getErrors());

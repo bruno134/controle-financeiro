@@ -1,4 +1,4 @@
-package br.com.mcf.controlefinanceiro.controller.dto;
+package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
 import br.com.mcf.controlefinanceiro.model.BaseDominio;
 import com.fasterxml.jackson.annotation.JsonCreator;

@@ -1,8 +1,7 @@
 package br.com.mcf.controlefinanceiro.service.validator;
 
-import br.com.fluentvalidator.context.ValidationResult;
-import br.com.mcf.controlefinanceiro.controller.dto.DadosConsultaDespesaDTO;
-import br.com.mcf.controlefinanceiro.controller.validator.ConsultaDespesaValidator;
+import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
+import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

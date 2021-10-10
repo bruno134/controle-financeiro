@@ -1,4 +1,4 @@
-package br.com.mcf.controlefinanceiro.controller.dto;
+package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
 import br.com.mcf.controlefinanceiro.model.Tipo;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -10,7 +10,7 @@ import java.util.List;
 
 import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 
-public class TipoDTO extends BaseDominioDTO implements BaseDTO{
+public class TipoDTO extends BaseDominioDTO implements BaseDTO {
 
     @JsonCreator
     public TipoDTO(@JsonProperty("nome") String nome) {

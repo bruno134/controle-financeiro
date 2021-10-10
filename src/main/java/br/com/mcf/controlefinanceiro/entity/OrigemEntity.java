@@ -1,6 +1,5 @@
 package br.com.mcf.controlefinanceiro.entity;
 
-import br.com.mcf.controlefinanceiro.model.Classificacao;
 import br.com.mcf.controlefinanceiro.model.Origem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package br.com.mcf.controlefinanceiro.controller.validator;
+package br.com.mcf.controlefinanceiro.controller.cadastro.validator;
 
 import br.com.fluentvalidator.AbstractValidator;
-import br.com.mcf.controlefinanceiro.controller.dto.DespesaDTO;
+import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DespesaDTO;
 import org.springframework.stereotype.Component;
 
 import static br.com.fluentvalidator.predicate.LogicalPredicate.not;

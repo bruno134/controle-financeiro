@@ -1,13 +1,10 @@
 package br.com.mcf.controlefinanceiro.entity;
 
 import br.com.mcf.controlefinanceiro.model.Despesa;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +28,8 @@ public class DespesaEntity {
     private Double valor;
     @Column(name = "descricao")
     private String descricao;
-    @Column(name = "classificacao")
-    private String classificacao;
+    @Column(name = "categoria")
+    private String categoria;
     @Column(name = "origem")
     private String origem;
     @Column(name = "tipo")
@@ -41,11 +38,11 @@ public class DespesaEntity {
     public DespesaEntity() {
     }
 
-    public DespesaEntity(LocalDate data, Double valor, String descricao, String classificacao, String origem, String tipo) {
+    public DespesaEntity(LocalDate data, Double valor, String descricao, String categoria, String origem, String tipo) {
         this.data = data;
         this.valor = valor;
         this.descricao = descricao;
-        this.classificacao = classificacao;
+        this.categoria = categoria;
         this.origem = origem;
         this.tipo = tipo;
     }
@@ -54,7 +51,7 @@ public class DespesaEntity {
         this.data = despesa.getData();
         this.valor = despesa.getValor();
         this.descricao = despesa.getDescricao();
-        this.classificacao = despesa.getClassificacao();
+        this.categoria = despesa.getCategoria();
         this.origem = despesa.getOrigem();
         this.tipo = despesa.getTipo();
     }
@@ -64,7 +61,7 @@ public class DespesaEntity {
                 this.data,
                 this.valor,
                 this.descricao,
-                this.classificacao,
+                this.categoria,
                 this.origem,
                 this.tipo);
 
@@ -79,7 +76,7 @@ public class DespesaEntity {
                     itemDespesa.getData(),
                     itemDespesa.getValor(),
                     itemDespesa.getDescricao(),
-                    itemDespesa.getClassificacao(),
+                    itemDespesa.getCategoria(),
                     itemDespesa.getTipo(),
                     itemDespesa.getOrigem());
             listaDespesa.add(despesa);

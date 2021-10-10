@@ -1,6 +1,6 @@
-package br.com.mcf.controlefinanceiro.controller;
+package br.com.mcf.controlefinanceiro.controller.cadastro;
 
-import br.com.mcf.controlefinanceiro.controller.dto.TipoDTO;
+import br.com.mcf.controlefinanceiro.controller.cadastro.dto.TipoDTO;
 import br.com.mcf.controlefinanceiro.exceptions.TipoNaoEncontradoException;
 import br.com.mcf.controlefinanceiro.model.Tipo;
 import br.com.mcf.controlefinanceiro.service.CadastroTipoService;

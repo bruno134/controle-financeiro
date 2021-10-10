@@ -10,26 +10,26 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Classificacao {
+public class Categoria {
 
     private Long id;
     private String nome;
     private LocalDate dataCriacao;
     private boolean isAtivo;
 
-    public Classificacao(String nome) {
+    public Categoria(String nome) {
         this.nome = nome;
         this.dataCriacao = LocalDate.now();
         this.isAtivo = true;
     }
 
-    public Classificacao(String nome, LocalDate dataCriacao) {
+    public Categoria(String nome, LocalDate dataCriacao) {
         this.nome = nome;
         this.dataCriacao = dataCriacao;
         this.isAtivo = true;
     }
 
-    public Classificacao(Long id, String nome, LocalDate dataCriacao) {
+    public Categoria(Long id, String nome, LocalDate dataCriacao) {
         this.id = id;
         this.nome = nome;
         this.dataCriacao = dataCriacao;
