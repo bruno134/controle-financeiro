@@ -15,15 +15,15 @@ public class Despesa {
      private Double valor;
      private String descricao;
      private String categoria;
-     private String origem;
+     private String tipoRateio;
      private String instrumento;
 
-     public Despesa(LocalDate data, Double valor, String descricao, String categoria, String origem, String instrumento) {
+     public Despesa(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
           this.data = data;
           this.valor = valor;
           this.descricao = descricao;
           this.categoria = categoria;
-          this.origem = origem;
+          this.tipoRateio = tipoRateio;
           this.instrumento = instrumento;
      }
 
@@ -33,7 +33,7 @@ public class Despesa {
                   this.valor,
                   this.descricao,
                   this.categoria,
-                  this.origem,
+                  this.tipoRateio,
                   this.instrumento);
      }
 }

@@ -1,9 +1,9 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro;
 
-import br.com.mcf.controlefinanceiro.controller.cadastro.dto.OrigemDTO;
-import br.com.mcf.controlefinanceiro.exceptions.OrigemNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.model.Origem;
-import br.com.mcf.controlefinanceiro.service.CadastroOrigemService;
+import br.com.mcf.controlefinanceiro.controller.cadastro.dto.TipoRateioDTO;
+import br.com.mcf.controlefinanceiro.exceptions.TipoRateioNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.TipoRateio;
+import br.com.mcf.controlefinanceiro.service.CadastroTipoRateioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,24 +12,24 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("origem")
-public class CadastroOrigemController {
+@RequestMapping("tipo_rateio")
+public class CadastroTipoRateioController {
 
-    final CadastroOrigemService origemService;
+    final CadastroTipoRateioService tipoRateioService;
 
-    public CadastroOrigemController(CadastroOrigemService origemService){
-        this.origemService = origemService;
+    public CadastroTipoRateioController(CadastroTipoRateioService tipoRateioService){
+        this.tipoRateioService = tipoRateioService;
     }
 
 
     @GetMapping("/consultar")
     public ResponseEntity buscar(){
-        List<Origem> lista;
+        List<TipoRateio> lista;
         try{
 
-            lista = origemService.consultarTudo();
+            lista = tipoRateioService.consultarTudo();
             if(lista.size()>0)
-                return ResponseEntity.ok().body(OrigemDTO.listaDto(lista));
+                return ResponseEntity.ok().body(TipoRateioDTO.listaDto(lista));
             else
                 return ResponseEntity.notFound().build();
         }catch (Exception e){
@@ -39,11 +39,11 @@ public class CadastroOrigemController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity inserir(@RequestBody OrigemDTO origemDTO){
+    public ResponseEntity inserir(@RequestBody TipoRateioDTO tipoRateioDTO){
 
         try {
 
-            origemService.inserir(origemDTO.getNome());
+            tipoRateioService.inserir(tipoRateioDTO.getNome());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }catch (Exception e){
             e.printStackTrace();
@@ -53,15 +53,15 @@ public class CadastroOrigemController {
 
     @PutMapping("/alterar/{id}")
     public ResponseEntity alterar(@PathVariable("id") Integer id,
-                                               @RequestBody OrigemDTO origemDTO){
+                                               @RequestBody TipoRateioDTO tipoRateioDTO){
         try {
-            origemDTO.setId(id);
-            var origemAlterada = origemService.alterar(origemDTO.toObject());
-            if(origemAlterada.isPresent()){
-                var dto = new OrigemDTO(origemAlterada.get());
+            tipoRateioDTO.setId(id);
+            var tipoRateioAlterado = tipoRateioService.alterar(tipoRateioDTO.toObject());
+            if(tipoRateioAlterado.isPresent()){
+                var dto = new TipoRateioDTO(tipoRateioAlterado.get());
                 return ResponseEntity.ok(dto);
             }
-        }catch (OrigemNaoEncontradaException e){
+        }catch (TipoRateioNaoEncontradaException e){
             return ResponseEntity.notFound().build();
         }catch (Exception e){
             e.printStackTrace();
@@ -73,9 +73,9 @@ public class CadastroOrigemController {
     public ResponseEntity apagar(@PathVariable("id") Integer id) {
 
         try {
-            origemService.apagar(id);
+            tipoRateioService.apagar(id);
             return ResponseEntity.ok().build();
-        }catch (OrigemNaoEncontradaException e){
+        }catch (TipoRateioNaoEncontradaException e){
             e.printStackTrace();
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

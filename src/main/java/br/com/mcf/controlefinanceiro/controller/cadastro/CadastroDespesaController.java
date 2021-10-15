@@ -134,12 +134,15 @@ public class CadastroDespesaController {
 
     @PostMapping("/import")
     public ResponseEntity importaExcel (@RequestParam("file") MultipartFile dataFile,
-                                        @RequestParam("tipo") String tipo) {
+                                        @RequestParam("instrumento") String instrumento) {
+
+
+
 
         //TODO Testar/tratar se planilha excel vier zerada, fora do formato, em xlsx
         try{
             List<DespesaDTO> dtoList = DespesaDTO.listaDto(
-                    arquivoService.importaDespesaDoExcel(dataFile.getInputStream(), tipo)
+                    arquivoService.importaDespesaDoExcel(dataFile.getInputStream(), instrumento)
             );
 
             return ResponseEntity.ok(dtoList);

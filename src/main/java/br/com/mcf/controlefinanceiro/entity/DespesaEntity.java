@@ -30,20 +30,20 @@ public class DespesaEntity {
     private String descricao;
     @Column(name = "categoria")
     private String categoria;
-    @Column(name = "origem")
-    private String origem;
+    @Column(name = "tp_rateio")
+    private String tipoRateio;
     @Column(name = "instrumento")
     private String instrumento;
 
     public DespesaEntity() {
     }
 
-    public DespesaEntity(LocalDate data, Double valor, String descricao, String categoria, String origem, String instrumento) {
+    public DespesaEntity(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
         this.data = data;
         this.valor = valor;
         this.descricao = descricao;
         this.categoria = categoria;
-        this.origem = origem;
+        this.tipoRateio = tipoRateio;
         this.instrumento = instrumento;
     }
 
@@ -52,7 +52,7 @@ public class DespesaEntity {
         this.valor = despesa.getValor();
         this.descricao = despesa.getDescricao();
         this.categoria = despesa.getCategoria();
-        this.origem = despesa.getOrigem();
+        this.tipoRateio = despesa.getTipoRateio();
         this.instrumento = despesa.getInstrumento();
     }
 
@@ -62,7 +62,7 @@ public class DespesaEntity {
                 this.valor,
                 this.descricao,
                 this.categoria,
-                this.origem,
+                this.tipoRateio,
                 this.instrumento);
 
 
@@ -77,8 +77,8 @@ public class DespesaEntity {
                     itemDespesa.getValor(),
                     itemDespesa.getDescricao(),
                     itemDespesa.getCategoria(),
-                    itemDespesa.getInstrumento(),
-                    itemDespesa.getOrigem());
+                    itemDespesa.getTipoRateio(),
+                    itemDespesa.getInstrumento());
             listaDespesa.add(despesa);
         });
 
