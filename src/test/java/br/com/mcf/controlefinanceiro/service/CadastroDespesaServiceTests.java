@@ -142,7 +142,7 @@ class CadastroDespesaServiceTests {
 				assertEquals(Double.valueOf(4d), despesaAlterada.get().getValor());
 				assertEquals("Compra na Coop", despesaAlterada.get().getDescricao());
 				assertEquals("SuperMercado", despesaAlterada.get().getCategoria());
-				assertEquals("Conta Corrente", despesaAlterada.get().getOrigem());
+				assertEquals("Conta Corrente", despesaAlterada.get().getTipoRateio());
 				assertEquals("Particular", despesaAlterada.get().getInstrumento());
 			}else{
 				Assertions.fail();

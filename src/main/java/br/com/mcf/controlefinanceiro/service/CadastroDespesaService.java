@@ -48,7 +48,7 @@ public class CadastroDespesaService {
                 despesa.getValor(),
                 despesa.getDescricao(),
                 despesa.getCategoria(),
-                despesa.getOrigem(),
+                despesa.getTipoRateio(),
                 despesa.getInstrumento());
     }
 
@@ -118,7 +118,7 @@ public class CadastroDespesaService {
             despesaEncontrada.get().setData(despesa.getData());
             despesaEncontrada.get().setDescricao(despesa.getDescricao());
             despesaEncontrada.get().setCategoria(despesa.getCategoria());
-            despesaEncontrada.get().setOrigem(despesa.getOrigem());
+            despesaEncontrada.get().setTipoRateio(despesa.getTipoRateio());
             despesaEncontrada.get().setInstrumento(despesa.getInstrumento());
 
             despesaSalva = repository.saveAndFlush(despesaEncontrada.get()).toObject();

@@ -25,31 +25,31 @@ public class DespesaDTO{
     private String descricao;
     @JsonProperty("categoria")
     private String categoria;
-    @JsonProperty("origem")
-    private String origem;
+    @JsonProperty("tipoRateio")
+    private String tipoRateio;
     @JsonProperty("instrumento")
     private String instrumento;
 
     public DespesaDTO() {
     }
 
-    public DespesaDTO(Integer id, String data, String valor, String descricao, String categoria, String origem, String instrumento) {
+    public DespesaDTO(Integer id, String data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {
         this.id = id;
         this.data = data;
         this.valor = valor;
         this.descricao = descricao;
         this.categoria = categoria;
-        this.origem = origem;
+        this.tipoRateio = tipoRateio;
         this.instrumento = instrumento;
     }
 
-    public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String categoria, String origem, String instrumento) {
+    public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {
         this.id = id;
         setData(data);
         this.valor = valor;
         this.descricao = descricao;
         this.categoria = categoria;
-        this.origem = origem;
+        this.tipoRateio = tipoRateio;
         this.instrumento = instrumento;
     }
 
@@ -59,7 +59,7 @@ public class DespesaDTO{
         this.valor = String.valueOf(despesa.getValor());
         this.descricao = despesa.getDescricao();
         this.categoria = despesa.getCategoria();
-        this.origem = despesa.getOrigem();
+        this.tipoRateio = despesa.getTipoRateio();
         this.instrumento = despesa.getInstrumento();
     }
 
@@ -84,7 +84,7 @@ public class DespesaDTO{
                 Double.valueOf(getValor()),
                 getDescricao(),
                 getCategoria(),
-                getOrigem(),
+                getTipoRateio(),
                 getInstrumento());
     }
 
@@ -92,12 +92,13 @@ public class DespesaDTO{
         final List<DespesaDTO> list = new ArrayList<>();
         listaDespesa.forEach(despesa -> {
 
-            DespesaDTO despesaDTO = new DespesaDTO(despesa.getId(),
+            DespesaDTO despesaDTO =
+                    new DespesaDTO(despesa.getId(),
                     despesa.getData(),
                     String.valueOf(despesa.getValor()),
                     despesa.getDescricao(),
                     despesa.getCategoria(),
-                    despesa.getOrigem(),
+                    despesa.getTipoRateio(),
                     despesa.getInstrumento());
             list.add(despesaDTO);
         });
@@ -131,7 +132,7 @@ public class DespesaDTO{
                     valorConvertido,
                     despesaDTO.getDescricao(),
                     despesaDTO.getCategoria(),
-                    despesaDTO.getOrigem(),
+                    despesaDTO.getTipoRateio(),
                     despesaDTO.getInstrumento())
             );
         });

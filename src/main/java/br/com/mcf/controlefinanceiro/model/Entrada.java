@@ -19,6 +19,6 @@ public class Entrada {
     private String descricao;
     private String categoria;
     private String instrumento;
-    private String origem;
+    private String tipoRateio;
 
 }
