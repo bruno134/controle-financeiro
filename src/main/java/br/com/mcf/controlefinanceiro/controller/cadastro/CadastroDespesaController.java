@@ -1,10 +1,12 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro;
 
 import br.com.fluentvalidator.Validator;
+import br.com.fluentvalidator.context.ValidationResult;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DespesaDTO;
-import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
+import br.com.mcf.controlefinanceiro.controller.cadastro.validator.InsereDespesaValidator;
+import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.service.CadastroDespesaService;
@@ -15,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class CadastroDespesaController {
     final CadastroPorArquivoService arquivoService;
 
     @Autowired
-    Validator<DespesaDTO> validator;
+    InsereDespesaValidator validator;
     @Autowired
     ConsultaDespesaValidator consultaValidator;
 
@@ -132,14 +133,37 @@ public class CadastroDespesaController {
     }
 
     @PostMapping("/import")
-    public ResponseEntity importaExcel (@RequestParam("file") MultipartFile dataFile) throws IOException {
+    public ResponseEntity importaExcel (@RequestParam("file") MultipartFile dataFile,
+                                        @RequestParam("tipo") String tipo) {
+
+        //TODO Testar/tratar se planilha excel vier zerada, fora do formato, em xlsx
+        try{
+            List<DespesaDTO> dtoList = DespesaDTO.listaDto(
+                    arquivoService.importaDespesaDoExcel(dataFile.getInputStream(), tipo)
+            );
+
+            return ResponseEntity.ok(dtoList);
+
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/inserir/lista")
+    public ResponseEntity inserirDespesaEmLote(@RequestBody List<DespesaDTO> listaDeDespesas){
+
+        System.out.println("me chamaram ==> " + listaDeDespesas);
+        try {
+            //TODO colocar validação da entrada
+
+            service.insereEmLista(DespesaDTO.listDtoToListDespesa(listaDeDespesas));
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
 
 
 
-        List<DespesaDTO> dtoList = DespesaDTO.listaDto(
-                service.insereEmLista(
-                        arquivoService.importaDespesaDoExcel(dataFile.getInputStream(), "CARTÃO")));
-
-        return ResponseEntity.ok(dtoList);
     }
 }

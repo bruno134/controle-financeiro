@@ -50,7 +50,7 @@ public class CategoriaService {
                     alterarCategoria(categoria.get());
                 }
             } catch (EmptyResultDataAccessException e) {
-                throw new CategoriaNaoEncontradaException(ConstantMessages.CLASSIFICACAO_NAO_ENCONTRADA);
+                throw new CategoriaNaoEncontradaException(ConstantMessages.CATEGORIA_NAO_ENCONTRADA);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -75,7 +75,7 @@ public class CategoriaService {
             categoriaEntity.setAtivo(categoria.isAtivo());
             categoriaAlterada = repository.saveAndFlush(categoriaEntity).toObject();
         }else{
-            throw new CategoriaNaoEncontradaException(ConstantMessages.CLASSIFICACAO_NAO_ENCONTRADA);
+            throw new CategoriaNaoEncontradaException(ConstantMessages.CATEGORIA_NAO_ENCONTRADA);
         }
 
         return Optional.ofNullable(categoriaAlterada);

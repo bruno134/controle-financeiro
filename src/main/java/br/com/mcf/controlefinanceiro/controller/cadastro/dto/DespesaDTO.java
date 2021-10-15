@@ -27,30 +27,30 @@ public class DespesaDTO{
     private String categoria;
     @JsonProperty("origem")
     private String origem;
-    @JsonProperty("tipo")
-    private String tipo;
+    @JsonProperty("instrumento")
+    private String instrumento;
 
     public DespesaDTO() {
     }
 
-    public DespesaDTO(Integer id, String data, String valor, String descricao, String categoria, String origem, String tipo) {
+    public DespesaDTO(Integer id, String data, String valor, String descricao, String categoria, String origem, String instrumento) {
         this.id = id;
         this.data = data;
         this.valor = valor;
         this.descricao = descricao;
         this.categoria = categoria;
         this.origem = origem;
-        this.tipo = tipo;
+        this.instrumento = instrumento;
     }
 
-    public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String categoria, String origem, String tipo) {
+    public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String categoria, String origem, String instrumento) {
         this.id = id;
         setData(data);
         this.valor = valor;
         this.descricao = descricao;
         this.categoria = categoria;
         this.origem = origem;
-        this.tipo = tipo;
+        this.instrumento = instrumento;
     }
 
     public DespesaDTO(Despesa despesa){
@@ -60,7 +60,7 @@ public class DespesaDTO{
         this.descricao = despesa.getDescricao();
         this.categoria = despesa.getCategoria();
         this.origem = despesa.getOrigem();
-        this.tipo = despesa.getTipo();
+        this.instrumento = despesa.getInstrumento();
     }
 
     public void setData(String data) {
@@ -85,7 +85,7 @@ public class DespesaDTO{
                 getDescricao(),
                 getCategoria(),
                 getOrigem(),
-                getTipo());
+                getInstrumento());
     }
 
     public static List<DespesaDTO> listaDto(List<Despesa> listaDespesa){
@@ -97,10 +97,45 @@ public class DespesaDTO{
                     String.valueOf(despesa.getValor()),
                     despesa.getDescricao(),
                     despesa.getCategoria(),
-                    despesa.getTipo(),
-                    despesa.getOrigem());
+                    despesa.getOrigem(),
+                    despesa.getInstrumento());
             list.add(despesaDTO);
         });
         return list;
+    }
+
+    public static List<Despesa> listDtoToListDespesa(List<DespesaDTO> listaDto){
+        final List<Despesa> listaDespesa = new ArrayList<>();
+
+        listaDto.forEach(despesaDTO -> {
+
+            LocalDate dataDespesa = null;
+
+            if(!despesaDTO.getData().equals("")) {
+                dataDespesa = LocalDate.parse(despesaDTO.getData(), format);
+            }
+            Double valorConvertido = null;
+
+            try{
+                valorConvertido = Double.parseDouble(despesaDTO.getValor());
+            }catch (NumberFormatException e0){
+                throw new NumberFormatException("Não pode converter " + despesaDTO.valor + "em double");
+            }catch (NullPointerException e1){
+                valorConvertido = 0d;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            listaDespesa.add(
+            new Despesa(despesaDTO.getId(),
+                    dataDespesa,
+                    valorConvertido,
+                    despesaDTO.getDescricao(),
+                    despesaDTO.getCategoria(),
+                    despesaDTO.getOrigem(),
+                    despesaDTO.getInstrumento())
+            );
+        });
+
+        return listaDespesa;
     }
 }

@@ -18,7 +18,7 @@ public class DashDespesaService {
 
         listaDadosDash.add(retornaTotalDespesaPorCategoria(listaDespesa));
         listaDadosDash.add(retornaTotalDespesaPorOrigem(listaDespesa));
-        listaDadosDash.add(retornaTotalDespesaPorTipo(listaDespesa));
+        listaDadosDash.add(retornaTotalDespesaPorInstrumento(listaDespesa));
 
         return listaDadosDash;
     }
@@ -42,10 +42,10 @@ public class DashDespesaService {
         );
     }
 
-    public Map<String, DoubleSummaryStatistics> retornaTotalDespesaPorTipo(List<Despesa> despesas){
+    public Map<String, DoubleSummaryStatistics> retornaTotalDespesaPorInstrumento(List<Despesa> despesas){
                 return despesas.stream().collect(
                 Collectors.groupingBy(
-                        Despesa::getTipo
+                        Despesa::getInstrumento
                         , Collectors.summarizingDouble(Despesa::getValor)
                 )
         );

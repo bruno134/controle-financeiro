@@ -1,4 +1,4 @@
-package br.com.mcf.controlefinanceiro.controller.dto;
+package br.com.mcf.controlefinanceiro.controller.dash.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ItemDespesaConsolidadoDTO {
+public class ItemDespesaConsolidadoInstrumentoDTO {
 
     @JsonProperty("descricao")
     private String descricaoItem;

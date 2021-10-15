@@ -1,6 +1,6 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
-import br.com.mcf.controlefinanceiro.model.Tipo;
+import br.com.mcf.controlefinanceiro.model.Instrumento;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,27 +10,27 @@ import java.util.List;
 
 import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 
-public class TipoDTO extends BaseDominioDTO implements BaseDTO {
+public class InstrumentoDTO extends BaseDominioDTO implements BaseDTO {
 
     @JsonCreator
-    public TipoDTO(@JsonProperty("nome") String nome) {
+    public InstrumentoDTO(@JsonProperty("nome") String nome) {
         super(nome);
     }
 
-    public TipoDTO(Integer id, String nome, String data) {
+    public InstrumentoDTO(Integer id, String nome, String data) {
         super(id, nome, data);
     }
 
-    public TipoDTO(Tipo baseDominio) {
+    public InstrumentoDTO(Instrumento baseDominio) {
         super(baseDominio);
     }
 
-    public static List<TipoDTO> listaDto(List<Tipo> lista) {
+    public static List<InstrumentoDTO> listaDto(List<Instrumento> lista) {
 
-        List<TipoDTO> listaDto = new ArrayList<>();
+        List<InstrumentoDTO> listaDto = new ArrayList<>();
 
         lista.forEach(item -> listaDto.add(
-            new TipoDTO(item.getId().intValue(),
+            new InstrumentoDTO(item.getId().intValue(),
                     item.getNome(),
                     String.valueOf(item.getDataCriacao()))
         ));
@@ -39,12 +39,12 @@ public class TipoDTO extends BaseDominioDTO implements BaseDTO {
     }
 
     @Override
-    public Tipo toObject() {
+    public Instrumento toObject() {
         LocalDate dataObjeto = null;
         if(this.getData()!=null&&"".equals(this.getData())){
             dataObjeto = LocalDate.parse(this.getData(),format);
         }
-        return new Tipo((long) (this.getId() == null ? 0 : this.getId()),
+        return new Instrumento((long) (this.getId() == null ? 0 : this.getId()),
                 this.getNome()
                 ,dataObjeto);
     }

@@ -46,7 +46,7 @@ public class ControleDespesaController {
                 final var valoresConsolidados = controleDespesaService.retornaDadosDespesaDash(despesas);
                 final var despesaConsolidadaDTO = new DashDTO();
                 despesaConsolidadaDTO.setItensPorCategoria(valoresConsolidados.get(0));
-                despesaConsolidadaDTO.setItensPorTipo(valoresConsolidados.get(2));
+                despesaConsolidadaDTO.setItensPorInstrumentos(valoresConsolidados.get(2));
                 return ResponseEntity.ok().body(despesaConsolidadaDTO);
             }else{
                 return ResponseEntity.badRequest().body(validate.getErrors());

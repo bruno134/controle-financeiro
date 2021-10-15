@@ -16,15 +16,15 @@ public class Despesa {
      private String descricao;
      private String categoria;
      private String origem;
-     private String tipo;
+     private String instrumento;
 
-     public Despesa(LocalDate data, Double valor, String descricao, String categoria, String origem, String tipo) {
+     public Despesa(LocalDate data, Double valor, String descricao, String categoria, String origem, String instrumento) {
           this.data = data;
           this.valor = valor;
           this.descricao = descricao;
           this.categoria = categoria;
           this.origem = origem;
-          this.tipo = tipo;
+          this.instrumento = instrumento;
      }
 
      public DespesaEntity toEntity(){
@@ -34,6 +34,6 @@ public class Despesa {
                   this.descricao,
                   this.categoria,
                   this.origem,
-                  this.tipo);
+                  this.instrumento);
      }
 }
