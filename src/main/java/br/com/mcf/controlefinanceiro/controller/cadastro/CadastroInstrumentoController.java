@@ -1,9 +1,9 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro;
 
-import br.com.mcf.controlefinanceiro.controller.cadastro.dto.TipoDTO;
-import br.com.mcf.controlefinanceiro.exceptions.TipoNaoEncontradoException;
-import br.com.mcf.controlefinanceiro.model.Tipo;
-import br.com.mcf.controlefinanceiro.service.CadastroTipoService;
+import br.com.mcf.controlefinanceiro.controller.cadastro.dto.InstrumentoDTO;
+import br.com.mcf.controlefinanceiro.exceptions.InstrumentoNaoEncontradoException;
+import br.com.mcf.controlefinanceiro.model.Instrumento;
+import br.com.mcf.controlefinanceiro.service.CadastroInstrumentoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,24 +12,24 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("tipo")
-public class CadastroTipoController {
+@RequestMapping("instrumento")
+public class CadastroInstrumentoController {
 
-    final CadastroTipoService tipoService;
+    final CadastroInstrumentoService instrumentoService;
 
-    public CadastroTipoController(CadastroTipoService tipoService){
-        this.tipoService = tipoService;
+    public CadastroInstrumentoController(CadastroInstrumentoService instrumentoService){
+        this.instrumentoService = instrumentoService;
     }
 
 
     @GetMapping("/consultar")
     public ResponseEntity buscar(){
-        List<Tipo> lista;
+        List<Instrumento> lista;
         try{
 
-            lista = tipoService.consultarTudo();
+            lista = instrumentoService.consultarTudo();
             if(lista.size()>0)
-                return ResponseEntity.ok().body(TipoDTO.listaDto(lista));
+                return ResponseEntity.ok().body(InstrumentoDTO.listaDto(lista));
             else
                 return ResponseEntity.notFound().build();
         }catch (Exception e){
@@ -39,11 +39,11 @@ public class CadastroTipoController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity inserir(@RequestBody TipoDTO tipoDTO){
+    public ResponseEntity inserir(@RequestBody InstrumentoDTO instrumentoDTO){
 
         try {
 
-            tipoService.inserir(tipoDTO.getNome());
+            instrumentoService.inserir(instrumentoDTO.getNome());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }catch (Exception e){
             e.printStackTrace();
@@ -53,15 +53,15 @@ public class CadastroTipoController {
 
     @PutMapping("/alterar/{id}")
     public ResponseEntity alterar(@PathVariable("id") Integer id,
-                                               @RequestBody TipoDTO tipoDTO){
+                                               @RequestBody InstrumentoDTO instrumentoDTO){
         try {
-            tipoDTO.setId(id);
-            var tipoAlterada = tipoService.alterar(tipoDTO.toObject());
+            instrumentoDTO.setId(id);
+            var tipoAlterada = instrumentoService.alterar(instrumentoDTO.toObject());
             if(tipoAlterada.isPresent()){
-                var dto = new TipoDTO(tipoAlterada.get());
+                var dto = new InstrumentoDTO(tipoAlterada.get());
                 return ResponseEntity.ok(dto);
             }
-        }catch (TipoNaoEncontradoException e){
+        }catch (InstrumentoNaoEncontradoException e){
             return ResponseEntity.notFound().build();
         }catch (Exception e){
             e.printStackTrace();
@@ -73,9 +73,9 @@ public class CadastroTipoController {
     public ResponseEntity apagar(@PathVariable("id") Integer id) {
 
         try {
-            tipoService.apagar(id);
+            instrumentoService.apagar(id);
             return ResponseEntity.ok().build();
-        }catch (TipoNaoEncontradoException e){
+        }catch (InstrumentoNaoEncontradoException e){
             e.printStackTrace();
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

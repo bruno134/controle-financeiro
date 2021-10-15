@@ -18,7 +18,7 @@ import java.util.List;
 public class CadastroPorArquivoService {
 
     public static final String NAO_CATEGORIZADO = "Não categorizado";
-    public static final String NAO_INFORMADO = "Não informado";
+    public static final String COMPARTILHADA = "COMPARTILHADA";
 
 
     public List<Despesa> importaDespesaDoExcel(InputStream inputFile, String tipo) throws IOException {
@@ -62,7 +62,7 @@ public class CadastroPorArquivoService {
                             ,Double.parseDouble(linha.get(3))
                             ,linha.get(1)
                             ,NAO_CATEGORIZADO
-                            ,NAO_INFORMADO
+                            ,COMPARTILHADA
                             ,tipo));
                     i++;
                 }

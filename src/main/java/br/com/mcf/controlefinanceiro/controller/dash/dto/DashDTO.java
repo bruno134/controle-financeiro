@@ -21,8 +21,8 @@ import java.util.Map;
 public class DashDTO {
     @JsonProperty("itens")
     private List<ItemDespesaConsolidadoCategoriaDTO> itensPorCategoria;
-    @JsonProperty("itensTipo")
-    private List<ItemDespesaConsolidadoTipoDTO> itensPorTipo;
+    @JsonProperty("itensInstrumentos")
+    private List<ItemDespesaConsolidadoInstrumentoDTO> itensPorInstrumentos;
 
 
     public void setItensPorCategoria(Map<String, DoubleSummaryStatistics> itensPorCategoria) {
@@ -38,10 +38,10 @@ public class DashDTO {
         });
     }
 
-    public void setItensPorTipo(Map<String, DoubleSummaryStatistics> itensPorTipo){
-        this.itensPorTipo = new ArrayList<>();
-        itensPorTipo.forEach(((mapKey, mapItem)  -> {
-            this.itensPorTipo.add(new ItemDespesaConsolidadoTipoDTO(mapKey, String.valueOf(mapItem.getCount())
+    public void setItensPorInstrumentos(Map<String, DoubleSummaryStatistics> itensPorInstrumentos){
+        this.itensPorInstrumentos = new ArrayList<>();
+        itensPorInstrumentos.forEach(((mapKey, mapItem)  -> {
+            this.itensPorInstrumentos.add(new ItemDespesaConsolidadoInstrumentoDTO(mapKey, String.valueOf(mapItem.getCount())
                     ,String.valueOf(mapItem.getSum())
                     ,String.valueOf(mapItem.getAverage())
                     ,String.valueOf(mapItem.getMin())

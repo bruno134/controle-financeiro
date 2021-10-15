@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_origem")
+@Table(name = "tb_dono_transacao")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -35,10 +35,10 @@ public class OrigemEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_origem", nullable = false)
+    @Column(name = "id_dono", nullable = false)
     private Long id;
 
-    @Column(name = "nm_origem")
+    @Column(name = "nm_dono")
     private String nomeOrigem;
     @Column(name = "dt_criacao")
     private LocalDate dataCriacao;
