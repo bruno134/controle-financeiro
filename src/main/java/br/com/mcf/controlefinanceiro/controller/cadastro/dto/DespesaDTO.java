@@ -1,6 +1,7 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -14,6 +15,8 @@ import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DespesaDTO{
+
+    private final TipoTransacao enumTipoTransacao = TipoTransacao.DESPESA;
 
     @JsonProperty("id")
     private Integer id;

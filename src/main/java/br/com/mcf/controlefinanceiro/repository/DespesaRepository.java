@@ -11,10 +11,14 @@ import java.util.Optional;
 @Repository
 public interface DespesaRepository extends JpaRepository<DespesaEntity,Long> {
 
-    List<DespesaEntity> findAllByDataBetweenOrderByDataAsc(
+    List<DespesaEntity> findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(
                                             LocalDate DataInicio,
-                                            LocalDate DataFim);
+                                            LocalDate DataFim,
+                                            String tipoTransacao);
+
+    List<DespesaEntity> findAllByTipoTransacaoOrderByDataAsc(String tipoTransacao);
+    void deleteByIdAndTipoTransacao(Long Id, String tipoTransacao);
 
 
-
+    Optional<DespesaEntity> findByIdAndTipoTransacao(long longValue, String tipoTransacao);
 }

@@ -1,6 +1,7 @@
 package br.com.mcf.controlefinanceiro.service;
 
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,8 +50,7 @@ public class ControleDespesaServiceTest {
                        "Descrição de " + listaCategoria.get(d) + " "+ i,
                        listaCategoria.get(d),
                        "Cartão de Crédito",
-                       "Compartilhada"
-               );
+                       "Compartilhada");
 
                cadastroService.insere(despesa);
            }
