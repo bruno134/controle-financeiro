@@ -1,6 +1,7 @@
 package br.com.mcf.controlefinanceiro.entity;
 
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,17 +35,20 @@ public class DespesaEntity {
     private String tipoRateio;
     @Column(name = "instrumento")
     private String instrumento;
+    @Column(name = "tp_transacao")
+    private String tipoTransacao;
 
     public DespesaEntity() {
     }
 
-    public DespesaEntity(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+    public DespesaEntity(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento, String tipoTransacao) {
         this.data = data;
         this.valor = valor;
         this.descricao = descricao;
         this.categoria = categoria;
         this.tipoRateio = tipoRateio;
         this.instrumento = instrumento;
+        this.tipoTransacao = tipoTransacao;
     }
 
     public DespesaEntity(Despesa despesa){
@@ -54,6 +58,7 @@ public class DespesaEntity {
         this.categoria = despesa.getCategoria();
         this.tipoRateio = despesa.getTipoRateio();
         this.instrumento = despesa.getInstrumento();
+        this.tipoTransacao = despesa.getTipoTransacao().getDescricao();
     }
 
     public Despesa toObject(){

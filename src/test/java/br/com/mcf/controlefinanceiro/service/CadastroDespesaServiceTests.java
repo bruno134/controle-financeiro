@@ -2,6 +2,7 @@ package br.com.mcf.controlefinanceiro.service;
 
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -125,16 +126,16 @@ class CadastroDespesaServiceTests {
 		final Double valor = Double.valueOf(4d);
 		final String descricao = "Compra na Coop";
 		final String categoria = "SuperMercado";
-		final String origem = "Conta Corrente";
-		final String tipo = "Particular";
+		final String tipoRateio = "Conta Corrente";
+		final String instrumento = "Particular";
 
 		final Despesa despesa = new Despesa(1,
 				data,
 				valor,
 				descricao,
 				categoria,
-				origem,
-				tipo);
+				tipoRateio,
+				instrumento);
 
 		try {
 			Optional<Despesa> despesaAlterada = service.alterarDespesa(despesa);
@@ -174,8 +175,7 @@ class CadastroDespesaServiceTests {
 											"Descrição de Compra " + i,
 											"Compras",
 											"Cartão de Crédito",
-											"Compartilhada"
-										   );
+											"Compartilhada");
 
 			service.insere(despesa);
 		}

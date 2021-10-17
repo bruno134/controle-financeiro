@@ -3,11 +3,13 @@ package br.com.mcf.controlefinanceiro.service;
 import br.com.mcf.controlefinanceiro.entity.DespesaEntity;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.repository.DespesaRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import com.sun.istack.NotNull;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -16,6 +18,7 @@ import java.util.*;
 public class CadastroDespesaService {
 
     private final DespesaRepository repository;
+    private final TipoTransacao despesaEnum = TipoTransacao.DESPESA;
 
     public CadastroDespesaService(DespesaRepository despesaRepository){
         this.repository = despesaRepository;
@@ -25,15 +28,15 @@ public class CadastroDespesaService {
                        @NotNull Double valorDespesa,
                        @NotNull String descricaoDespesa,
                        String categoriaDespesa,
-                       String origemDespesa,
-                       String tipoDespesa) {
+                       String tipoRateioDespesa,
+                       String instrumentoDespesa) {
 
         Despesa despesa = new Despesa(dataDespesa==null? LocalDate.now():dataDespesa,
                                       valorDespesa,
                                       descricaoDespesa,
                                       categoriaDespesa,
-                                      origemDespesa,
-                                      tipoDespesa);
+                                      tipoRateioDespesa,
+                                      instrumentoDespesa);
             try {
                 repository.save(new DespesaEntity(despesa));
             } catch (Exception e) {
@@ -61,7 +64,7 @@ public class CadastroDespesaService {
     }
 
     public List<Despesa> buscarTodasDespesas(){
-        return DespesaEntity.toList(repository.findAll());
+        return DespesaEntity.toList(repository.findAllByTipoTransacaoOrderByDataAsc(despesaEnum.getDescricao()));
     }
 
     public Optional<Despesa> buscaDespesaPorID(Integer idDespesa){
@@ -79,10 +82,11 @@ public class CadastroDespesaService {
         return Optional.ofNullable(despesaEncontrada);
     }
 
+    @Transactional
     public void apagarDespesa(Integer id) throws DespesaNaoEncontradaException {
         if(id>0) {
             try {
-                repository.deleteById(id.longValue());
+                repository.deleteByIdAndTipoTransacao(id.longValue(),despesaEnum.getDescricao());
             } catch (EmptyResultDataAccessException e) {
                 throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
             }catch (Exception e){
@@ -99,14 +103,14 @@ public class CadastroDespesaService {
             e.printStackTrace();
         }
     }
-
+    @Transactional
     public Optional<Despesa> alterarDespesa(Despesa despesa) throws DespesaNaoEncontradaException {
 
         Despesa despesaSalva;
         Optional<DespesaEntity> despesaEncontrada = Optional.empty();
 
         try {
-            despesaEncontrada = repository.findById(despesa.getId().longValue());
+            despesaEncontrada = repository.findByIdAndTipoTransacao(despesa.getId().longValue(), despesaEnum.getDescricao());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -139,7 +143,7 @@ public class CadastroDespesaService {
 
         try {
             listaResultado = DespesaEntity.toList(
-                    repository.findAllByDataBetweenOrderByDataAsc(dataInicial,dataFinal)
+                    repository.findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(dataInicial,dataFinal,despesaEnum.getDescricao())
             );
 
         } catch (Exception e) {

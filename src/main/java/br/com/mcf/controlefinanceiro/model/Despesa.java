@@ -8,32 +8,38 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @Getter
-public class Despesa {
+public class Despesa extends Transacao{
 
-     private Integer id;
-     private LocalDate data;
-     private Double valor;
-     private String descricao;
-     private String categoria;
-     private String tipoRateio;
-     private String instrumento;
+
 
      public Despesa(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
-          this.data = data;
-          this.valor = valor;
-          this.descricao = descricao;
-          this.categoria = categoria;
-          this.tipoRateio = tipoRateio;
-          this.instrumento = instrumento;
+           super(data,
+                 valor,
+                 descricao,
+                 categoria,
+                 tipoRateio,
+                 instrumento,
+                 TipoTransacao.DESPESA);
+     }
+     public Despesa(Integer id, LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+          super(  id,
+                  data,
+                  valor,
+                  descricao,
+                  categoria,
+                  tipoRateio,
+                  instrumento,
+                  TipoTransacao.DESPESA);
      }
 
      public DespesaEntity toEntity(){
           return new DespesaEntity(
-                  this.data,
-                  this.valor,
-                  this.descricao,
-                  this.categoria,
-                  this.tipoRateio,
-                  this.instrumento);
+                  getData(),
+                  getValor(),
+                  getDescricao(),
+                  getCategoria(),
+                  getTipoRateio(),
+                  getInstrumento(),
+                  TipoTransacao.DESPESA.getDescricao());
      }
 }
