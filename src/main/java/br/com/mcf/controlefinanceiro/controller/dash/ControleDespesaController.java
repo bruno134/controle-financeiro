@@ -1,10 +1,11 @@
 package br.com.mcf.controlefinanceiro.controller.dash;
 
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
-import br.com.mcf.controlefinanceiro.controller.dash.dto.DashDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
+import br.com.mcf.controlefinanceiro.controller.dash.dto.DashDTO;
 import br.com.mcf.controlefinanceiro.model.Despesa;
-import br.com.mcf.controlefinanceiro.service.CadastroDespesaService;
+import br.com.mcf.controlefinanceiro.service.DespesaService;
+import br.com.mcf.controlefinanceiro.service.TransacaoService;
 import br.com.mcf.controlefinanceiro.service.DashDespesaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,15 +20,15 @@ import java.util.List;
 public class ControleDespesaController {
 
     private final DashDespesaService controleDespesaService;
-    private final CadastroDespesaService cadastroDespesaService;
+    private final DespesaService despesaService;
     private final ConsultaDespesaValidator consultaValidator;
 
     public ControleDespesaController(DashDespesaService controleDespesaService,
-                                     CadastroDespesaService cadastroDespesaService,
+                                     DespesaService despesaService,
                                      ConsultaDespesaValidator consultaValidator) {
 
         this.controleDespesaService = controleDespesaService;
-        this.cadastroDespesaService = cadastroDespesaService;
+        this.despesaService = despesaService;
         this.consultaValidator = consultaValidator;
     }
 
@@ -42,7 +43,7 @@ public class ControleDespesaController {
             final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
 
             if(validate.isValid()) {
-                List<Despesa> despesas = cadastroDespesaService.buscaDespesaPorParametros(Integer.parseInt(mes), Integer.parseInt(ano));
+                var despesas = despesaService.buscarPorParametros(Integer.parseInt(mes), Integer.parseInt(ano));
                 final var valoresConsolidados = controleDespesaService.retornaDadosDespesaDash(despesas);
                 final var despesaConsolidadaDTO = new DashDTO();
                 despesaConsolidadaDTO.setItensPorCategoria(valoresConsolidados.get(0));

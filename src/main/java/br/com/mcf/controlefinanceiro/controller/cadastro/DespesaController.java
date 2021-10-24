@@ -1,7 +1,5 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro;
 
-import br.com.fluentvalidator.Validator;
-import br.com.fluentvalidator.context.ValidationResult;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
@@ -9,8 +7,8 @@ import br.com.mcf.controlefinanceiro.controller.cadastro.validator.InsereDespesa
 import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
-import br.com.mcf.controlefinanceiro.service.CadastroDespesaService;
 import br.com.mcf.controlefinanceiro.service.CadastroPorArquivoService;
+import br.com.mcf.controlefinanceiro.service.DespesaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +21,9 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("despesa")
-public class CadastroDespesaController {
+public class DespesaController {
 
-    final CadastroDespesaService service;
+    final DespesaService service;
     final CadastroPorArquivoService arquivoService;
 
     @Autowired
@@ -33,21 +31,23 @@ public class CadastroDespesaController {
     @Autowired
     ConsultaDespesaValidator consultaValidator;
 
-    public CadastroDespesaController(CadastroDespesaService service, CadastroPorArquivoService arquivoService) {
+    public DespesaController(DespesaService service, CadastroPorArquivoService arquivoService) {
         this.service = service;
         this.arquivoService = arquivoService;
     }
 
     @GetMapping("/consultar/{id}")
-    public ResponseEntity buscaDespesa(@PathVariable Integer id) {
-        final Optional<Despesa> despesaEncontrada = service.buscaDespesaPorID(id);
+    public ResponseEntity buscaDespesa(@PathVariable Long id) {
+
+
 
         try {
-            if (despesaEncontrada.isPresent())
-                return ResponseEntity.ok(new DespesaDTO(despesaEncontrada.get()));
-            else
-                return ResponseEntity.notFound().build();
-        } catch (Exception e) {
+            final Optional<Despesa> despesaEncontrada = service.buscarPorID(id);
+            return ResponseEntity.ok(new DespesaDTO(despesaEncontrada.get()));
+        }   catch (DespesaNaoEncontradaException e){
+            return ResponseEntity.notFound().build();
+        }
+            catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -64,7 +64,7 @@ public class CadastroDespesaController {
             final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
 
             if (validate.isValid()) {
-                despesas = service.buscaDespesaPorParametros(Integer.parseInt(mes), Integer.parseInt(ano));
+                despesas = service.buscarPorParametros(Integer.parseInt(mes), Integer.parseInt(ano));
                 return ResponseEntity.ok().body(DespesaDTO.listaDto(despesas));
             } else {
                 return ResponseEntity.badRequest().body(validate.getErrors());
@@ -81,7 +81,7 @@ public class CadastroDespesaController {
 
         if (validate.isValid()) {
             try {
-                service.insere(despesaDTO.toObject());
+                service.inserir(despesaDTO.toObject());
                 return ResponseEntity.status(HttpStatus.CREATED).build();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -101,7 +101,7 @@ public class CadastroDespesaController {
         if (validate.isValid()) {
             try {
                 despesaDTO.setId(id);
-                final Optional<Despesa> despesaAlterada = service.alterarDespesa(despesaDTO.toObject());
+                final Optional<Despesa> despesaAlterada = service.alterar(despesaDTO.toObject());
 
                 if (despesaAlterada.isPresent()) {
                     final DespesaDTO despesaRespostaDTO = new DespesaDTO(despesaAlterada.get());
@@ -124,7 +124,9 @@ public class CadastroDespesaController {
     public ResponseEntity apagarDespesa(@PathVariable("id") Integer id) {
 
         try {
-            service.apagarDespesa(id);
+            Despesa despesaParaApagar = new Despesa();
+            despesaParaApagar.setId(id);
+            service.apagar(despesaParaApagar);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,11 +157,10 @@ public class CadastroDespesaController {
     @PostMapping("/inserir/lista")
     public ResponseEntity inserirDespesaEmLote(@RequestBody List<DespesaDTO> listaDeDespesas){
 
-        System.out.println("me chamaram ==> " + listaDeDespesas);
         try {
             //TODO colocar validação da entrada
 
-            service.insereEmLista(DespesaDTO.listDtoToListDespesa(listaDeDespesas));
+            service.inserirEmLista(DespesaDTO.listDtoToListDespesa(listaDeDespesas));
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }catch (Exception e){
             e.printStackTrace();
