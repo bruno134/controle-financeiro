@@ -1,6 +1,7 @@
 package br.com.mcf.controlefinanceiro.entity;
 
 import br.com.mcf.controlefinanceiro.model.Categoria;
+import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,7 @@ public class CategoriaEntity {
         this.nomeCategoria = categoria.getNome();
         this.dataCriacao = categoria.getDataCriacao();
         this.ativo = true;
+        this.tipoTransacao = categoria.getTipoTransacao().getDescricao();
     }
 
     @Id
@@ -44,18 +46,22 @@ public class CategoriaEntity {
     private LocalDate dataCriacao;
     @Column(name = "is_ativo")
     private boolean ativo;
+    @Column(name = "tp_transacao")
+    private String tipoTransacao;
 
+//TODO sera aqui o melhor lugar desse metodo?
     public Categoria toObject(){
         return new Categoria(
                 this.id,
                 this.nomeCategoria,
-                this.dataCriacao
+                this.dataCriacao,
+                this.tipoTransacao
         );
     }
 
     public static List<Categoria> toList(List<CategoriaEntity> list){
         List<Categoria> listaCategoria = new ArrayList<>();
-        list.forEach(entity -> listaCategoria.add(new Categoria(entity.id, entity.nomeCategoria, entity.dataCriacao)));
+        list.forEach(entity -> listaCategoria.add(new Categoria(entity.id, entity.nomeCategoria, entity.dataCriacao, entity.getTipoTransacao())));
         return listaCategoria;
     }
 

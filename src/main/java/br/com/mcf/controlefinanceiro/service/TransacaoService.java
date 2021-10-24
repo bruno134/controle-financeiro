@@ -1,12 +1,10 @@
 package br.com.mcf.controlefinanceiro.service;
 
 import br.com.mcf.controlefinanceiro.entity.TransacaoEntity;
-import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.exceptions.ReceitaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.model.Transacao;
-import br.com.mcf.controlefinanceiro.repository.DespesaRepository;
+import br.com.mcf.controlefinanceiro.repository.TransacaoRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -19,12 +17,12 @@ import java.util.Optional;
 
 public class TransacaoService<T extends Transacao> {
 
-    private final DespesaRepository repository;
+    private final TransacaoRepository repository;
     private final TipoTransacao despesaEnum = TipoTransacao.DESPESA;
     private Class<T> clazz;
 
-    public TransacaoService(DespesaRepository despesaRepository, Class<T> clazz){
-        this.repository = despesaRepository;
+    public TransacaoService(TransacaoRepository transacaoRepository, Class<T> clazz){
+        this.repository = transacaoRepository;
         this.clazz = clazz;
     }
 

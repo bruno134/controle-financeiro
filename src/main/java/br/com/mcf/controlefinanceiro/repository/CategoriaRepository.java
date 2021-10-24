@@ -10,5 +10,6 @@ import java.util.Optional;
 @Repository
 public interface CategoriaRepository extends JpaRepository<CategoriaEntity, Long> {
     List<CategoriaEntity> findAllByAtivo(boolean ativo);
+    List<CategoriaEntity> findAllByAtivoAndTipoTransacao(boolean ativo, String tipoTransacao);
     Optional<CategoriaEntity> findByIdAndAtivo(Long id, boolean ativo);
 }

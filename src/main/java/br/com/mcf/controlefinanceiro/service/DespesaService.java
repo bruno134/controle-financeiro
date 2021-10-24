@@ -4,7 +4,7 @@ import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
-import br.com.mcf.controlefinanceiro.repository.DespesaRepository;
+import br.com.mcf.controlefinanceiro.repository.TransacaoRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +19,9 @@ public class DespesaService{
 
 
     private final TransacaoService<Despesa> service;
-    private final DespesaRepository repository;
 
-    public DespesaService(DespesaRepository repository) {
-        this.repository = repository;
-        service = new TransacaoService<>(this.repository, Despesa.class);
+    public DespesaService(TransacaoRepository repository) {
+        service = new TransacaoService<>(repository, Despesa.class);
     }
 
     @Transactional

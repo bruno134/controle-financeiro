@@ -1,6 +1,5 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
-import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.model.Transacao;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,6 +17,7 @@ import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TransacaoDTO {
 
+
     @JsonProperty("id")
     private Integer id;
     @JsonProperty("data")
@@ -33,7 +33,8 @@ public abstract class TransacaoDTO {
     @JsonProperty("instrumento")
     private String instrumento;
 
-    public TransacaoDTO() {
+    public TransacaoDTO(){
+
     }
 
     public TransacaoDTO(Integer id, String data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {

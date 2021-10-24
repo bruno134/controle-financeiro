@@ -3,6 +3,7 @@ package br.com.mcf.controlefinanceiro.controller.cadastro;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.CategoriaDTO;
 import br.com.mcf.controlefinanceiro.exceptions.CategoriaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Categoria;
+import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.service.CategoriaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class CategoriaController {
 
         try {
 
-            service.cadastrarClassificao(categoriaDTO.getNome());
+            service.cadastrarClassificao(categoriaDTO.getNome(), TipoTransacao.get(categoriaDTO.getTipoCategoria()));
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }catch (Exception e){
             e.printStackTrace();
