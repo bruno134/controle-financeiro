@@ -43,7 +43,12 @@ public class DespesaService{
 
     @Transactional
     public Optional<Despesa> alterar(Despesa despesa) throws DespesaNaoEncontradaException {
-      return service.alterar(despesa);
+        try {
+            return service.alterar(despesa);
+        } catch (TransacaoNaoEncontradaException e) {
+            e.printStackTrace();
+            throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
+        }
     }
 
     @Transactional
