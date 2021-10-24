@@ -50,11 +50,12 @@ public class ReceitaController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity insereNovaReceita(@RequestBody ReceitaDTO receitaDTO) {
+    public ResponseEntity<Object> insereNovaReceita(@RequestBody ReceitaDTO receitaDTO) {
         //TODO validador de receita
 
             try {
-                service.inserir(receitaDTO.toObject());
+                Receita receita = receitaDTO.toObject();
+                service.inserir(receita);
                 return ResponseEntity.status(HttpStatus.CREATED).build();
             } catch (Exception e) {
                 e.printStackTrace();

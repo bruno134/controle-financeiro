@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DespesaRepository extends JpaRepository<TransacaoEntity,Long> {
+public interface TransacaoRepository extends JpaRepository<TransacaoEntity,Long> {
 
     List<TransacaoEntity> findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(
                                             LocalDate DataInicio,

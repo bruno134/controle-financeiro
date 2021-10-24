@@ -1,10 +1,13 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import br.com.mcf.controlefinanceiro.model.Receita;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,134 +15,39 @@ import java.util.List;
 
 import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 
-@Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class DespesaDTO{
+@Getter
+@Setter
+public class DespesaDTO extends TransacaoDTO{
 
-    private final TipoTransacao enumTipoTransacao = TipoTransacao.DESPESA;
+    public DespesaDTO (){
 
-    @JsonProperty("id")
-    private Integer id;
-    @JsonProperty("data")
-    private String data;
-    @JsonProperty("valor")
-    private String valor;
-    @JsonProperty("descricao")
-    private String descricao;
-    @JsonProperty("categoria")
-    private String categoria;
-    @JsonProperty("tipoRateio")
-    private String tipoRateio;
-    @JsonProperty("instrumento")
-    private String instrumento;
-
-    public DespesaDTO() {
-    }
-
-    public DespesaDTO(Integer id, String data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {
-        this.id = id;
-        this.data = data;
-        this.valor = valor;
-        this.descricao = descricao;
-        this.categoria = categoria;
-        this.tipoRateio = tipoRateio;
-        this.instrumento = instrumento;
-    }
-
-    public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {
-        this.id = id;
-        setData(data);
-        this.valor = valor;
-        this.descricao = descricao;
-        this.categoria = categoria;
-        this.tipoRateio = tipoRateio;
-        this.instrumento = instrumento;
     }
 
     public DespesaDTO(Despesa despesa){
-        this.id = despesa.getId();
-        this.data = despesa.getData().format(format);
-        this.valor = String.valueOf(despesa.getValor());
-        this.descricao = despesa.getDescricao();
-        this.categoria = despesa.getCategoria();
-        this.tipoRateio = despesa.getTipoRateio();
-        this.instrumento = despesa.getInstrumento();
+        super(despesa);
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+        super(id,data,valor,descricao,categoria,tipoRateio,instrumento);
+    }
+    public DespesaDTO(Integer id, String data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+        super(id,data,valor,descricao,categoria,tipoRateio,instrumento);
     }
 
-    public void setData(LocalDate data) {
-        this.data = data.format(format);
+    public DespesaDTO(String data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+        super(null,data,valor,descricao,categoria,tipoRateio,instrumento);
     }
 
     public Despesa toObject() {
-
-        LocalDate dataDespesa = null;
-
-        if(!getData().equals("")) {
-            dataDespesa = LocalDate.parse(getData(), format);
-        }
-
-        return new Despesa( getId(),
-                dataDespesa,
-                Double.valueOf(getValor()),
-                getDescricao(),
-                getCategoria(),
-                getTipoRateio(),
-                getInstrumento());
+        return super.toObject(Despesa.class);
     }
 
-    public static List<DespesaDTO> listaDto(List<Despesa> listaDespesa){
-        final List<DespesaDTO> list = new ArrayList<>();
-        listaDespesa.forEach(despesa -> {
+    public static List<DespesaDTO> dtoList(List<Despesa> list){
 
-            DespesaDTO despesaDTO =
-                    new DespesaDTO(despesa.getId(),
-                    despesa.getData(),
-                    String.valueOf(despesa.getValor()),
-                    despesa.getDescricao(),
-                    despesa.getCategoria(),
-                    despesa.getTipoRateio(),
-                    despesa.getInstrumento());
-            list.add(despesaDTO);
-        });
-        return list;
+        return TransacaoDTO.listaDto(list,DespesaDTO.class);
     }
 
-    public static List<Despesa> listDtoToListDespesa(List<DespesaDTO> listaDto){
-        final List<Despesa> listaDespesa = new ArrayList<>();
-
-        listaDto.forEach(despesaDTO -> {
-
-            LocalDate dataDespesa = null;
-
-            if(!despesaDTO.getData().equals("")) {
-                dataDespesa = LocalDate.parse(despesaDTO.getData(), format);
-            }
-            Double valorConvertido = null;
-
-            try{
-                valorConvertido = Double.parseDouble(despesaDTO.getValor());
-            }catch (NumberFormatException e0){
-                throw new NumberFormatException("Não pode converter " + despesaDTO.valor + "em double");
-            }catch (NullPointerException e1){
-                valorConvertido = 0d;
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            listaDespesa.add(
-            new Despesa(despesaDTO.getId(),
-                    dataDespesa,
-                    valorConvertido,
-                    despesaDTO.getDescricao(),
-                    despesaDTO.getCategoria(),
-                    despesaDTO.getTipoRateio(),
-                    despesaDTO.getInstrumento())
-            );
-        });
-
-        return listaDespesa;
+    public static List<Despesa> listDtoToListObject(List<DespesaDTO> list){
+        return TransacaoDTO.listDtoToListObject(list, Despesa.class);
     }
 }

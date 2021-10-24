@@ -1,6 +1,5 @@
 package br.com.mcf.controlefinanceiro.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +15,7 @@ public class Categoria {
     private String nome;
     private LocalDate dataCriacao;
     private boolean isAtivo;
+    private TipoTransacao tipoTransacao;
 
     public Categoria(String nome) {
         this.nome = nome;
@@ -23,16 +23,26 @@ public class Categoria {
         this.isAtivo = true;
     }
 
-    public Categoria(String nome, LocalDate dataCriacao) {
+    public Categoria(String nome, TipoTransacao tipoTransacao) {
         this.nome = nome;
-        this.dataCriacao = dataCriacao;
+        this.tipoTransacao = tipoTransacao;
+        this.dataCriacao = LocalDate.now();
         this.isAtivo = true;
     }
 
-    public Categoria(Long id, String nome, LocalDate dataCriacao) {
+    public Categoria(Long id, String nome, LocalDate dataCriacao, String tipoTransacao) {
         this.id = id;
         this.nome = nome;
         this.dataCriacao = dataCriacao;
         this.isAtivo = true;
+        this.tipoTransacao = TipoTransacao.get(tipoTransacao);
+    }
+
+    public Categoria(Long id, String nome, LocalDate dataCriacao, TipoTransacao tipoTransacao) {
+        this.id = id;
+        this.nome = nome;
+        this.dataCriacao = dataCriacao;
+        this.isAtivo = true;
+        this.tipoTransacao = tipoTransacao;
     }
 }

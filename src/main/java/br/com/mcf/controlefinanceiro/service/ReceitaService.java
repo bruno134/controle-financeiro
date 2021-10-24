@@ -1,12 +1,11 @@
 package br.com.mcf.controlefinanceiro.service;
 
 
-import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.ReceitaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Receita;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
-import br.com.mcf.controlefinanceiro.repository.DespesaRepository;
+import br.com.mcf.controlefinanceiro.repository.TransacaoRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +19,9 @@ import java.util.Optional;
 public class ReceitaService{
 
     private final TransacaoService<Receita> service;
-    private final DespesaRepository repository;
 
-    public ReceitaService(DespesaRepository repository) {
-        this.repository = repository;
-        this.service = new TransacaoService<>(this.repository, Receita.class);
+    public ReceitaService(TransacaoRepository repository) {
+        this.service = new TransacaoService<>(repository, Receita.class);
     }
 
     public Receita inserir(Receita receita){
@@ -68,7 +65,6 @@ public class ReceitaService{
         try {
             receitaEncontrada = service.buscarPorID(id);
         } catch (TransacaoNaoEncontradaException e) {
-            e.printStackTrace();
             throw new ReceitaNaoEncontradaException(ConstantMessages.RECEITA_NAO_ENCONTRADA);
 
         }

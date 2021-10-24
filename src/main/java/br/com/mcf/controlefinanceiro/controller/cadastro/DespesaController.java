@@ -65,7 +65,7 @@ public class DespesaController {
 
             if (validate.isValid()) {
                 despesas = service.buscarPorParametros(Integer.parseInt(mes), Integer.parseInt(ano));
-                return ResponseEntity.ok().body(DespesaDTO.listaDto(despesas));
+                return ResponseEntity.ok().body(DespesaDTO.dtoList(despesas));
             } else {
                 return ResponseEntity.badRequest().body(validate.getErrors());
             }
@@ -143,7 +143,7 @@ public class DespesaController {
 
         //TODO Testar/tratar se planilha excel vier zerada, fora do formato, em xlsx
         try{
-            List<DespesaDTO> dtoList = DespesaDTO.listaDto(
+            List<DespesaDTO> dtoList = DespesaDTO.dtoList(
                     arquivoService.importaDespesaDoExcel(dataFile.getInputStream(), instrumento)
             );
 
@@ -160,7 +160,7 @@ public class DespesaController {
         try {
             //TODO colocar validação da entrada
 
-            service.inserirEmLista(DespesaDTO.listDtoToListDespesa(listaDeDespesas));
+            service.inserirEmLista(DespesaDTO.listDtoToListObject(listaDeDespesas));
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }catch (Exception e){
             e.printStackTrace();

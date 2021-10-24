@@ -3,6 +3,7 @@ package br.com.mcf.controlefinanceiro.service;
 import br.com.mcf.controlefinanceiro.entity.CategoriaEntity;
 import br.com.mcf.controlefinanceiro.exceptions.CategoriaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Categoria;
+import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.repository.CategoriaRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -35,8 +36,24 @@ public class CategoriaService {
 
     }
 
+    public void cadastrarClassificao(String nome, TipoTransacao tipoTransacao){
+
+        Categoria categoria = new Categoria(nome,tipoTransacao);
+
+        try {
+            repository.save(new CategoriaEntity(categoria));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public List<Categoria> consultarTodasClassificacoes(){
         return CategoriaEntity.toList(repository.findAllByAtivo(true));
+    }
+
+    public List<Categoria> consultarTodasClassificacoesPorTipoTransacao(TipoTransacao tipoTransacao){
+        return CategoriaEntity.toList(repository.findAllByAtivoAndTipoTransacao(true, tipoTransacao.getDescricao()));
     }
 
     public void apagarCategoria(Integer id) throws CategoriaNaoEncontradaException {
