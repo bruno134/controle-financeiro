@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 @Getter
 public enum TipoTransacao {
     DESPESA("DESPESA"),
-    ENTRADA("ENTRADA");
+    RECEITA("RECEITA");
 
     private String descricao;
 
