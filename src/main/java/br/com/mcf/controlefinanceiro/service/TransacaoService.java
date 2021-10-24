@@ -2,6 +2,7 @@ package br.com.mcf.controlefinanceiro.service;
 
 import br.com.mcf.controlefinanceiro.entity.TransacaoEntity;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.exceptions.ReceitaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.model.Transacao;
@@ -44,7 +45,7 @@ public class TransacaoService<T extends Transacao> {
     }
 
 
-    public <T extends Transacao> Optional<T> alterar(T t) throws DespesaNaoEncontradaException {
+    public <T extends Transacao> Optional<T> alterar(T t) throws TransacaoNaoEncontradaException {
 
         T transacaoSalva = null;
         Optional<TransacaoEntity> transacaoEncontrada = Optional.empty();
@@ -63,7 +64,7 @@ public class TransacaoService<T extends Transacao> {
               transacaoSalva = (T) this.clazz.getDeclaredConstructor(TransacaoEntity.class)
                                      .newInstance(repository.saveAndFlush(transacaoEncontrada.get()));
           }else{
-              throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
+              throw new TransacaoNaoEncontradaException(ConstantMessages.TRANSACAO_NAO_ENCONTRADA);
           }
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,11 +91,11 @@ public class TransacaoService<T extends Transacao> {
         T transacaoEncontrada = null;
 
         try {
-            final Optional<TransacaoEntity> despesaEntity = repository.findById(id);
+            final Optional<TransacaoEntity> transacaoEntity = repository.findById(id);
 
-            if(despesaEntity.isPresent()){
+            if(transacaoEntity.isPresent()){
                 transacaoEncontrada = (T) this.clazz.getDeclaredConstructor(TransacaoEntity.class)
-                                            .newInstance(despesaEntity.get());
+                                            .newInstance(transacaoEntity.get());
             } else
                 throw new TransacaoNaoEncontradaException(ConstantMessages.TRANSACAO_NAO_ENCONTRADA);
         }catch (Exception e){

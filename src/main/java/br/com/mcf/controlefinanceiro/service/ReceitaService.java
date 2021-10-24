@@ -2,10 +2,12 @@ package br.com.mcf.controlefinanceiro.service;
 
 
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.exceptions.ReceitaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Receita;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.repository.DespesaRepository;
+import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,16 +42,26 @@ public class ReceitaService{
     }
 
     @Transactional
-    public Optional<Receita> alterar(Receita receita) throws DespesaNaoEncontradaException {
-        return service.alterar(receita);
+    public Optional<Receita> alterar(Receita receita) throws ReceitaNaoEncontradaException {
+        try {
+            return service.alterar(receita);
+        } catch (TransacaoNaoEncontradaException e) {
+            e.printStackTrace();
+            throw new ReceitaNaoEncontradaException(ConstantMessages.RECEITA_NAO_ENCONTRADA);
+        }
     }
 
     @Transactional
-    public void apagar(Receita receita) throws TransacaoNaoEncontradaException {
-        service.apagar(receita);
+    public void apagar(Receita receita) throws ReceitaNaoEncontradaException {
+        try {
+            service.apagar(receita);
+        } catch (TransacaoNaoEncontradaException e) {
+            e.printStackTrace();
+            throw new ReceitaNaoEncontradaException(ConstantMessages.RECEITA_NAO_ENCONTRADA);
+        }
     }
 
-    public Optional<Receita> buscarPorId(Long id) throws TransacaoNaoEncontradaException {
+    public Optional<Receita> buscarPorId(Long id) throws ReceitaNaoEncontradaException {
 
         Optional<Receita> receitaEncontrada = Optional.empty();
 
@@ -57,6 +69,8 @@ public class ReceitaService{
             receitaEncontrada = service.buscarPorID(id);
         } catch (TransacaoNaoEncontradaException e) {
             e.printStackTrace();
+            throw new ReceitaNaoEncontradaException(ConstantMessages.RECEITA_NAO_ENCONTRADA);
+
         }
 
         return receitaEncontrada;
