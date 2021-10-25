@@ -88,9 +88,17 @@ public abstract class TransacaoDTO {
                 dataTransacao = LocalDate.parse(getData(), format);
             }
 
+            Double valor = 0d;
+
+            try{
+                valor = Double.valueOf(getValor());
+            }catch (NumberFormatException e){
+                System.out.println("Erro ao converter valor para numérico, setando valor = 0"); //TODO arrumar forma de avisar (WARN)?
+            }
+
             objetoRetornado = (T) declaredConstructor.newInstance( getId(),
                                                             dataTransacao,
-                                                            Double.valueOf(getValor()),
+                                                            valor,
                                                             getDescricao(),
                                                             getCategoria(),
                                                             getTipoRateio(),

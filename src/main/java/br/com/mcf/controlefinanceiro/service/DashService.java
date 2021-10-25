@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class DashDespesaService {
+public class DashService {
 
     public List<Map<String, DoubleSummaryStatistics>> retornaDadosDespesaDash(List<Despesa> listaDespesa){
 
