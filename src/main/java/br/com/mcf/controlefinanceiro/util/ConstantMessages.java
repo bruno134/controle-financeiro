@@ -7,4 +7,7 @@ public class ConstantMessages {
     public static final String TRANSACAO_NAO_ENCONTRADA = "Transacao não encontrada";
     public static final String INSTRUMENTO_NAO_ENCONTRADO = "Tipo não econtrado";
     public static final String RECEITA_NAO_ENCONTRADA = "Receita não encontrada";
+    public static final String RATEIO_NAO_ENCONTRADO = "Rateio não encontrado com os parâmetros informados";
+    public static final String RATEIO_PESSOA_EXISTENTE = "Já existe rateio existente para a compêtencia mês/ano informados.";
+    public static final String MAIS_DE_UM_RATEIO_ENCONTRADO = "Encontrado mais de um rateios com os parametros informados";
 }
