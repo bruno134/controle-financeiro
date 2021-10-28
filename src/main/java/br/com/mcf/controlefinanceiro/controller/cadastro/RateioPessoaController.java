@@ -1,9 +1,9 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro;
 
+import br.com.fluentvalidator.context.Error;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.RateioPessoaDTO;
-import br.com.mcf.controlefinanceiro.entity.RateioPessoaEntity;
-import br.com.mcf.controlefinanceiro.entity.embedded.RateioPessoaEmbeddedKey;
-import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaExistenteException;
+import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
+import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaBusinessException;
 import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.RateioPessoa;
 import br.com.mcf.controlefinanceiro.service.RateioPessoaService;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("rateio")
@@ -33,9 +32,10 @@ public class RateioPessoaController {
         }catch (Exception | RateioPessoaNaoEncontradaException e){
             return ResponseEntity.internalServerError().build();
         }
-        catch (RateioPessoaExistenteException e){
-            //TODO devolver mensagem de erro
-            return ResponseEntity.unprocessableEntity().build();
+        catch (RateioPessoaBusinessException e){
+            ErrorsDTO errors = new ErrorsDTO();
+            errors.getErrors().add(e.getError());
+            return ResponseEntity.unprocessableEntity().body(errors);
         }
     }
 

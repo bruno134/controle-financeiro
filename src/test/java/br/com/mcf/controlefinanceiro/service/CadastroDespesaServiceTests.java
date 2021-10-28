@@ -1,8 +1,10 @@
 package br.com.mcf.controlefinanceiro.service;
 
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaBusinessException;
+import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
-import org.junit.jupiter.api.Assertions;
+import br.com.mcf.controlefinanceiro.model.RateioPessoa;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,16 +12,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class CadastroDespesaServiceTests {
 	private static final Logger LOG = LoggerFactory.getLogger(CadastroDespesaServiceTests.class);
 	@Autowired
 	private DespesaService service;
+
+	@Autowired
+	private RateioPessoaService rateioService;
+
+	@Test
+	public void testaCalculo(){
+
+		RateioPessoa r1 = new RateioPessoa(10,2021,0.7,"BRUNO");
+		RateioPessoa r2 = new RateioPessoa(10,2021,0.3,"PRI");
+
+		Despesa d1 = new Despesa(1,LocalDate.now(),93d, "", "", "BRUNO", "");
+		Despesa d2 = new Despesa(1,LocalDate.now(),150d, "", "", "COMPARTILHADA", "");
+		Despesa d3 = new Despesa(1,LocalDate.now(),41d, "", "", "PRI", "");
+		Despesa d4 = new Despesa(1,LocalDate.now(),160d, "", "", "COMPARTILHADA", "");
+
+		service.inserir(d1);
+		service.inserir(d2);
+		service.inserir(d3);
+		service.inserir(d4);
+
+		try {
+			rateioService.inserir(r1);
+			rateioService.inserir(r2);
+		} catch (RateioPessoaBusinessException | RateioPessoaNaoEncontradaException e) {
+			e.printStackTrace();
+		}
+
+		rateioService.calculaRateio(10,2021);
+
+	}
 
 	@Test
 	public void testar() throws DespesaNaoEncontradaException {

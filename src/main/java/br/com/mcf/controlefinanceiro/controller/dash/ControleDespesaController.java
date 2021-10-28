@@ -3,8 +3,10 @@ package br.com.mcf.controlefinanceiro.controller.dash;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.DashDTO;
+import br.com.mcf.controlefinanceiro.controller.dash.dto.ListaDespesaPorDonoDTO;
 import br.com.mcf.controlefinanceiro.service.DespesaService;
 import br.com.mcf.controlefinanceiro.service.DashService;
+import br.com.mcf.controlefinanceiro.service.RateioPessoaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,14 +20,17 @@ public class ControleDespesaController {
     private final DashService controleDespesaService;
     private final DespesaService despesaService;
     private final ConsultaDespesaValidator consultaValidator;
+    private final RateioPessoaService rateioPessoaService;
 
     public ControleDespesaController(DashService controleDespesaService,
                                      DespesaService despesaService,
-                                     ConsultaDespesaValidator consultaValidator) {
+                                     ConsultaDespesaValidator consultaValidator,
+                                     RateioPessoaService rateioPessoaService) {
 
         this.controleDespesaService = controleDespesaService;
         this.despesaService = despesaService;
         this.consultaValidator = consultaValidator;
+        this.rateioPessoaService = rateioPessoaService;
     }
 
     @GetMapping("/consultar")
@@ -53,6 +58,13 @@ public class ControleDespesaController {
         }
         return ResponseEntity.internalServerError().build();
 
+    }
+
+    @GetMapping("/calculo")
+    public ResponseEntity consultaDespesasAPagar(@RequestParam Integer mes, @RequestParam Integer ano){
+
+        ListaDespesaPorDonoDTO dto = new ListaDespesaPorDonoDTO(rateioPessoaService.calculaRateio(mes,ano));
+        return  ResponseEntity.ok(dto);
     }
 
 

@@ -10,4 +10,5 @@ public class ConstantMessages {
     public static final String RATEIO_NAO_ENCONTRADO = "Rateio não encontrado com os parâmetros informados";
     public static final String RATEIO_PESSOA_EXISTENTE = "Já existe rateio existente para a compêtencia mês/ano informados.";
     public static final String MAIS_DE_UM_RATEIO_ENCONTRADO = "Encontrado mais de um rateios com os parametros informados";
+    public static final String VALOR_RATEIO_EXCEDE_100 = "Valor rateio excede 100%";
 }
