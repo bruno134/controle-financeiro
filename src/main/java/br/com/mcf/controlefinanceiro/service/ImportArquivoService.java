@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CadastroPorArquivoService {
+public class ImportArquivoService {
 
     public static final String NAO_CATEGORIZADO = "Não categorizado";
     public static final String COMPARTILHADA = "COMPARTILHADA";

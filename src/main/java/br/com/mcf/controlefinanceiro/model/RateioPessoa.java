@@ -32,6 +32,11 @@ public class RateioPessoa {
 
     }
 
+    public RateioPessoa(Integer anoCompetenciaRateio, Integer mesCompetenciaRateio) {
+        this.mesCompetenciaRateio = mesCompetenciaRateio;
+        this.anoCompetenciaRateio = anoCompetenciaRateio;
+    }
+
     public RateioPessoaEntity toEntity(){
         return new RateioPessoaEntity(this.mesCompetenciaRateio, this.anoCompetenciaRateio,this.valorRateio, this.pessoaRateio);
     }

@@ -1,29 +1,40 @@
 package br.com.mcf.controlefinanceiro.service;
 
+import br.com.fluentvalidator.context.Error;
 import br.com.mcf.controlefinanceiro.entity.RateioPessoaEntity;
 import br.com.mcf.controlefinanceiro.entity.embedded.RateioPessoaEmbeddedKey;
-import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaExistenteException;
+import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaBusinessException;
 import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.DespesaPessoaConsolidada;
 import br.com.mcf.controlefinanceiro.model.RateioPessoa;
 import br.com.mcf.controlefinanceiro.repository.RateioPessoaRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RateioPessoaService {
 
-    RateioPessoaRepository repository;
+    private final RateioPessoaRepository repository;
+    private final DespesaService despesaService;
 
-    public RateioPessoaService(RateioPessoaRepository repository){ this.repository = repository; }
+    public RateioPessoaService(RateioPessoaRepository repository, DespesaService despesaService){ this.repository = repository;
+        this.despesaService = despesaService;
+    }
 
-    public RateioPessoa inserir(RateioPessoa rateioPessoa) throws RateioPessoaExistenteException, RateioPessoaNaoEncontradaException {
+    public RateioPessoa inserir(RateioPessoa rateioPessoa) throws RateioPessoaBusinessException, RateioPessoaNaoEncontradaException {
 
         Optional<RateioPessoa> rateioPessoaEncontrada;
-        rateioPessoaEncontrada = buscar(rateioPessoa);
+
+        var totalSomaRateio = buscarListaRateio(rateioPessoa).stream().collect(Collectors.summingDouble(RateioPessoa::getValorRateio));
+
+        if(totalSomaRateio+rateioPessoa.getValorRateio()>1) {
+            var error = Error.create("valorRateio",ConstantMessages.VALOR_RATEIO_EXCEDE_100, "99", rateioPessoa.getValorRateio());
+            throw new RateioPessoaBusinessException(error);
+        }
+        rateioPessoaEncontrada = buscarRateioPessoa(rateioPessoa);
 
         if(rateioPessoaEncontrada.isEmpty()){
             try {
@@ -33,28 +44,26 @@ public class RateioPessoaService {
                 e.printStackTrace();
             }
         }else{
-            throw new RateioPessoaExistenteException(ConstantMessages.RATEIO_PESSOA_EXISTENTE);
+            var error = Error.create("nomePessoaRateio",ConstantMessages.RATEIO_PESSOA_EXISTENTE, "99", rateioPessoa.getPessoaRateio());
+            throw new RateioPessoaBusinessException(error);
         }
         return null;
     }
 
+
     public Optional<RateioPessoa> alterar(RateioPessoa rateioPessoa) throws RateioPessoaNaoEncontradaException {
 
-        try {
-            final var rateioPessoaEncontrada = consultar(rateioPessoa);
-            if(rateioPessoaEncontrada.isPresent()){
-                return Optional.of(new RateioPessoa(repository.save(rateioPessoa.toEntity())));
-            }else{
-                throw new RateioPessoaNaoEncontradaException(ConstantMessages.RATEIO_NAO_ENCONTRADO);
-            }
-        } catch (RateioPessoaNaoEncontradaException e) {
-            throw e;
+        final var rateioPessoaEncontrada = consultar(rateioPessoa);
+        if(rateioPessoaEncontrada.isPresent()){
+            return Optional.of(new RateioPessoa(repository.save(rateioPessoa.toEntity())));
+        }else{
+            throw new RateioPessoaNaoEncontradaException(ConstantMessages.RATEIO_NAO_ENCONTRADO);
         }
     }
 
     public Optional<RateioPessoa> consultar(RateioPessoa rateioPessoa) throws RateioPessoaNaoEncontradaException {
         try{
-            final var rateioPessoaEncontrada = buscar(rateioPessoa);
+            final var rateioPessoaEncontrada = buscarRateioPessoa(rateioPessoa);
 
             if(rateioPessoaEncontrada.isPresent()){
                 return rateioPessoaEncontrada;
@@ -72,7 +81,7 @@ public class RateioPessoaService {
         List<RateioPessoa> rateioPessoaList = new ArrayList<>();
 
         try{
-            rateioPessoaList = buscarLista(rateioPessoa);
+            rateioPessoaList = buscarListaRateio(rateioPessoa);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -94,8 +103,54 @@ public class RateioPessoaService {
         }
     }
 
-    private Optional<RateioPessoa> buscar(RateioPessoa rateioPessoa){
-        Optional<RateioPessoaEntity> rateioPessoaEncontrada = Optional.empty();
+    public Map<String, DespesaPessoaConsolidada> calculaRateio(Integer mes, Integer ano){
+
+
+        final RateioPessoa rateioPessoa = new RateioPessoa(ano,mes);
+        final DashService dash = new DashService();
+        final Map<String, DespesaPessoaConsolidada> despesasAPagar  = new HashMap<>();
+
+
+
+        final var despesasPorDono = dash.retornaTotalDespesaPorTipoRateio(
+                                                                        despesaService.buscarPorParametros(mes, ano)
+                                                                    );
+
+        if(despesasPorDono.size()>0){
+
+            //TODO da pra fazer melhor? Sem repetir o try catch?
+            final Double valorCompatilhado;
+            Double compartilhada;
+            try {
+                compartilhada = despesasPorDono.get("COMPARTILHADA").getSum();
+            } catch (NullPointerException e) {
+                compartilhada = 0d;
+            }
+            valorCompatilhado = compartilhada;
+
+            final var valoresRateioPorPessoa = consultarListaRateio(rateioPessoa)
+                    .stream().collect(Collectors
+                            .toMap(RateioPessoa::getPessoaRateio, RateioPessoa::getValorRateio));
+
+            valoresRateioPorPessoa.forEach((chave,valorRateio) -> {
+               Double valorSoma;
+                try {
+                     valorSoma = despesasPorDono.get(chave.toUpperCase()).getSum();
+                } catch (NullPointerException e) {
+                    valorSoma = 0d;
+                }
+                final var valorTotal = (valorCompatilhado*valorRateio) + valorSoma;
+                final var valorCompartilhado =  (valorCompatilhado*valorRateio);
+                final var valorTotalIndividual = valorSoma;
+
+                despesasAPagar.put(chave, new DespesaPessoaConsolidada(valorTotal, valorTotalIndividual, valorCompartilhado, valorRateio) );
+            });
+        }
+        return  despesasAPagar;
+    }
+
+    private Optional<RateioPessoa> buscarRateioPessoa(RateioPessoa rateioPessoa){
+        Optional<RateioPessoaEntity> rateioPessoaEncontrada;
         try{
             rateioPessoaEncontrada = repository.findById(new RateioPessoaEmbeddedKey(rateioPessoa.getMesCompetenciaRateio(), rateioPessoa.getAnoCompetenciaRateio(), rateioPessoa.getPessoaRateio()));
             return rateioPessoaEncontrada.map(RateioPessoa::new);
@@ -106,7 +161,7 @@ public class RateioPessoaService {
         }
     }
 
-    private List<RateioPessoa> buscarLista(RateioPessoa rateioPessoa){
+    private List<RateioPessoa> buscarListaRateio(RateioPessoa rateioPessoa){
         List<RateioPessoaEntity> entityList;
 
         try{
@@ -117,5 +172,4 @@ public class RateioPessoaService {
             throw e;
         }
     }
-
 }

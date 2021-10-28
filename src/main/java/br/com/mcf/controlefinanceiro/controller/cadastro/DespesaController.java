@@ -7,7 +7,7 @@ import br.com.mcf.controlefinanceiro.controller.cadastro.validator.InsereDespesa
 import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
-import br.com.mcf.controlefinanceiro.service.CadastroPorArquivoService;
+import br.com.mcf.controlefinanceiro.service.ImportArquivoService;
 import br.com.mcf.controlefinanceiro.service.DespesaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,14 +24,14 @@ import java.util.Optional;
 public class DespesaController {
 
     final DespesaService service;
-    final CadastroPorArquivoService arquivoService;
+    final ImportArquivoService arquivoService;
 
     @Autowired
     InsereDespesaValidator validator;
     @Autowired
     ConsultaDespesaValidator consultaValidator;
 
-    public DespesaController(DespesaService service, CadastroPorArquivoService arquivoService) {
+    public DespesaController(DespesaService service, ImportArquivoService arquivoService) {
         this.service = service;
         this.arquivoService = arquivoService;
     }
