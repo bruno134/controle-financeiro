@@ -1,10 +1,12 @@
 package br.com.mcf.controlefinanceiro.service;
 
+import br.com.mcf.controlefinanceiro.config.PeriodoMesConfig;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaBusinessException;
 import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.model.RateioPessoa;
+import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @SpringBootTest
 class CadastroDespesaServiceTests {
@@ -21,6 +24,23 @@ class CadastroDespesaServiceTests {
 
 	@Autowired
 	private RateioPessoaService rateioService;
+
+	@Autowired
+	private PeriodoMesConfig mesConfig;
+
+	@Test
+	public void testa(){
+
+		var despesaList = service.buscarPorPeriodo(11,2021,-1);
+		despesaList.getTransacoes().forEach(despesa -> System.out.println(despesa.toString()));
+
+//		Integer page = 0;
+//		while (despesaList.size()>0) {
+//			despesaList.forEach(despesa -> System.out.println(despesa.toString()));
+//			System.out.println("------------------------");
+//			despesaList = service.buscarTodas(++page);
+//		}
+	}
 
 	@Test
 	public void testaCalculo(){

@@ -1,12 +1,16 @@
-package br.com.mcf.controlefinanceiro.service;
+package br.com.mcf.controlefinanceiro.service.transacao;
 
 import br.com.mcf.controlefinanceiro.entity.TransacaoEntity;
 import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.ListaTransacao;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.model.Transacao;
 import br.com.mcf.controlefinanceiro.repository.TransacaoRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -18,8 +22,8 @@ import java.util.Optional;
 public class TransacaoService<T extends Transacao> {
 
     private final TransacaoRepository repository;
-    private final TipoTransacao despesaEnum = TipoTransacao.DESPESA;
     private Class<T> clazz;
+    private PeriodoMes periodoMes = new PeriodoMes();
 
     public TransacaoService(TransacaoRepository transacaoRepository, Class<T> clazz){
         this.repository = transacaoRepository;
@@ -107,14 +111,15 @@ public class TransacaoService<T extends Transacao> {
         return toList(repository.findAllByTipoTransacaoOrderByDataAsc(tipoTransacao.getDescricao()));
     }
 
-    public <T extends Transacao> List<T>  buscarPorParametros(int mes, int ano, TipoTransacao tipoTransacao) {
-        if(mes>0 && ano>0){
-            return buscaPorMesEAno(mes,ano, tipoTransacao);
-        }else
-        {
-            return buscarTodas(tipoTransacao);
-        }
+    public <T extends Transacao> ListaTransacao<T> buscarPorPeriodo(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer pagina) {
+       return buscaPorRangeDeDatas(dataInicio,dataFim, tipoTransacao, pagina);
     }
+
+    public <T extends Transacao> List<T> buscarPorPeriodo(TipoTransacao tipoTransacao) {
+       return buscarTodas(tipoTransacao);
+
+    }
+
 
     private <T extends Transacao> List<T> toList(List<TransacaoEntity> entityList){
         List<T> list = new ArrayList<>();
@@ -130,22 +135,29 @@ public class TransacaoService<T extends Transacao> {
     }
 
 
-    private <T extends Transacao> List<T> buscaPorMesEAno(int mes, int ano, TipoTransacao tipoTransacao){
+    private <T extends Transacao> ListaTransacao<T> buscaPorRangeDeDatas(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer paginaInformada){
 
-        final LocalDate dataInicial = LocalDate.of(ano,mes,1);
-        final LocalDate dataFinal = LocalDate.of(ano,mes,dataInicial.lengthOfMonth());
 
-        List<T> list = new ArrayList<>();
+        ListaTransacao<T> lista = new ListaTransacao<>();
+        Pageable page;
+
 
         try{
-           list = toList(
-                   repository.findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(dataInicial,dataFinal,tipoTransacao.getDescricao())
-           );
+            if(paginaInformada>0) {
+                page = PageRequest.of(paginaInformada-1, 10, Sort.by("id"));
+                final var despesaSlice = repository.findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(dataInicio, dataFim, tipoTransacao.getDescricao(), page);
+                if(despesaSlice.hasContent())
+                    lista.setTransacoes(toList(despesaSlice.toList()));
+                    lista.setPaginaAnterior(despesaSlice.hasPrevious()?paginaInformada-1:null);
+                    lista.setProximaPAgina(despesaSlice.hasNext()?paginaInformada+1:null);
+            }
+            else {
+                lista.setTransacoes(toList(repository.findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(dataInicio, dataFim, tipoTransacao.getDescricao())));
+            }
         }catch(Exception e){
             e.printStackTrace();
         }
 
-        return list;
+        return lista;
     }
-
 }

@@ -1,5 +1,6 @@
 package br.com.mcf.controlefinanceiro.service;
 
+import br.com.mcf.controlefinanceiro.service.transacao.TransacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

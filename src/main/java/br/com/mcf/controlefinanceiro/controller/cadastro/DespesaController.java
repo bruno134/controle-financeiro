@@ -2,13 +2,15 @@ package br.com.mcf.controlefinanceiro.controller.cadastro;
 
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DespesaDTO;
+import br.com.mcf.controlefinanceiro.controller.cadastro.dto.ListaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.InsereDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import br.com.mcf.controlefinanceiro.model.ListaTransacao;
 import br.com.mcf.controlefinanceiro.service.ImportArquivoService;
-import br.com.mcf.controlefinanceiro.service.DespesaService;
+import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,16 +58,20 @@ public class DespesaController {
 
     @GetMapping("/consultar")
     public ResponseEntity buscaDespesaPorMes(@RequestParam(value = "mes", required = false, defaultValue = "0") String mes,
-                                             @RequestParam(value = "ano", required = false, defaultValue = "0") String ano) {
+                                             @RequestParam(value = "ano", required = false, defaultValue = "0") String ano,
+                                             @RequestParam(value = "pagina", required = false, defaultValue = "0") String pagina) {
 
         try {
-            List<Despesa> despesas;
+            ListaTransacao<Despesa> despesas;
             final var dadosConsultaDespesaDTO = new DadosConsultaDespesaDTO(ano, mes, null);
             final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
 
             if (validate.isValid()) {
-                despesas = service.buscarPorParametros(Integer.parseInt(mes), Integer.parseInt(ano));
-                return ResponseEntity.ok().body(DespesaDTO.dtoList(despesas));
+                despesas = service.buscarPorPeriodo(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina));
+                if(!despesas.getTransacoes().isEmpty())
+                    return ResponseEntity.ok().body(new ListaDespesaDTO(despesas));
+                else
+                    return  ResponseEntity.notFound().build();
             } else {
                 return ResponseEntity.badRequest().body(validate.getErrors());
             }

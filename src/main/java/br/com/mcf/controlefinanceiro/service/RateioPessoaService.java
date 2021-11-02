@@ -8,6 +8,7 @@ import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaNaoEncontradaExcepti
 import br.com.mcf.controlefinanceiro.model.DespesaPessoaConsolidada;
 import br.com.mcf.controlefinanceiro.model.RateioPessoa;
 import br.com.mcf.controlefinanceiro.repository.RateioPessoaRepository;
+import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,14 @@ public class RateioPessoaService {
 
     private final RateioPessoaRepository repository;
     private final DespesaService despesaService;
+    private final CadastroTipoRateioService tipoRateioService;
+    private final DashService dash;
 
-    public RateioPessoaService(RateioPessoaRepository repository, DespesaService despesaService){ this.repository = repository;
+    public RateioPessoaService(RateioPessoaRepository repository, DespesaService despesaService, CadastroTipoRateioService tipoRateioService, DashService dash){
+        this.repository = repository;
         this.despesaService = despesaService;
+        this.tipoRateioService = tipoRateioService;
+        this.dash = dash;
     }
 
     public RateioPessoa inserir(RateioPessoa rateioPessoa) throws RateioPessoaBusinessException, RateioPessoaNaoEncontradaException {
@@ -107,35 +113,40 @@ public class RateioPessoaService {
 
 
         final RateioPessoa rateioPessoa = new RateioPessoa(ano,mes);
-        final DashService dash = new DashService();
         final Map<String, DespesaPessoaConsolidada> despesasAPagar  = new HashMap<>();
 
 
-
-        final var despesasPorDono = dash.retornaTotalDespesaPorTipoRateio(
-                                                                        despesaService.buscarPorParametros(mes, ano)
+        var sumarizadoPorTipoRateio = dash.retornaTotalDespesaPorTipoRateio(
+                                                                        despesaService.buscarPorPeriodo(mes, ano,-1).getTransacoes()
                                                                     );
 
-        if(despesasPorDono.size()>0){
+        if(sumarizadoPorTipoRateio.size()>0){
 
             //TODO da pra fazer melhor? Sem repetir o try catch?
             final Double valorCompatilhado;
             Double compartilhada;
             try {
-                compartilhada = despesasPorDono.get("COMPARTILHADA").getSum();
+                compartilhada = sumarizadoPorTipoRateio.get("COMPARTILHADA").getSum();
             } catch (NullPointerException e) {
                 compartilhada = 0d;
             }
             valorCompatilhado = compartilhada;
 
-            final var valoresRateioPorPessoa = consultarListaRateio(rateioPessoa)
+            var valoresRateioPorPessoa = consultarListaRateio(rateioPessoa)
                     .stream().collect(Collectors
                             .toMap(RateioPessoa::getPessoaRateio, RateioPessoa::getValorRateio));
+
+            if(valoresRateioPorPessoa.isEmpty()) {
+                cadastraRateioPadrao(mes, ano);
+                valoresRateioPorPessoa = consultarListaRateio(rateioPessoa)
+                        .stream().collect(Collectors
+                                .toMap(RateioPessoa::getPessoaRateio, RateioPessoa::getValorRateio));
+            }
 
             valoresRateioPorPessoa.forEach((chave,valorRateio) -> {
                Double valorSoma;
                 try {
-                     valorSoma = despesasPorDono.get(chave.toUpperCase()).getSum();
+                     valorSoma = sumarizadoPorTipoRateio.get(chave.toUpperCase()).getSum();
                 } catch (NullPointerException e) {
                     valorSoma = 0d;
                 }
@@ -147,6 +158,26 @@ public class RateioPessoaService {
             });
         }
         return  despesasAPagar;
+    }
+
+    private void cadastraRateioPadrao(Integer mes, Integer ano) {
+
+        final var tipoRateios = tipoRateioService.consultarTudo();
+
+
+
+        tipoRateios.forEach(tipoRateio -> {
+            if(!tipoRateio.getNome().equals("COMPARTILHADA")) {
+                RateioPessoa rateioPessoa = new RateioPessoa(mes, ano, 0.5, tipoRateio.getNome());
+                try {
+                    inserir(rateioPessoa);
+                } catch (RateioPessoaBusinessException e) {
+                    e.printStackTrace();
+                } catch (RateioPessoaNaoEncontradaException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private Optional<RateioPessoa> buscarRateioPessoa(RateioPessoa rateioPessoa){
@@ -172,4 +203,8 @@ public class RateioPessoaService {
             throw e;
         }
     }
+
+
+
+
 }

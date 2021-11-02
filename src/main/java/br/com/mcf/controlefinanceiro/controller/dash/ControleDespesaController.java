@@ -4,7 +4,7 @@ import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespes
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.DashDTO;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.ListaDespesaPorDonoDTO;
-import br.com.mcf.controlefinanceiro.service.DespesaService;
+import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
 import br.com.mcf.controlefinanceiro.service.DashService;
 import br.com.mcf.controlefinanceiro.service.RateioPessoaService;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,8 @@ public class ControleDespesaController {
 
     @GetMapping("/consultar")
     public ResponseEntity consultaDadosDash(@RequestParam(value = "mes", required = false, defaultValue = "0") String mes,
-                                            @RequestParam(value = "ano", required = false, defaultValue = "0") String ano){
+                                            @RequestParam(value = "ano", required = false, defaultValue = "0") String ano,
+                                            @RequestParam(value = "pagina", required = false, defaultValue = "0") String pagina) {
 
 
         try {
@@ -44,8 +45,8 @@ public class ControleDespesaController {
             final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
 
             if(validate.isValid()) {
-                var despesas = despesaService.buscarPorParametros(Integer.parseInt(mes), Integer.parseInt(ano));
-                final var valoresConsolidados = controleDespesaService.retornaDadosDespesaDash(despesas);
+                var despesas = despesaService.buscarPorPeriodo(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina));
+                final var valoresConsolidados = controleDespesaService.retornaDadosDespesaDash(despesas.getTransacoes());
                 final var despesaConsolidadaDTO = new DashDTO();
                 despesaConsolidadaDTO.setItensPorCategoria(valoresConsolidados.get(0));
                 despesaConsolidadaDTO.setItensPorInstrumentos(valoresConsolidados.get(2));

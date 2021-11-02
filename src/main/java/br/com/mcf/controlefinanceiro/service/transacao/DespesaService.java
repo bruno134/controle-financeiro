@@ -1,15 +1,19 @@
-package br.com.mcf.controlefinanceiro.service;
+package br.com.mcf.controlefinanceiro.service.transacao;
 
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
+import br.com.mcf.controlefinanceiro.model.ListaTransacao;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.repository.TransacaoRepository;
+import br.com.mcf.controlefinanceiro.service.transacao.TransacaoService;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +22,8 @@ import java.util.Optional;
 public class DespesaService{
 
 
+    @Autowired
+    private PeriodoMes periodoMes;
     private final TransacaoService<Despesa> service;
 
     public DespesaService(TransacaoRepository repository) {
@@ -72,7 +78,7 @@ public class DespesaService{
     }
 
     public List<Despesa> buscarTodas(){
-        return service.buscarTodas(TipoTransacao.DESPESA);
+        return service.buscarPorPeriodo(TipoTransacao.DESPESA);
     }
 
     public List<Despesa> inserirEmLista(List<Despesa> despesaList){
@@ -85,8 +91,17 @@ public class DespesaService{
         return listaDespesaIncluida;
     }
 
-    public List<Despesa> buscarPorParametros(int mes, int ano){
-        return service.buscarPorParametros(mes,ano, TipoTransacao.DESPESA);
+    public ListaTransacao<Despesa> buscarPorPeriodo(int mes, int ano, int pagina){
+
+        /**
+         *  O dia inicial do mês é definido dentro da propriedade 'controle-financeiro.inicio-mes.dia' no application.properties
+         *  Não defina a propriedade 'controle-financeiro.inicio-mes.dia', caso não deseje customizar o  periodo de competencia do mes.
+         */
+
+        final LocalDate dataInicial = periodoMes.getDataInicioMes(mes,ano);
+        final LocalDate dataFinal = periodoMes.getDataFimMes(mes,ano);
+
+        return service.buscarPorPeriodo(dataInicial,dataFinal, TipoTransacao.DESPESA,pagina);
     }
 
 }
