@@ -1,21 +1,16 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro;
 
-import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.ReceitaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.InsereDespesaValidator;
-import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.ReceitaNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.model.Receita;
-import br.com.mcf.controlefinanceiro.service.ReceitaService;
+import br.com.mcf.controlefinanceiro.service.transacao.ReceitaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Optional;
 
 

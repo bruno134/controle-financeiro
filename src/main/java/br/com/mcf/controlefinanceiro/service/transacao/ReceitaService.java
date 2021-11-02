@@ -1,16 +1,19 @@
-package br.com.mcf.controlefinanceiro.service;
+package br.com.mcf.controlefinanceiro.service.transacao;
 
 
 import br.com.mcf.controlefinanceiro.exceptions.ReceitaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.ListaTransacao;
 import br.com.mcf.controlefinanceiro.model.Receita;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.repository.TransacaoRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +21,8 @@ import java.util.Optional;
 @Service
 public class ReceitaService{
 
+    @Autowired
+    private PeriodoMes periodoMes;
     private final TransacaoService<Receita> service;
 
     public ReceitaService(TransacaoRepository repository) {
@@ -73,11 +78,19 @@ public class ReceitaService{
 
     }
 
-    public List<Receita> buscarPorParametros(int mes, int ano){
-        List<Receita> receitaList = new ArrayList<>();
+    public ListaTransacao<Receita> buscarPorPeriodo(int mes, int ano, int pagina){
+        ListaTransacao<Receita> receitaList = new ListaTransacao<>();
 
         try {
-            receitaList = service.buscarPorParametros(mes,ano, TipoTransacao.RECEITA);
+            /**
+             *  O dia inicial do mês é definido dentro da propriedade 'controle-financeiro.inicio-mes.dia' no application.properties
+             *  Não defina a propriedade 'controle-financeiro.inicio-mes.dia', caso não deseje customizar o  periodo de competencia do mes.
+             */
+
+            final LocalDate dataInicial = periodoMes.getDataInicioMes(mes,ano);
+            final LocalDate dataFinal = periodoMes.getDataFimMes(mes,ano);
+
+            receitaList =  service.buscarPorPeriodo(dataInicial,dataFinal,TipoTransacao.RECEITA, pagina);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,7 +102,7 @@ public class ReceitaService{
         List<Receita> receitaList = new ArrayList<>();
 
         try {
-            receitaList = service.buscarTodas(TipoTransacao.RECEITA);
+            receitaList = service.buscarPorPeriodo(TipoTransacao.RECEITA);
         } catch (Exception e) {
             e.printStackTrace();
         }

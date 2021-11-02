@@ -43,4 +43,16 @@ public class Despesa extends Transacao{
                entity.getInstrumento(),
                TipoTransacao.DESPESA);
    }
+
+    @Override
+    public String toString() {
+        return String.format("Despesa=[%s, %s, %s, %s, %s, %s, %s, %s]", super.getId(),
+                                                                            super.getData(),
+                                                                            super.getValor(),
+                                                                            super.getDescricao(),
+                                                                            super.getCategoria(),
+                                                                            super.getTipoRateio(),
+                                                                            super.getInstrumento(),
+                                                                            super.getTipoTransacao());
+    }
 }

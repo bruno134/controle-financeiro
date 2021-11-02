@@ -1,6 +1,8 @@
 package br.com.mcf.controlefinanceiro.repository;
 
 import br.com.mcf.controlefinanceiro.entity.TransacaoEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,10 +13,16 @@ import java.util.Optional;
 @Repository
 public interface TransacaoRepository extends JpaRepository<TransacaoEntity,Long> {
 
-    List<TransacaoEntity> findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(
+    Slice<TransacaoEntity> findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(
                                             LocalDate DataInicio,
                                             LocalDate DataFim,
-                                            String tipoTransacao);
+                                            String tipoTransacao, Pageable pageable);
+
+    List<TransacaoEntity> findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(
+            LocalDate DataInicio,
+            LocalDate DataFim,
+            String tipoTransacao);
+
 
     List<TransacaoEntity> findAllByTipoTransacaoOrderByDataAsc(String tipoTransacao);
     void deleteByIdAndTipoTransacao(Long Id, String tipoTransacao);
