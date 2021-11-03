@@ -21,8 +21,14 @@ public abstract class Transacao {
     private String tipoRateio;
     private String instrumento;
     private TipoTransacao tipoTransacao;
+    /*
+    Data competencia é a data em que a transaçao foi registrada; Será o valor utilizado para
+        as buscas por data.
+     */
+    private LocalDate dataCompetencia;
 
-    public Transacao(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento, TipoTransacao tipoTransacao) {
+    public Transacao(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio,
+                     String instrumento, TipoTransacao tipoTransacao, LocalDate dataCompetencia) {
         this.data = data;
         this.valor = valor;
         this.descricao = descricao;
@@ -30,6 +36,7 @@ public abstract class Transacao {
         this.tipoRateio = tipoRateio;
         this.instrumento = instrumento;
         this.tipoTransacao = tipoTransacao;
+        this.dataCompetencia = dataCompetencia;
     }
 
 }

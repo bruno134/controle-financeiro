@@ -13,16 +13,44 @@ public class Despesa extends Transacao{
         super.setTipoTransacao(TipoTransacao.DESPESA);
     }
 
-     public Despesa(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+     public Despesa(LocalDate data, Double valor, String descricao, String categoria,
+                    String tipoRateio, String instrumento, LocalDate dataCompetencia) {
            super(data,
                  valor,
                  descricao,
                  categoria,
                  tipoRateio,
                  instrumento,
-                 TipoTransacao.DESPESA);
+                 TipoTransacao.DESPESA,
+                   dataCompetencia);
      }
-     public Despesa(Integer id, LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+
+     public Despesa(LocalDate data, Double valor, String descricao, String categoria,
+                     String tipoRateio, String instrumento) {
+        super(data,
+                valor,
+                descricao,
+                categoria,
+                tipoRateio,
+                instrumento,
+                TipoTransacao.DESPESA,
+                data);
+    }
+
+    public Despesa(Integer id, LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+        super(  id,
+                data,
+                valor,
+                descricao,
+                categoria,
+                tipoRateio,
+                instrumento,
+                TipoTransacao.DESPESA,
+                data);
+    }
+
+
+     public Despesa(Integer id, LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento, LocalDate dataCompetencia) {
           super(  id,
                   data,
                   valor,
@@ -30,7 +58,8 @@ public class Despesa extends Transacao{
                   categoria,
                   tipoRateio,
                   instrumento,
-                  TipoTransacao.DESPESA);
+                  TipoTransacao.DESPESA,
+                  dataCompetencia);
      }
 
    public Despesa(TransacaoEntity entity){
@@ -41,13 +70,15 @@ public class Despesa extends Transacao{
                entity.getCategoria(),
                entity.getTipoRateio(),
                entity.getInstrumento(),
-               TipoTransacao.DESPESA);
+               TipoTransacao.DESPESA,
+               entity.getDataCompetencia());
    }
 
     @Override
     public String toString() {
-        return String.format("Despesa=[%s, %s, %s, %s, %s, %s, %s, %s]", super.getId(),
+        return String.format("Despesa=[%s, %s, %s, %s, %s, %s, %s, %s, %s]", super.getId(),
                                                                             super.getData(),
+                                                                            super.getDataCompetencia(),
                                                                             super.getValor(),
                                                                             super.getDescricao(),
                                                                             super.getCategoria(),

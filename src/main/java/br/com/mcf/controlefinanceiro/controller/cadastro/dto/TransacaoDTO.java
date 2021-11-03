@@ -32,6 +32,8 @@ public abstract class TransacaoDTO {
     private String tipoRateio;
     @JsonProperty("instrumento")
     private String instrumento;
+    @JsonProperty("dataCompetencia")
+    private String dataCompetencia;
 
     public TransacaoDTO(){
 
@@ -57,6 +59,18 @@ public abstract class TransacaoDTO {
         this.instrumento = instrumento;
     }
 
+    public TransacaoDTO(Integer id, LocalDate data, String valor, String descricao, String categoria,
+                        String tipoRateio, String instrumento, LocalDate dataCompetencia) {
+        this.id = id;
+        setData(data);
+        this.valor = valor;
+        this.descricao = descricao;
+        this.categoria = categoria;
+        this.tipoRateio = tipoRateio;
+        this.instrumento = instrumento;
+        setDataCompetencia(dataCompetencia);
+    }
+
     public TransacaoDTO(Transacao transacao){
         this.id = transacao.getId();
         this.data = transacao.getData().format(format);
@@ -65,6 +79,7 @@ public abstract class TransacaoDTO {
         this.categoria = transacao.getCategoria();
         this.tipoRateio = transacao.getTipoRateio();
         this.instrumento = transacao.getInstrumento();
+        this.dataCompetencia = transacao.getDataCompetencia().format(format);
     }
 
     public void setData(String data) {
@@ -75,20 +90,28 @@ public abstract class TransacaoDTO {
         this.data = data.format(format);
     }
 
-    public <T> T toObject(Class<T> clazz) {
+    public void setDataCompetencia(String data) {
+        this.dataCompetencia = data;
+    }
+
+    public void setDataCompetencia(LocalDate data) {
+        this.dataCompetencia = data.format(format);
+    }
+
+    public <T> T toObject(Class<T> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException,IllegalAccessException {
 
         LocalDate dataTransacao = null;
 
         T objetoRetornado = null;
 
         try {
-            final Constructor<T> declaredConstructor = clazz.getDeclaredConstructor(Integer.class, LocalDate.class, Double.class, String.class, String.class,String.class, String.class);
+            final Constructor<T> declaredConstructor = clazz.getDeclaredConstructor(Integer.class, LocalDate.class, Double.class, String.class, String.class,String.class, String.class, LocalDate.class);
 
             if(!getData().equals("")) {
                 dataTransacao = LocalDate.parse(getData(), format);
             }
 
-            Double valor = 0d;
+            Double valor = 0D;
 
             try{
                 valor = Double.valueOf(getValor());
@@ -102,7 +125,8 @@ public abstract class TransacaoDTO {
                                                             getDescricao(),
                                                             getCategoria(),
                                                             getTipoRateio(),
-                                                            getInstrumento());
+                                                            getInstrumento(),
+                                                        getDataCompetencia());
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -121,7 +145,8 @@ public abstract class TransacaoDTO {
                     String.class,
                     String.class,
                     String.class,
-                    String.class);
+                    String.class,
+                    LocalDate.class);
 
             lista.forEach(item -> {
                 T objeto = null;
@@ -132,7 +157,8 @@ public abstract class TransacaoDTO {
                             item.getDescricao(),
                             item.getCategoria(),
                             item.getTipoRateio(),
-                            item.getInstrumento());
+                            item.getInstrumento(),
+                            item.getDataCompetencia());
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -149,14 +175,23 @@ public abstract class TransacaoDTO {
         final List<T2> listRetorno = new ArrayList<>();
 
         try {
-            final Constructor<T2> declaredConstructor = clazz.getDeclaredConstructor(Integer.class, LocalDate.class, Double.class, String.class, String.class,String.class, String.class);
+            final Constructor<T2> declaredConstructor = clazz.getDeclaredConstructor(Integer.class, LocalDate.class, Double.class, String.class, String.class,String.class, String.class,LocalDate.class);
             listaDto.forEach(item -> {
 
                 LocalDate dataDespesa = null;
+                LocalDate dataCompetencia;
 
 
                 if(!item.getData().equals("")) {
                     dataDespesa = LocalDate.parse(item.getData(), format);
+
+                }
+
+                if(!item.getDataCompetencia().equals("")) {
+                    dataCompetencia = LocalDate.parse(item.getDataCompetencia(), format);
+
+                }else{
+                    dataCompetencia = dataDespesa;
                 }
 
                 Double valorConvertido = null;
@@ -178,7 +213,8 @@ public abstract class TransacaoDTO {
                                                                     item.getDescricao(),
                                                                     item.getCategoria(),
                                                                     item.getTipoRateio(),
-                                                                    item.getInstrumento())
+                                                                    item.getInstrumento(),
+                                                                    dataCompetencia)
                     );
                 } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
                     e.printStackTrace();

@@ -7,6 +7,7 @@ import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespe
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.InsereDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
 import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.exceptions.TransactionBusinessException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.model.ListaTransacao;
 import br.com.mcf.controlefinanceiro.service.ImportArquivoService;
@@ -90,7 +91,6 @@ public class DespesaController {
                 service.inserir(despesaDTO.toObject());
                 return ResponseEntity.status(HttpStatus.CREATED).build();
             } catch (Exception e) {
-                e.printStackTrace();
                 return ResponseEntity.internalServerError().build();
             }
         } else {
@@ -142,7 +142,9 @@ public class DespesaController {
 
     @PostMapping("/import")
     public ResponseEntity importaExcel (@RequestParam("file") MultipartFile dataFile,
-                                        @RequestParam("instrumento") String instrumento) {
+                                        @RequestParam("instrumento") String instrumento,
+                                        @RequestParam("mes") Integer mes,
+                                        @RequestParam("ano") Integer ano) {
 
 
 
@@ -150,12 +152,12 @@ public class DespesaController {
         //TODO Testar/tratar se planilha excel vier zerada, fora do formato, em xlsx
         try{
             List<DespesaDTO> dtoList = DespesaDTO.dtoList(
-                    arquivoService.importaDespesaDoExcel(dataFile.getInputStream(), instrumento)
+                    arquivoService.importaDespesaDoExcel(dataFile.getInputStream(), instrumento, mes,ano)
             );
 
             return ResponseEntity.ok(dtoList);
 
-        }catch (Exception e){
+        }catch (Exception | TransactionBusinessException e){
             return ResponseEntity.internalServerError().build();
         }
     }
