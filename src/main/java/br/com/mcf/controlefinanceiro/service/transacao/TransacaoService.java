@@ -108,7 +108,7 @@ public class TransacaoService<T extends Transacao> {
     }
 
     public <T extends Transacao> List<T> buscarTodas(TipoTransacao tipoTransacao){
-        return toList(repository.findAllByTipoTransacaoOrderByDataAsc(tipoTransacao.getDescricao()));
+        return toList(repository.findAllByTipoTransacaoOrderByDataCompetenciaAsc(tipoTransacao.getDescricao()));
     }
 
     public <T extends Transacao> ListaTransacao<T> buscarPorPeriodo(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer pagina) {
@@ -145,14 +145,14 @@ public class TransacaoService<T extends Transacao> {
         try{
             if(paginaInformada>0) {
                 page = PageRequest.of(paginaInformada-1, 10, Sort.by("id"));
-                final var despesaSlice = repository.findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(dataInicio, dataFim, tipoTransacao.getDescricao(), page);
+                final var despesaSlice = repository.findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaAsc(dataInicio, dataFim, tipoTransacao.getDescricao(), page);
                 if(despesaSlice.hasContent())
                     lista.setTransacoes(toList(despesaSlice.toList()));
                     lista.setPaginaAnterior(despesaSlice.hasPrevious()?paginaInformada-1:null);
                     lista.setProximaPAgina(despesaSlice.hasNext()?paginaInformada+1:null);
             }
             else {
-                lista.setTransacoes(toList(repository.findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(dataInicio, dataFim, tipoTransacao.getDescricao())));
+                lista.setTransacoes(toList(repository.findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaAsc(dataInicio, dataFim, tipoTransacao.getDescricao())));
             }
         }catch(Exception e){
             e.printStackTrace();

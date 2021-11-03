@@ -13,18 +13,18 @@ import java.util.Optional;
 @Repository
 public interface TransacaoRepository extends JpaRepository<TransacaoEntity,Long> {
 
-    Slice<TransacaoEntity> findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(
+    Slice<TransacaoEntity> findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaAsc(
                                             LocalDate DataInicio,
                                             LocalDate DataFim,
                                             String tipoTransacao, Pageable pageable);
 
-    List<TransacaoEntity> findAllByDataBetweenAndTipoTransacaoOrderByDataAsc(
+    List<TransacaoEntity> findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaAsc(
             LocalDate DataInicio,
             LocalDate DataFim,
             String tipoTransacao);
 
 
-    List<TransacaoEntity> findAllByTipoTransacaoOrderByDataAsc(String tipoTransacao);
+    List<TransacaoEntity> findAllByTipoTransacaoOrderByDataCompetenciaAsc(String tipoTransacao);
     void deleteByIdAndTipoTransacao(Long Id, String tipoTransacao);
 
 
