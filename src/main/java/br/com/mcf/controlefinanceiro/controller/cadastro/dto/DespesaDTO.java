@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,11 @@ public class DespesaDTO extends TransacaoDTO{
     public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {
         super(id,data,valor,descricao,categoria,tipoRateio,instrumento);
     }
+
+    public DespesaDTO(Integer id, LocalDate data, String valor, String descricao, String categoria, String tipoRateio, String instrumento, LocalDate dataCompetencia) {
+        super(id,data,valor,descricao,categoria,tipoRateio,instrumento,dataCompetencia);
+    }
+
     public DespesaDTO(Integer id, String data, String valor, String descricao, String categoria, String tipoRateio, String instrumento) {
         super(id,data,valor,descricao,categoria,tipoRateio,instrumento);
     }
@@ -38,7 +44,7 @@ public class DespesaDTO extends TransacaoDTO{
         super(null,data,valor,descricao,categoria,tipoRateio,instrumento);
     }
 
-    public Despesa toObject() {
+    public Despesa toObject() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return super.toObject(Despesa.class);
     }
 

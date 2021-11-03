@@ -20,24 +20,25 @@ public class TransacaoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
-
-    @Column(name = "data", nullable = false)
+    @Column(name = "dt_transacao", nullable = false)
     private LocalDate data;
-    @Column(name = "valor", nullable = false)
+    @Column(name = "dt_competencia", nullable = false)
+    private LocalDate dataCompetencia;
+    @Column(name = "vl_transacao", nullable = false)
     private Double valor;
-    @Column(name = "descricao")
+    @Column(name = "ds_transacao")
     private String descricao;
-    @Column(name = "categoria")
+    @Column(name = "nm_categoria")
     private String categoria;
     @Column(name = "tp_rateio")
     private String tipoRateio;
-    @Column(name = "instrumento")
+    @Column(name = "nm_instrumento")
     private String instrumento;
     @Column(name = "tp_transacao")
     private String tipoTransacao;
 
-    public TransacaoEntity(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento, String tipoTransacao) {
+    public TransacaoEntity(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio,
+                           String instrumento, String tipoTransacao, LocalDate dataCompetencia) {
         this.data = data;
         this.valor = valor;
         this.descricao = descricao;
@@ -45,6 +46,7 @@ public class TransacaoEntity {
         this.tipoRateio = tipoRateio;
         this.instrumento = instrumento;
         this.tipoTransacao = tipoTransacao;
+        this.dataCompetencia = dataCompetencia;
     }
 
     public TransacaoEntity(Transacao transacao){
@@ -55,6 +57,6 @@ public class TransacaoEntity {
         this.tipoRateio = transacao.getTipoRateio();
         this.instrumento = transacao.getInstrumento();
         this.tipoTransacao = transacao.getTipoTransacao().getDescricao();
+        this.dataCompetencia = transacao.getDataCompetencia();
     }
-
 }

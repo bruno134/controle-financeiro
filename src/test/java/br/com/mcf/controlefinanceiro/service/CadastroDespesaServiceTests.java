@@ -48,10 +48,10 @@ class CadastroDespesaServiceTests {
 		RateioPessoa r1 = new RateioPessoa(10,2021,0.7,"BRUNO");
 		RateioPessoa r2 = new RateioPessoa(10,2021,0.3,"PRI");
 
-		Despesa d1 = new Despesa(1,LocalDate.now(),93d, "", "", "BRUNO", "");
-		Despesa d2 = new Despesa(1,LocalDate.now(),150d, "", "", "COMPARTILHADA", "");
-		Despesa d3 = new Despesa(1,LocalDate.now(),41d, "", "", "PRI", "");
-		Despesa d4 = new Despesa(1,LocalDate.now(),160d, "", "", "COMPARTILHADA", "");
+		Despesa d1 = new Despesa(1,LocalDate.now(),93d, "", "", "BRUNO", "",LocalDate.now());
+		Despesa d2 = new Despesa(1,LocalDate.now(),150d, "", "", "COMPARTILHADA", "",LocalDate.now());
+		Despesa d3 = new Despesa(1,LocalDate.now(),41d, "", "", "PRI", "",LocalDate.now());
+		Despesa d4 = new Despesa(1,LocalDate.now(),160d, "", "", "COMPARTILHADA", "",LocalDate.now());
 
 		service.inserir(d1);
 		service.inserir(d2);
@@ -72,15 +72,9 @@ class CadastroDespesaServiceTests {
 	@Test
 	public void testar() throws DespesaNaoEncontradaException {
 
-		Despesa despesa = new Despesa(1,LocalDate.now(),100d, "", "", "", "");
+		Despesa despesa = new Despesa(1,LocalDate.now(),100d, "", "", "", "",LocalDate.now());
 
 		service.inserir(despesa);
-//		despesa.setValor(14d);
-//		service.inserir(despesa);
-//		despesa.setValor(32d);
-//		service.inserir(despesa);
-//		despesa.setCategoria("Presente");
-//		service.alterar(despesa);
 
 		service.buscarTodas().forEach(d -> System.out.println("Result ==> " + d.getValor()));
 

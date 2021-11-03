@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class ReceitaDTO extends TransacaoDTO{
         super(null,data,valor,descricao,categoria,tipoRateio,instrumento);
     }
 
-    public Receita toObject() {
+    public Receita toObject() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return super.toObject(Receita.class);
     }
 

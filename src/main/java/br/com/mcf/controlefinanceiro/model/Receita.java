@@ -12,16 +12,19 @@ public class Receita extends Transacao{
         super.setTipoTransacao(TipoTransacao.RECEITA);
     }
 
-    public Receita(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+    public Receita(LocalDate data, Double valor, String descricao, String categoria, String tipoRateio,
+                   String instrumento, LocalDate dataCompetencia) {
         super(data,
                 valor,
                 descricao,
                 categoria,
                 tipoRateio,
                 instrumento,
-                TipoTransacao.RECEITA);
+                TipoTransacao.RECEITA,
+                dataCompetencia);
     }
-    public Receita(Integer id, LocalDate data, Double valor, String descricao, String categoria, String tipoRateio, String instrumento) {
+    public Receita(Integer id, LocalDate data, Double valor, String descricao, String categoria,
+                   String tipoRateio, String instrumento, LocalDate dataCompetencia) {
         super(  id,
                 data,
                 valor,
@@ -29,7 +32,8 @@ public class Receita extends Transacao{
                 categoria,
                 tipoRateio,
                 instrumento,
-                TipoTransacao.RECEITA);
+                TipoTransacao.RECEITA,
+                dataCompetencia);
     }
 
     public Receita(TransacaoEntity entity){
@@ -40,7 +44,8 @@ public class Receita extends Transacao{
                 entity.getCategoria(),
                 entity.getTipoRateio(),
                 entity.getInstrumento(),
-                TipoTransacao.RECEITA);
+                TipoTransacao.RECEITA,
+                entity.getDataCompetencia());
     }
 
 }

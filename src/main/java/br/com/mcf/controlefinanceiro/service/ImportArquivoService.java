@@ -1,7 +1,8 @@
 package br.com.mcf.controlefinanceiro.service;
 
+import br.com.fluentvalidator.context.Error;
+import br.com.mcf.controlefinanceiro.exceptions.TransactionBusinessException;
 import br.com.mcf.controlefinanceiro.model.Despesa;
-import br.com.mcf.controlefinanceiro.model.TipoTransacao;
 import br.com.mcf.controlefinanceiro.util.ConstantFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -22,7 +23,15 @@ public class ImportArquivoService {
     public static final String COMPARTILHADA = "COMPARTILHADA";
 
 
-    public List<Despesa> importaDespesaDoExcel(InputStream inputFile, String tipo) throws IOException {
+    public List<Despesa> importaDespesaDoExcel(InputStream inputFile, String tipo
+                         ,Integer mes, Integer ano) throws IOException, TransactionBusinessException {
+
+
+        if(mes>12)
+            throw new TransactionBusinessException(Error.create("mes",
+                                                       "Mes informado inválido",
+                                                          "99",
+                                                                mes));
 
         Workbook wb = new HSSFWorkbook(inputFile);
         Sheet sheet = wb.getSheetAt(0);
@@ -64,7 +73,8 @@ public class ImportArquivoService {
                             ,linha.get(1)
                             ,NAO_CATEGORIZADO
                             ,COMPARTILHADA
-                            ,tipo));
+                            ,tipo
+                    , LocalDate.of(ano,mes,1)));
                     i++;
                 }
                 grava=true;

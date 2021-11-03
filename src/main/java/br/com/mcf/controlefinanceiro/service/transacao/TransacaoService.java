@@ -23,7 +23,6 @@ public class TransacaoService<T extends Transacao> {
 
     private final TransacaoRepository repository;
     private Class<T> clazz;
-    private PeriodoMes periodoMes = new PeriodoMes();
 
     public TransacaoService(TransacaoRepository transacaoRepository, Class<T> clazz){
         this.repository = transacaoRepository;
@@ -50,7 +49,7 @@ public class TransacaoService<T extends Transacao> {
     public <T extends Transacao> Optional<T> alterar(T t) throws TransacaoNaoEncontradaException {
 
         T transacaoSalva = null;
-        Optional<TransacaoEntity> transacaoEncontrada = Optional.empty();
+        Optional<TransacaoEntity> transacaoEncontrada;
 
         try{
           transacaoEncontrada = repository.findByIdAndTipoTransacao(t.getId().longValue(), t.getTipoTransacao().getDescricao());
@@ -62,6 +61,7 @@ public class TransacaoService<T extends Transacao> {
               transacaoEncontrada.get().setCategoria(t.getCategoria());
               transacaoEncontrada.get().setTipoRateio(t.getTipoRateio());
               transacaoEncontrada.get().setInstrumento(t.getInstrumento());
+              transacaoEncontrada.get().setDataCompetencia(t.getDataCompetencia());
 
               transacaoSalva = (T) this.clazz.getDeclaredConstructor(TransacaoEntity.class)
                                      .newInstance(repository.saveAndFlush(transacaoEncontrada.get()));
