@@ -1,6 +1,7 @@
 package br.com.mcf.controlefinanceiro.repository;
 
 import br.com.mcf.controlefinanceiro.entity.TransacaoEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,12 +14,12 @@ import java.util.Optional;
 @Repository
 public interface TransacaoRepository extends JpaRepository<TransacaoEntity,Long> {
 
-    Slice<TransacaoEntity> findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaAsc(
+    Page<TransacaoEntity> findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaDesc(
                                             LocalDate DataInicio,
                                             LocalDate DataFim,
                                             String tipoTransacao, Pageable pageable);
 
-    List<TransacaoEntity> findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaAsc(
+    List<TransacaoEntity> findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaDesc(
             LocalDate DataInicio,
             LocalDate DataFim,
             String tipoTransacao);

@@ -18,6 +18,10 @@ import java.util.Map;
 public class ListaDespesaPorDonoDTO {
     @JsonProperty("itens")
     private List<DespesaPorDonoDTO> listaDespesaPorDono;
+    @JsonProperty("descricaoDespesaCompartilhada")
+    private String descricaoDespesaCompartilhada;
+    @JsonProperty("valorTotalDespesaCompartilhada")
+    private String valorTotalDespesaCompartilhada;
 
 
     public ListaDespesaPorDonoDTO(Map<String, DespesaPessoaConsolidada> listaDespesaPorDono) {

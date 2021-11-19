@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("rateio")
 public class RateioPessoaController {
 
-    private RateioPessoaService rateioPessoaService;
+    private final RateioPessoaService rateioPessoaService;
 
     public RateioPessoaController(RateioPessoaService rateioPessoaService){
         this.rateioPessoaService = rateioPessoaService;

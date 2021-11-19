@@ -78,7 +78,11 @@ public class DespesaService{
     }
 
     public List<Despesa> buscarTodas(){
-        return service.buscarPorPeriodo(TipoTransacao.DESPESA);
+        return service.buscarTodas(TipoTransacao.DESPESA);
+    }
+
+    public List<Despesa> buscarTodasPor(Integer ano){
+                return service.buscarTodasPor(ano,TipoTransacao.DESPESA);
     }
 
     public List<Despesa> inserirEmLista(List<Despesa> despesaList){
@@ -103,5 +107,7 @@ public class DespesaService{
 
         return service.buscarPorPeriodo(dataInicial,dataFinal, TipoTransacao.DESPESA,pagina);
     }
+
+
 
 }

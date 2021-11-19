@@ -12,9 +12,13 @@ public class ListaTransacao <T> {
 
     private List<T> transacoes;
     private Integer paginaAnterior;
-    private Integer proximaPAgina;
+    private Integer proximaPagina;
+    private Integer totalPaginas;
 
     public ListaTransacao(){
         this.transacoes = new ArrayList<>();
+        this.paginaAnterior = 0;
+        this.proximaPagina = 0;
+        this.totalPaginas = 0;
     }
 }

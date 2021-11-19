@@ -22,7 +22,7 @@ import java.util.Optional;
 public class TransacaoService<T extends Transacao> {
 
     private final TransacaoRepository repository;
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     public TransacaoService(TransacaoRepository transacaoRepository, Class<T> clazz){
         this.repository = transacaoRepository;
@@ -111,13 +111,17 @@ public class TransacaoService<T extends Transacao> {
         return toList(repository.findAllByTipoTransacaoOrderByDataCompetenciaAsc(tipoTransacao.getDescricao()));
     }
 
-    public <T extends Transacao> ListaTransacao<T> buscarPorPeriodo(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer pagina) {
-       return buscaPorRangeDeDatas(dataInicio,dataFim, tipoTransacao, pagina);
+    public <T extends Transacao> List<T> buscarTodasPor(Integer ano, TipoTransacao tipoTransacao){
+
+        LocalDate dataInicio = LocalDate.of(ano,1,1);
+        LocalDate dataFim = LocalDate.of(ano,12,31);
+
+        return (List<T>) buscaPorRangeDeDatas(dataInicio,dataFim, tipoTransacao, -1).getTransacoes();
+
     }
 
-    public <T extends Transacao> List<T> buscarPorPeriodo(TipoTransacao tipoTransacao) {
-       return buscarTodas(tipoTransacao);
-
+    public <T extends Transacao> ListaTransacao<T> buscarPorPeriodo(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer pagina) {
+       return buscaPorRangeDeDatas(dataInicio,dataFim, tipoTransacao, pagina);
     }
 
 
@@ -134,7 +138,6 @@ public class TransacaoService<T extends Transacao> {
         return list;
     }
 
-
     private <T extends Transacao> ListaTransacao<T> buscaPorRangeDeDatas(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer paginaInformada){
 
 
@@ -145,19 +148,20 @@ public class TransacaoService<T extends Transacao> {
         try{
             if(paginaInformada>0) {
                 page = PageRequest.of(paginaInformada-1, 10, Sort.by("id"));
-                final var despesaSlice = repository.findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaAsc(dataInicio, dataFim, tipoTransacao.getDescricao(), page);
-                if(despesaSlice.hasContent())
-                    lista.setTransacoes(toList(despesaSlice.toList()));
-                    lista.setPaginaAnterior(despesaSlice.hasPrevious()?paginaInformada-1:null);
-                    lista.setProximaPAgina(despesaSlice.hasNext()?paginaInformada+1:null);
+                final var despesaPage = repository.findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaDesc(dataInicio, dataFim, tipoTransacao.getDescricao(), page);
+                if(despesaPage.hasContent()) {
+                    lista.setTransacoes(toList(despesaPage.toList()));
+                    lista.setPaginaAnterior(despesaPage.hasPrevious() ? paginaInformada - 1 : null);
+                    lista.setProximaPagina(despesaPage.hasNext() ? paginaInformada + 1 : null);
+                    lista.setTotalPaginas(despesaPage.getTotalPages());
+                }
             }
             else {
-                lista.setTransacoes(toList(repository.findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaAsc(dataInicio, dataFim, tipoTransacao.getDescricao())));
+                lista.setTransacoes(toList(repository.findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaDesc(dataInicio, dataFim, tipoTransacao.getDescricao())));
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-
         return lista;
     }
 }

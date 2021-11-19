@@ -1,6 +1,7 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
 import br.com.mcf.controlefinanceiro.model.Transacao;
+import br.com.mcf.controlefinanceiro.util.ConstantFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -101,6 +102,7 @@ public abstract class TransacaoDTO {
     public <T> T toObject(Class<T> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException,IllegalAccessException {
 
         LocalDate dataTransacao = null;
+        LocalDate dataCompetencia = null;
 
         T objetoRetornado = null;
 
@@ -111,6 +113,13 @@ public abstract class TransacaoDTO {
                 dataTransacao = LocalDate.parse(getData(), format);
             }
 
+            if(getDataCompetencia()!=null && !getDataCompetencia().equals("")){
+                dataCompetencia = LocalDate.parse(getDataCompetencia(), format);
+            }else{
+                dataCompetencia = dataTransacao;
+            }
+
+
             Double valor = 0D;
 
             try{
@@ -119,14 +128,14 @@ public abstract class TransacaoDTO {
                 System.out.println("Erro ao converter valor para numérico, setando valor = 0"); //TODO arrumar forma de avisar (WARN)?
             }
 
-            objetoRetornado = (T) declaredConstructor.newInstance( getId(),
+            objetoRetornado = declaredConstructor.newInstance( getId(),
                                                             dataTransacao,
                                                             valor,
                                                             getDescricao(),
                                                             getCategoria(),
                                                             getTipoRateio(),
                                                             getInstrumento(),
-                                                        getDataCompetencia());
+                                                            dataCompetencia);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -187,7 +196,7 @@ public abstract class TransacaoDTO {
 
                 }
 
-                if(!item.getDataCompetencia().equals("")) {
+                if(item.getDataCompetencia()!=null && !"".equals(item.getDataCompetencia())) {
                     dataCompetencia = LocalDate.parse(item.getDataCompetencia(), format);
 
                 }else{
