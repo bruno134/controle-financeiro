@@ -3,6 +3,7 @@ package br.com.mcf.controlefinanceiro.service.transacao;
 
 import br.com.mcf.controlefinanceiro.exceptions.ReceitaNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.model.ListaTransacao;
 import br.com.mcf.controlefinanceiro.model.Receita;
 import br.com.mcf.controlefinanceiro.model.TipoTransacao;
@@ -78,6 +79,10 @@ public class ReceitaService{
 
     }
 
+    public List<Despesa> buscarTodasPor(Integer ano){
+        return service.buscarTodasPor(ano,TipoTransacao.RECEITA);
+    }
+
     public ListaTransacao<Receita> buscarPorPeriodo(int mes, int ano, int pagina){
         ListaTransacao<Receita> receitaList = new ListaTransacao<>();
 
@@ -102,7 +107,7 @@ public class ReceitaService{
         List<Receita> receitaList = new ArrayList<>();
 
         try {
-            receitaList = service.buscarPorPeriodo(TipoTransacao.RECEITA);
+            receitaList = service.buscarTodas(TipoTransacao.RECEITA);
         } catch (Exception e) {
             e.printStackTrace();
         }

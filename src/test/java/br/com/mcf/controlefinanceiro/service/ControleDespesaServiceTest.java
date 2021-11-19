@@ -13,7 +13,7 @@ public class ControleDespesaServiceTest {
     private TransacaoService cadastroService;
 
     @Autowired
-    private DashService controleService;
+    private ControleDespesaService controleService;
 
 //    @Test
 //    void deveSomarDespesasPorCategoria(){

@@ -11,7 +11,7 @@ public enum TipoTransacao {
     DESPESA("DESPESA"),
     RECEITA("RECEITA");
 
-    private String descricao;
+    private final String descricao;
 
     TipoTransacao(String descricao) {
         this.descricao = descricao;

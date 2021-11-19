@@ -3,26 +3,36 @@ package br.com.mcf.controlefinanceiro.controller.dash;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.DashDTO;
+import br.com.mcf.controlefinanceiro.controller.dash.dto.DespesaConsolidadaAnoDTO;
+import br.com.mcf.controlefinanceiro.controller.dash.dto.DespesaMesDTO;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.ListaDespesaPorDonoDTO;
+import br.com.mcf.controlefinanceiro.model.Despesa;
 import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
-import br.com.mcf.controlefinanceiro.service.DashService;
+import br.com.mcf.controlefinanceiro.service.ControleDespesaService;
 import br.com.mcf.controlefinanceiro.service.RateioPessoaService;
+import br.com.mcf.controlefinanceiro.util.ConstantMonths;
+import org.apache.regexp.RE;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("dash")
 public class ControleDespesaController {
 
-    private final DashService controleDespesaService;
+    public static final String COMPARTILHADA = "COMPARTILHADA";
+    private final ControleDespesaService controleDespesaService;
     private final DespesaService despesaService;
     private final ConsultaDespesaValidator consultaValidator;
     private final RateioPessoaService rateioPessoaService;
 
-    public ControleDespesaController(DashService controleDespesaService,
+    public ControleDespesaController(ControleDespesaService controleDespesaService,
                                      DespesaService despesaService,
                                      ConsultaDespesaValidator consultaValidator,
                                      RateioPessoaService rateioPessoaService) {
@@ -64,9 +74,36 @@ public class ControleDespesaController {
     @GetMapping("/calculo")
     public ResponseEntity consultaDespesasAPagar(@RequestParam Integer mes, @RequestParam Integer ano){
 
-        ListaDespesaPorDonoDTO dto = new ListaDespesaPorDonoDTO(rateioPessoaService.calculaRateio(mes,ano));
+        final var rateio = rateioPessoaService.calculaRateio(mes, ano);
+        final var totalCompartilhado = rateioPessoaService.retornaValorTotalCompartilhado(rateio);
+
+        ListaDespesaPorDonoDTO dto = new ListaDespesaPorDonoDTO(rateio);
+
+        dto.setValorTotalDespesaCompartilhada("0.0");
+        dto.setDescricaoDespesaCompartilhada(COMPARTILHADA);
+        if(!totalCompartilhado.isEmpty())
+            dto.setValorTotalDespesaCompartilhada(totalCompartilhado.get(COMPARTILHADA).toString());
+
+
         return  ResponseEntity.ok(dto);
     }
 
+    @GetMapping("totalconsolidadodespesa")
+    public ResponseEntity consultaDespesaConsolidadaPorMes(@RequestParam Integer ano){
+
+        final List<DespesaMesDTO> despesas = new ArrayList<>();
+        final var despesaList = despesaService.buscarTodasPor(ano);
+        final var totalDespesaAno = controleDespesaService.retornaTotalDespesaAno(despesaList);
+
+        totalDespesaAno.forEach(item -> despesas.add(
+                                                      new DespesaMesDTO(
+                                                                        ConstantMonths.months.get(item.getKey()),
+                                                                        String.valueOf(item.getValue())
+                                                                        )
+                                                    )
+                                );
+
+        return ResponseEntity.ok(despesas);
+    }
 
 }

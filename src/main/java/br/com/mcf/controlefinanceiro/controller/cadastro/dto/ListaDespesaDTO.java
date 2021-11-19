@@ -21,18 +21,21 @@ public class ListaDespesaDTO {
     public Integer paginaAnterior;
     @JsonProperty("proximaPagina")
     public Integer proximaPagina;
+    @JsonProperty("totalPaginas")
+    public Integer totalPaginas;
     @JsonProperty("despesas")
     public List<DespesaDTO> despesas;
 
 
     public ListaDespesaDTO(){
         this.despesas = new ArrayList<>();
-    };
+    }
 
     public ListaDespesaDTO(ListaTransacao<Despesa> despesas) {
         this.despesas = DespesaDTO.dtoList(despesas.getTransacoes());
         this.paginaAnterior = despesas.getPaginaAnterior();
-        this.proximaPagina = despesas.getProximaPAgina();
+        this.proximaPagina = despesas.getProximaPagina();
+        this.totalPaginas = despesas.getTotalPaginas();
 
     }
 }
