@@ -24,6 +24,21 @@ public class CategoriaController {
     }
 
 
+    @GetMapping("/consultar/ativas")
+    public ResponseEntity<List<CategoriaDTO>> buscaTodasClassificacoesAtivas(){
+
+        List<Categoria> lista;
+
+        try{
+            //TODO Deve retornar 404 para lista vazia?
+            lista = service.consultarTodasClassificacoesAtivas();
+            return ResponseEntity.ok().body(CategoriaDTO.listaDto(lista));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.internalServerError().build();
+    }
+
     @GetMapping("/consultar")
     public ResponseEntity<List<CategoriaDTO>> buscaTodasClassificacoes(){
 
@@ -31,7 +46,7 @@ public class CategoriaController {
 
         try{
             //TODO Deve retornar 404 para lista vazia?
-            lista = service.consultarTodasClassificacoes();
+            lista = service.consultarTodasClassificacoesAtivas();
             return ResponseEntity.ok().body(CategoriaDTO.listaDto(lista));
         }catch (Exception e){
             e.printStackTrace();
@@ -44,7 +59,7 @@ public class CategoriaController {
 
         try {
 
-            service.cadastrarClassificao(categoriaDTO.getNome(), TipoTransacao.get(categoriaDTO.getTipoCategoria()));
+            service.cadastrarClassificao(categoriaDTO.getNome(), TipoTransacao.get(categoriaDTO.getTipoCategoria().toUpperCase()));
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }catch (Exception e){
             e.printStackTrace();

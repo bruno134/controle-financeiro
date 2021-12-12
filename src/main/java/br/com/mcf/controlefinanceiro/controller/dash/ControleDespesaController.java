@@ -3,15 +3,12 @@ package br.com.mcf.controlefinanceiro.controller.dash;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.DadosConsultaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.DashDTO;
-import br.com.mcf.controlefinanceiro.controller.dash.dto.DespesaConsolidadaAnoDTO;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.DespesaMesDTO;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.ListaDespesaPorDonoDTO;
-import br.com.mcf.controlefinanceiro.model.Despesa;
-import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
 import br.com.mcf.controlefinanceiro.service.ControleDespesaService;
 import br.com.mcf.controlefinanceiro.service.RateioPessoaService;
+import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
 import br.com.mcf.controlefinanceiro.util.ConstantMonths;
-import org.apache.regexp.RE;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("dash")

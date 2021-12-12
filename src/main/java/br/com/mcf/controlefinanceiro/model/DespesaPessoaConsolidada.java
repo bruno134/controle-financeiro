@@ -12,4 +12,5 @@ public class DespesaPessoaConsolidada {
     private Double valorTotalIndividual;
     private Double getValorTotalCompartilhado;
     private Double valorTaxa;
+    private Double valorSalario;
 }

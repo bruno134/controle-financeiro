@@ -36,6 +36,8 @@ public class ListaDespesaPorDonoDTO {
                                     String.valueOf(valor.getValorTotal()),
                                     String.valueOf(valor.getValorTotalIndividual()),
                                     String.valueOf(valor.getGetValorTotalCompartilhado()),
-                                    String.valueOf(valor.getValorTaxa())));
+                                    String.valueOf(valor.getValorTaxa()),
+                                    String.valueOf(valor.getValorSalario())
+        ));
     }
 }

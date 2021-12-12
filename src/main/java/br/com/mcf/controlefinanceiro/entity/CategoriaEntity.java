@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoriaEntity {
     //TODO deixar os campos no padrão qualificador/idenficador
-
+    //TODO tirar campo ativo e realmente apagar os registros???
     public CategoriaEntity() {
     }
 
