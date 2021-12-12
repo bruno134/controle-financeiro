@@ -31,8 +31,8 @@ class CadastroDespesaServiceTests {
 	@Test
 	public void testa(){
 
-		var despesaList = service.buscarPorPeriodo(11,2021,-1);
-		despesaList.getTransacoes().forEach(despesa -> System.out.println(despesa.toString()));
+//		var despesaList = service.buscarPorPeriodo(11,2021,-1);
+//		despesaList.getTransacoes().forEach(despesa -> System.out.println(despesa.toString()));
 
 //		Integer page = 0;
 //		while (despesaList.size()>0) {
@@ -45,8 +45,8 @@ class CadastroDespesaServiceTests {
 	@Test
 	public void testaCalculo(){
 
-		RateioPessoa r1 = new RateioPessoa(10,2021,0.7,"BRUNO");
-		RateioPessoa r2 = new RateioPessoa(10,2021,0.3,"PRI");
+		RateioPessoa r1 = new RateioPessoa(10,2021,0.7,0D,"BRUNO");
+		RateioPessoa r2 = new RateioPessoa(10,2021,0.3,0D,"PRI");
 
 		Despesa d1 = new Despesa(1,LocalDate.now(),93d, "", "", "BRUNO", "",LocalDate.now());
 		Despesa d2 = new Despesa(1,LocalDate.now(),150d, "", "", "COMPARTILHADA", "",LocalDate.now());

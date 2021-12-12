@@ -12,6 +12,7 @@ public class RateioPessoa {
     private Integer mesCompetenciaRateio;
     private Integer anoCompetenciaRateio;
     private Double valorRateio;
+    private Double valorSalario;
     private String pessoaRateio;
 
     public RateioPessoa(RateioPessoaEntity entity){
@@ -19,13 +20,15 @@ public class RateioPessoa {
         this.anoCompetenciaRateio = entity.getId().getAnoCompetencia();
         this.valorRateio = entity.getValorRateio();
         this.pessoaRateio = entity.getId().getPessoaRateio();
+        this.valorSalario = entity.getValorSalario();
     }
 
-    public RateioPessoa(Integer mesCompetenciaRateio, Integer anoCompetenciaRateio, Double valor, String pessoaRateio) {
+    public RateioPessoa(Integer mesCompetenciaRateio, Integer anoCompetenciaRateio, Double valor, Double valorSalario, String pessoaRateio) {
         this.mesCompetenciaRateio = mesCompetenciaRateio;
         this.anoCompetenciaRateio = anoCompetenciaRateio;
         this.valorRateio = valor;
         this.pessoaRateio = pessoaRateio;
+        this.valorSalario = valorSalario;
     }
 
     public RateioPessoa() {
@@ -38,7 +41,7 @@ public class RateioPessoa {
     }
 
     public RateioPessoaEntity toEntity(){
-        return new RateioPessoaEntity(this.mesCompetenciaRateio, this.anoCompetenciaRateio,this.valorRateio, this.pessoaRateio);
+        return new RateioPessoaEntity(this.mesCompetenciaRateio, this.anoCompetenciaRateio,this.valorRateio, this.valorSalario, this.pessoaRateio);
     }
 
     public static List<RateioPessoa> toList(List<RateioPessoaEntity> list){

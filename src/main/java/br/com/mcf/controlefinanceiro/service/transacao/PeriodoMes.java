@@ -16,8 +16,15 @@ public class PeriodoMes {
     public LocalDate getDataInicioMes(Integer mes, Integer ano){
 
         Integer diaInicioMes = mesConfig.getDiaInicioMes();
-        return LocalDate.of(ano,(mes-1),diaInicioMes);
+        Integer mesInicio = mes -1;
+        Integer AnoInicio = ano;
 
+        if(mesInicio==0){
+            mesInicio = 12;
+            AnoInicio = ano -1;
+        }
+
+        return LocalDate.of(AnoInicio,mesInicio,diaInicioMes);
 
     }
 

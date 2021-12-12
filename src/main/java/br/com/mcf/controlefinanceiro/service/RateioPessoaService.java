@@ -12,6 +12,8 @@ import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.stereotype.Service;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -59,12 +61,34 @@ public class RateioPessoaService {
 
 
     public Optional<RateioPessoa> alterar(RateioPessoa rateioPessoa) throws RateioPessoaNaoEncontradaException {
+        final var rateioPessoaList = buscarListaRateio(rateioPessoa);
 
-        final var rateioPessoaEncontrada = consultar(rateioPessoa);
-        if (rateioPessoaEncontrada.isPresent()) {
+        if (!rateioPessoaList.isEmpty()) {
+
+            //Retirando o item que não será atualizado com a diferença do rateio de entrada
+            rateioPessoaList.removeIf(rp -> rp.getPessoaRateio().equals(rateioPessoa.getPessoaRateio()));
+
+            alteraDemaisRateios(rateioPessoaList, rateioPessoa.getValorRateio());
             return Optional.of(new RateioPessoa(repository.save(rateioPessoa.toEntity())));
         } else {
             throw new RateioPessoaNaoEncontradaException(ConstantMessages.RATEIO_NAO_ENCONTRADO);
+        }
+    }
+
+    private void alteraDemaisRateios(List<RateioPessoa> rateioPessoaList,Double valorRateioReferencia) {
+
+        DecimalFormat df = new DecimalFormat("##0.00###");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+
+        if(!rateioPessoaList.isEmpty()){
+            Double finalValorAlterar =  (1-valorRateioReferencia)/rateioPessoaList.size();
+            final var valorFormatado = df.format(finalValorAlterar).replace(",",".");
+
+            rateioPessoaList.forEach(rp -> {
+
+                rp.setValorRateio(Double.valueOf(valorFormatado));
+                repository.save(rp.toEntity());
+            });
         }
     }
 
@@ -133,31 +157,27 @@ public class RateioPessoaService {
                 valorCompatilhado = 0d;
             }
 
-            var valoresRateioPorPessoa = consultarListaRateio(rateioPessoa)
-                    .stream().collect(Collectors
-                            .toMap(RateioPessoa::getPessoaRateio, RateioPessoa::getValorRateio));
+            var valoresRateioPorPessoa = consultarListaRateio(rateioPessoa);
 
             if (valoresRateioPorPessoa.isEmpty()) {
                 cadastraRateioPadrao(mes, ano);
-                valoresRateioPorPessoa = consultarListaRateio(rateioPessoa)
-                        .stream().collect(Collectors
-                                .toMap(RateioPessoa::getPessoaRateio, RateioPessoa::getValorRateio));
+                valoresRateioPorPessoa = consultarListaRateio(rateioPessoa);
             }
 
-            valoresRateioPorPessoa.forEach((chave, valorRateio) -> {
+
+            valoresRateioPorPessoa.forEach(rp -> {
                 Double valorSoma;
                 try {
-                    valorSoma = sumarizadoPorTipoRateio.get(chave.toUpperCase()).getSum();
+                    valorSoma = sumarizadoPorTipoRateio.get(rp.getPessoaRateio().toUpperCase()).getSum();
                 } catch (NullPointerException e) {
                     valorSoma = 0d;
                 }
-                final var valorTotal = (valorCompatilhado * valorRateio) + valorSoma;
-                final var valorCompartilhado = (valorCompatilhado * valorRateio);
+                final var valorTotal = (valorCompatilhado * rp.getValorRateio()) + valorSoma;
+                final var valorCompartilhado = (valorCompatilhado * rp.getValorRateio());
                 final var valorTotalIndividual = valorSoma;
 
-                despesasAPagar.put(chave, new DespesaPessoaConsolidada(valorTotal, valorTotalIndividual, valorCompartilhado, valorRateio));
+                despesasAPagar.put(rp.getPessoaRateio().toUpperCase(), new DespesaPessoaConsolidada(valorTotal, valorTotalIndividual, valorCompartilhado, rp.getValorRateio(),rp.getValorSalario()));
             });
-
         }
         return despesasAPagar;
     }
@@ -183,7 +203,7 @@ public class RateioPessoaService {
 
         tipoRateios.forEach(tipoRateio -> {
             if (!tipoRateio.getNome().equals(statusCompartilhada)) {
-                RateioPessoa rateioPessoa = new RateioPessoa(mes, ano, 0.5, tipoRateio.getNome());
+                RateioPessoa rateioPessoa = new RateioPessoa(mes, ano, 0.5, 0D,tipoRateio.getNome());
                 try {
                     inserir(rateioPessoa);
                 } catch (RateioPessoaBusinessException e) {

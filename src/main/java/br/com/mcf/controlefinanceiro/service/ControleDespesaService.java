@@ -76,11 +76,9 @@ public class ControleDespesaService {
                 )
         );
 
-        final var sorted = despesasMesMap.entrySet()
+        return despesasMesMap.entrySet()
                 .stream()
                 .sorted(Map.Entry.<Integer, Double>comparingByKey()).collect(Collectors.toList());
-
-        return sorted;
     }
 
 

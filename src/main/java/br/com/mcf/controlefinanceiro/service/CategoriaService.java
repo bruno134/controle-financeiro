@@ -48,8 +48,12 @@ public class CategoriaService {
 
     }
 
-    public List<Categoria> consultarTodasClassificacoes(){
+    public List<Categoria> consultarTodasClassificacoesAtivas(){
         return CategoriaEntity.toList(repository.findAllByAtivo(true));
+    }
+
+    public List<Categoria> consultarTodasClassificacoes(){
+        return CategoriaEntity.toList(repository.findAll());
     }
 
     public List<Categoria> consultarTodasClassificacoesPorTipoTransacao(TipoTransacao tipoTransacao){

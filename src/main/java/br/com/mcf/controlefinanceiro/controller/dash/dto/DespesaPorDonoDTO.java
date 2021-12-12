@@ -20,12 +20,15 @@ public class DespesaPorDonoDTO {
     private String valorTotalCompartilhado;
     @JsonProperty("valorTaxa")
     private String valorTaxa;
+    @JsonProperty("valorSalario")
+    private String valorSalario;
 
-    public DespesaPorDonoDTO(String nomeDono, String valorTotal, String valorTotalIndividual, String valorTotalCompartilhado, String valorTaxa) {
+    public DespesaPorDonoDTO(String nomeDono, String valorTotal, String valorTotalIndividual, String valorTotalCompartilhado, String valorTaxa, String valorSalario) {
         this.nomeDono = nomeDono;
         this.valorTotal = valorTotal;
         this.valorTotalIndividual = valorTotalIndividual;
         this.valorTotalCompartilhado = valorTotalCompartilhado;
         this.valorTaxa = valorTaxa;
+        this.valorSalario = valorSalario;
     }
 }
