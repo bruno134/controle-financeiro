@@ -47,11 +47,11 @@ public class ControleDespesaController {
 
         try {
 
-            final var dadosConsultaDespesaDTO = new DadosConsultaDespesaDTO(ano, mes, null);
+            final var dadosConsultaDespesaDTO = new DadosConsultaDespesaDTO(ano, mes);
             final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
 
             if(validate.isValid()) {
-                var despesas = despesaService.buscarPorPeriodo(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina));
+                var despesas = despesaService.buscarPorPeriodo(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina),0);
                 final var valoresConsolidados = controleDespesaService.retornaDadosDespesaDash(despesas.getTransacoes());
                 final var despesaConsolidadaDTO = new DashDTO();
                 despesaConsolidadaDTO.setItensPorCategoria(valoresConsolidados.get(0));

@@ -95,7 +95,7 @@ public class DespesaService{
         return listaDespesaIncluida;
     }
 
-    public ListaTransacao<Despesa> buscarPorPeriodo(int mes, int ano, int pagina){
+    public ListaTransacao<Despesa> buscarPorPeriodo(int mes, int ano, int pagina, Integer tamanhoPagina){
 
         /**
          *  O dia inicial do mês é definido dentro da propriedade 'controle-financeiro.inicio-mes.dia' no application.properties
@@ -105,7 +105,7 @@ public class DespesaService{
         final LocalDate dataInicial = periodoMes.getDataInicioMes(mes,ano);
         final LocalDate dataFinal = periodoMes.getDataFimMes(mes,ano);
 
-        return service.buscarPorPeriodo(dataInicial,dataFinal, TipoTransacao.DESPESA,pagina);
+        return service.buscarPorPeriodo(dataInicial,dataFinal, TipoTransacao.DESPESA,pagina, tamanhoPagina);
     }
 
 

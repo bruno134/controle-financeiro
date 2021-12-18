@@ -142,7 +142,7 @@ public class RateioPessoaService {
 
 
         var sumarizadoPorTipoRateio = dash.retornaTotalDespesaPorTipoRateio(
-                despesaService.buscarPorPeriodo(mes, ano, -1).getTransacoes()
+                despesaService.buscarPorPeriodo(mes, ano, -1,0).getTransacoes()
         );
 
         if (!sumarizadoPorTipoRateio.isEmpty()) {
