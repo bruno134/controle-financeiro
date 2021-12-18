@@ -83,7 +83,7 @@ public class ReceitaService{
         return service.buscarTodasPor(ano,TipoTransacao.RECEITA);
     }
 
-    public ListaTransacao<Receita> buscarPorPeriodo(int mes, int ano, int pagina){
+    public ListaTransacao<Receita> buscarPorPeriodo(int mes, int ano, int pagina, Integer tamanhoPagina){
         ListaTransacao<Receita> receitaList = new ListaTransacao<>();
 
         try {
@@ -95,7 +95,7 @@ public class ReceitaService{
             final LocalDate dataInicial = periodoMes.getDataInicioMes(mes,ano);
             final LocalDate dataFinal = periodoMes.getDataFimMes(mes,ano);
 
-            receitaList =  service.buscarPorPeriodo(dataInicial,dataFinal,TipoTransacao.RECEITA, pagina);
+            receitaList =  service.buscarPorPeriodo(dataInicial,dataFinal,TipoTransacao.RECEITA, pagina, tamanhoPagina);
         } catch (Exception e) {
             e.printStackTrace();
         }

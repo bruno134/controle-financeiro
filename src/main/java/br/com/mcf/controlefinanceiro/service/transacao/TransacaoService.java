@@ -23,6 +23,7 @@ public class TransacaoService<T extends Transacao> {
 
     private final TransacaoRepository repository;
     private final Class<T> clazz;
+    private static final Integer tamanhoPadraoPagina = 10;
 
     public TransacaoService(TransacaoRepository transacaoRepository, Class<T> clazz){
         this.repository = transacaoRepository;
@@ -116,12 +117,12 @@ public class TransacaoService<T extends Transacao> {
         LocalDate dataInicio = LocalDate.of(ano,1,1);
         LocalDate dataFim = LocalDate.of(ano,12,31);
 
-        return (List<T>) buscaPorRangeDeDatas(dataInicio,dataFim, tipoTransacao, -1).getTransacoes();
+        return (List<T>) buscaPorRangeDeDatas(dataInicio,dataFim, tipoTransacao, -1,0).getTransacoes();
 
     }
 
-    public <T extends Transacao> ListaTransacao<T> buscarPorPeriodo(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer pagina) {
-       return buscaPorRangeDeDatas(dataInicio,dataFim, tipoTransacao, pagina);
+    public <T extends Transacao> ListaTransacao<T> buscarPorPeriodo(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer pagina, Integer tamanhoDaPagina) {
+       return buscaPorRangeDeDatas(dataInicio,dataFim, tipoTransacao, pagina, tamanhoDaPagina);
     }
 
 
@@ -138,16 +139,21 @@ public class TransacaoService<T extends Transacao> {
         return list;
     }
 
-    private <T extends Transacao> ListaTransacao<T> buscaPorRangeDeDatas(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer paginaInformada){
+    private <T extends Transacao> ListaTransacao<T> buscaPorRangeDeDatas(LocalDate dataInicio,
+                                                                         LocalDate dataFim,
+                                                                         TipoTransacao tipoTransacao,
+                                                                         Integer paginaInformada,
+                                                                         Integer tamanhoPaginaInformado){
 
 
         ListaTransacao<T> lista = new ListaTransacao<>();
         Pageable page;
+        Integer tamanhoDaPagina = tamanhoPaginaInformado>0?tamanhoPaginaInformado:tamanhoPadraoPagina;
 
 
         try{
             if(paginaInformada>0) {
-                page = PageRequest.of(paginaInformada-1, 10, Sort.by("id"));
+                page = PageRequest.of(paginaInformada-1, tamanhoDaPagina, Sort.by("id"));
                 final var despesaPage = repository.findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaDesc(dataInicio, dataFim, tipoTransacao.getDescricao(), page);
                 if(despesaPage.hasContent()) {
                     lista.setTransacoes(toList(despesaPage.toList()));

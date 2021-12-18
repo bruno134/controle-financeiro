@@ -60,15 +60,16 @@ public class DespesaController {
     @GetMapping("/consultar")
     public ResponseEntity buscaDespesaPorMes(@RequestParam(value = "mes", required = false, defaultValue = "0") String mes,
                                              @RequestParam(value = "ano", required = false, defaultValue = "0") String ano,
-                                             @RequestParam(value = "pagina", required = false, defaultValue = "0") String pagina) {
+                                             @RequestParam(value = "pagina", required = false, defaultValue = "0") String pagina,
+                                             @RequestParam(value = "tamanhoPagina", required = false, defaultValue = "0") String tamanhoPagina) {
 
         try {
             ListaTransacao<Despesa> despesas;
-            final var dadosConsultaDespesaDTO = new DadosConsultaDespesaDTO(ano, mes, null);
+            final var dadosConsultaDespesaDTO = new DadosConsultaDespesaDTO(ano, mes, pagina, tamanhoPagina);
             final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
 
             if (validate.isValid()) {
-                despesas = service.buscarPorPeriodo(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina));
+                despesas = service.buscarPorPeriodo(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina), Integer.parseInt(tamanhoPagina));
                 if(!despesas.getTransacoes().isEmpty())
                     return ResponseEntity.ok().body(new ListaDespesaDTO(despesas));
                 else
