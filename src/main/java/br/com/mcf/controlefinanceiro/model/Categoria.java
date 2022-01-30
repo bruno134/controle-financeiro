@@ -9,40 +9,27 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Categoria {
+public class Categoria extends BaseDominio{
 
-    private Long id;
-    private String nome;
-    private LocalDate dataCriacao;
-    private boolean isAtivo;
+
     private TipoTransacao tipoTransacao;
 
     public Categoria(String nome) {
-        this.nome = nome;
-        this.dataCriacao = LocalDate.now();
-        this.isAtivo = true;
+       super(nome);
     }
 
     public Categoria(String nome, TipoTransacao tipoTransacao) {
-        this.nome = nome;
-        this.tipoTransacao = tipoTransacao;
-        this.dataCriacao = LocalDate.now();
-        this.isAtivo = true;
+      super(nome);
+      this.tipoTransacao = tipoTransacao;
     }
 
     public Categoria(Long id, String nome, LocalDate dataCriacao, String tipoTransacao) {
-        this.id = id;
-        this.nome = nome;
-        this.dataCriacao = dataCriacao;
-        this.isAtivo = true;
+        super(id,nome,dataCriacao);
         this.tipoTransacao = TipoTransacao.get(tipoTransacao);
     }
 
     public Categoria(Long id, String nome, LocalDate dataCriacao, TipoTransacao tipoTransacao) {
-        this.id = id;
-        this.nome = nome;
-        this.dataCriacao = dataCriacao;
-        this.isAtivo = true;
+        super(id,nome,dataCriacao);
         this.tipoTransacao = tipoTransacao;
     }
 }
