@@ -206,9 +206,7 @@ public class RateioPessoaService {
                 RateioPessoa rateioPessoa = new RateioPessoa(mes, ano, 0.5, 0D,tipoRateio.getNome());
                 try {
                     inserir(rateioPessoa);
-                } catch (RateioPessoaBusinessException e) {
-                    e.printStackTrace();
-                } catch (RateioPessoaNaoEncontradaException e) {
+                } catch (RateioPessoaBusinessException | RateioPessoaNaoEncontradaException e) {
                     e.printStackTrace();
                 }
             }
