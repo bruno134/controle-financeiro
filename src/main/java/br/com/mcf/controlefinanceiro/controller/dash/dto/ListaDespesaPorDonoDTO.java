@@ -1,6 +1,6 @@
 package br.com.mcf.controlefinanceiro.controller.dash.dto;
 
-import br.com.mcf.controlefinanceiro.model.DespesaPessoaConsolidada;
+import br.com.mcf.controlefinanceiro.model.transacao.DespesaPessoaConsolidada;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

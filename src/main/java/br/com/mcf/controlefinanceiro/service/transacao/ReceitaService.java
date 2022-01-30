@@ -1,13 +1,13 @@
 package br.com.mcf.controlefinanceiro.service.transacao;
 
 
-import br.com.mcf.controlefinanceiro.exceptions.ReceitaNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.model.Despesa;
-import br.com.mcf.controlefinanceiro.model.ListaTransacao;
-import br.com.mcf.controlefinanceiro.model.Receita;
-import br.com.mcf.controlefinanceiro.model.TipoTransacao;
-import br.com.mcf.controlefinanceiro.repository.TransacaoRepository;
+import br.com.mcf.controlefinanceiro.model.exceptions.ReceitaNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.exceptions.TransacaoNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.transacao.Despesa;
+import br.com.mcf.controlefinanceiro.model.transacao.PaginaTransacao;
+import br.com.mcf.controlefinanceiro.model.transacao.Receita;
+import br.com.mcf.controlefinanceiro.model.dominio.TipoTransacao;
+import br.com.mcf.controlefinanceiro.model.repository.TransacaoRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,8 +83,8 @@ public class ReceitaService{
         return service.buscarTodasPor(ano,TipoTransacao.RECEITA);
     }
 
-    public ListaTransacao<Receita> buscarPorPeriodo(int mes, int ano, int pagina, Integer tamanhoPagina){
-        ListaTransacao<Receita> receitaList = new ListaTransacao<>();
+    public PaginaTransacao buscarPorPeriodo(int mes, int ano, int pagina, Integer tamanhoPagina){
+        PaginaTransacao receitaList = new PaginaTransacao();
 
         try {
             /**

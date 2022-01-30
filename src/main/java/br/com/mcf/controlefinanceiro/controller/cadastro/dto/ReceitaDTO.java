@@ -1,17 +1,12 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
-import br.com.mcf.controlefinanceiro.model.Receita;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import br.com.mcf.controlefinanceiro.model.transacao.Receita;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.List;
-
-import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 
 @Getter
 @Setter

@@ -1,6 +1,6 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
-import br.com.mcf.controlefinanceiro.model.RateioPessoa;
+import br.com.mcf.controlefinanceiro.model.rateio.RateioPessoa;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

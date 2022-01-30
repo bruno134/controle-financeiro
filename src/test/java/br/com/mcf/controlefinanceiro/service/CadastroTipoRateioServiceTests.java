@@ -1,6 +1,7 @@
 package br.com.mcf.controlefinanceiro.service;
 
-import br.com.mcf.controlefinanceiro.model.TipoRateio;
+import br.com.mcf.controlefinanceiro.model.dominio.TipoRateio;
+import br.com.mcf.controlefinanceiro.service.dominio.CadastroTipoRateioService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
