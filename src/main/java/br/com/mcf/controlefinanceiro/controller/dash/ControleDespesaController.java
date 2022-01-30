@@ -5,8 +5,8 @@ import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespe
 import br.com.mcf.controlefinanceiro.controller.dash.dto.DashDTO;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.DespesaMesDTO;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.ListaDespesaPorDonoDTO;
-import br.com.mcf.controlefinanceiro.service.ControleDespesaService;
-import br.com.mcf.controlefinanceiro.service.RateioPessoaService;
+import br.com.mcf.controlefinanceiro.service.transacao.ControleDespesaService;
+import br.com.mcf.controlefinanceiro.service.rateio.RateioPessoaService;
 import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
 import br.com.mcf.controlefinanceiro.util.ConstantMonths;
 import org.springframework.http.ResponseEntity;
@@ -45,24 +45,24 @@ public class ControleDespesaController {
                                             @RequestParam(value = "pagina", required = false, defaultValue = "0") String pagina) {
 
 
-        try {
-
-            final var dadosConsultaDespesaDTO = new DadosConsultaDespesaDTO(ano, mes);
-            final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
-
-            if(validate.isValid()) {
-                var despesas = despesaService.buscarPorPeriodo(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina),0);
-                final var valoresConsolidados = controleDespesaService.retornaDadosDespesaDash(despesas.getTransacoes());
-                final var despesaConsolidadaDTO = new DashDTO();
-                despesaConsolidadaDTO.setItensPorCategoria(valoresConsolidados.get(0));
-                despesaConsolidadaDTO.setItensPorInstrumentos(valoresConsolidados.get(2));
-                return ResponseEntity.ok().body(despesaConsolidadaDTO);
-            }else{
-                return ResponseEntity.badRequest().body(validate.getErrors());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try {
+//
+//            final var dadosConsultaDespesaDTO = new DadosConsultaDespesaDTO(ano, mes);
+//            final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
+//
+//            if(validate.isValid()) {
+//                var despesas = despesaService.buscaPorMesAnoPaginado(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina),0);
+//                final var valoresConsolidados = controleDespesaService.retornaDadosDespesaDash(despesas.getTransacoes());
+//                final var despesaConsolidadaDTO = new DashDTO();
+//                despesaConsolidadaDTO.setItensPorCategoria(valoresConsolidados.get(0));
+//                despesaConsolidadaDTO.setItensPorInstrumentos(valoresConsolidados.get(2));
+//                return ResponseEntity.ok().body(despesaConsolidadaDTO);
+//            }else{
+//                return ResponseEntity.badRequest().body(validate.getErrors());
+//            }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
         return ResponseEntity.internalServerError().build();
 
     }
@@ -84,22 +84,22 @@ public class ControleDespesaController {
         return  ResponseEntity.ok(dto);
     }
 
-    @GetMapping("totalconsolidadodespesa")
-    public ResponseEntity consultaDespesaConsolidadaPorMes(@RequestParam Integer ano){
-
-        final List<DespesaMesDTO> despesas = new ArrayList<>();
-        final var despesaList = despesaService.buscarTodasPor(ano);
-        final var totalDespesaAno = controleDespesaService.retornaTotalDespesaAno(despesaList);
-
-        totalDespesaAno.forEach(item -> despesas.add(
-                                                      new DespesaMesDTO(
-                                                                        ConstantMonths.months.get(item.getKey()),
-                                                                        String.valueOf(item.getValue())
-                                                                        )
-                                                    )
-                                );
-
-        return ResponseEntity.ok(despesas);
-    }
+//    @GetMapping("totalconsolidadodespesa")
+//    public ResponseEntity consultaDespesaConsolidadaPorMes(@RequestParam Integer ano){
+//
+//        final List<DespesaMesDTO> despesas = new ArrayList<>();
+//        final var despesaList = despesaService.buscarPorAno(ano);
+//        final var totalDespesaAno = controleDespesaService.retornaTotalDespesaAno(despesaList);
+//
+//        totalDespesaAno.forEach(item -> despesas.add(
+//                                                      new DespesaMesDTO(
+//                                                                        ConstantMonths.months.get(item.getKey()),
+//                                                                        String.valueOf(item.getValue())
+//                                                                        )
+//                                                    )
+//                                );
+//
+//        return ResponseEntity.ok(despesas);
+//    }
 
 }

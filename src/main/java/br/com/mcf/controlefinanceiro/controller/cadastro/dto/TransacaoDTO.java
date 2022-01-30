@@ -1,7 +1,6 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
-import br.com.mcf.controlefinanceiro.model.Transacao;
-import br.com.mcf.controlefinanceiro.util.ConstantFormat;
+import br.com.mcf.controlefinanceiro.model.transacao.Transacao;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

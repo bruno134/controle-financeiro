@@ -1,13 +1,10 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
-import br.com.mcf.controlefinanceiro.model.BaseDominio;
+import br.com.mcf.controlefinanceiro.model.dominio.BaseDominio;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 

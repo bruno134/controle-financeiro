@@ -1,11 +1,11 @@
 package br.com.mcf.controlefinanceiro.service.transacao;
 
-import br.com.mcf.controlefinanceiro.entity.TransacaoEntity;
-import br.com.mcf.controlefinanceiro.exceptions.TransacaoNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.model.ListaTransacao;
-import br.com.mcf.controlefinanceiro.model.TipoTransacao;
-import br.com.mcf.controlefinanceiro.model.Transacao;
-import br.com.mcf.controlefinanceiro.repository.TransacaoRepository;
+import br.com.mcf.controlefinanceiro.model.entity.TransacaoEntity;
+import br.com.mcf.controlefinanceiro.model.exceptions.TransacaoNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.transacao.PaginaTransacao;
+import br.com.mcf.controlefinanceiro.model.dominio.TipoTransacao;
+import br.com.mcf.controlefinanceiro.model.transacao.Transacao;
+import br.com.mcf.controlefinanceiro.model.repository.TransacaoRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
@@ -121,7 +121,7 @@ public class TransacaoService<T extends Transacao> {
 
     }
 
-    public <T extends Transacao> ListaTransacao<T> buscarPorPeriodo(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer pagina, Integer tamanhoDaPagina) {
+    public PaginaTransacao buscarPorPeriodo(LocalDate dataInicio, LocalDate dataFim, TipoTransacao tipoTransacao, Integer pagina, Integer tamanhoDaPagina) {
        return buscaPorRangeDeDatas(dataInicio,dataFim, tipoTransacao, pagina, tamanhoDaPagina);
     }
 
@@ -139,14 +139,14 @@ public class TransacaoService<T extends Transacao> {
         return list;
     }
 
-    private <T extends Transacao> ListaTransacao<T> buscaPorRangeDeDatas(LocalDate dataInicio,
-                                                                         LocalDate dataFim,
-                                                                         TipoTransacao tipoTransacao,
-                                                                         Integer paginaInformada,
-                                                                         Integer tamanhoPaginaInformado){
+    private PaginaTransacao buscaPorRangeDeDatas(LocalDate dataInicio,
+                                                                          LocalDate dataFim,
+                                                                          TipoTransacao tipoTransacao,
+                                                                          Integer paginaInformada,
+                                                                          Integer tamanhoPaginaInformado){
 
 
-        ListaTransacao<T> lista = new ListaTransacao<>();
+        PaginaTransacao lista = new PaginaTransacao();
         Pageable page;
         Integer tamanhoDaPagina = tamanhoPaginaInformado>0?tamanhoPaginaInformado:tamanhoPadraoPagina;
 

@@ -1,9 +1,9 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro;
 
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.InstrumentoDTO;
-import br.com.mcf.controlefinanceiro.exceptions.InstrumentoNaoEncontradoException;
-import br.com.mcf.controlefinanceiro.model.Instrumento;
-import br.com.mcf.controlefinanceiro.service.CadastroInstrumentoService;
+import br.com.mcf.controlefinanceiro.model.exceptions.InstrumentoNaoEncontradoException;
+import br.com.mcf.controlefinanceiro.model.dominio.Instrumento;
+import br.com.mcf.controlefinanceiro.service.dominio.CadastroInstrumentoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

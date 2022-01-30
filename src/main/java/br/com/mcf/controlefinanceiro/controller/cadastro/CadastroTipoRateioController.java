@@ -1,9 +1,9 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro;
 
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.TipoRateioDTO;
-import br.com.mcf.controlefinanceiro.exceptions.TipoRateioNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.model.TipoRateio;
-import br.com.mcf.controlefinanceiro.service.CadastroTipoRateioService;
+import br.com.mcf.controlefinanceiro.model.exceptions.TipoRateioNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.dominio.TipoRateio;
+import br.com.mcf.controlefinanceiro.service.dominio.CadastroTipoRateioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
