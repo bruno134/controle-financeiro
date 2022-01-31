@@ -3,6 +3,7 @@ package br.com.mcf.controlefinanceiro.service.transacao;
 import br.com.fluentvalidator.context.Error;
 import br.com.mcf.controlefinanceiro.model.exceptions.TransactionBusinessException;
 import br.com.mcf.controlefinanceiro.model.transacao.Despesa;
+import br.com.mcf.controlefinanceiro.model.transacao.Transacao;
 import br.com.mcf.controlefinanceiro.util.ConstantFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -23,8 +24,8 @@ public class ImportArquivoService {
     public static final String COMPARTILHADA = "COMPARTILHADA";
 
 
-    public List<Despesa> importaDespesaDoExcel(InputStream inputFile, String tipo
-                         ,Integer mes, Integer ano) throws IOException, TransactionBusinessException {
+    public List<Transacao> importaDespesaDoExcel(InputStream inputFile, String tipo
+                         , Integer mes, Integer ano) throws IOException, TransactionBusinessException {
 
 
         if(mes>12)
@@ -39,7 +40,7 @@ public class ImportArquivoService {
         int i=0;
         boolean grava = false;
 
-        List<Despesa> listaDespesa = new ArrayList<>();
+        List<Transacao> listaDespesa = new ArrayList<>();
 
         for(Row row: sheet){
             List<String> linha = new ArrayList<>();

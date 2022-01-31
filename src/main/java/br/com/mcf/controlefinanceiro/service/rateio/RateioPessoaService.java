@@ -143,44 +143,44 @@ public class RateioPessoaService {
         final Map<String, DespesaPessoaConsolidada> despesasAPagar = new HashMap<>();
 
 
-//        var sumarizadoPorTipoRateio = dash.retornaTotalDespesaPorTipoRateio(
-//                despesaService.buscaPorMesAnoPaginado(mes, ano, -1,0).getTransacoes()
-//        );
-//
-//        if (!sumarizadoPorTipoRateio.isEmpty()) {
-//
-//            //TODO da pra fazer melhor? Sem repetir o try catch?
-//            final Double valorCompatilhado;
-//            Double compartilhada;
-//
-//            if (sumarizadoPorTipoRateio.containsKey(statusCompartilhada)) {
-//                valorCompatilhado = sumarizadoPorTipoRateio.get(statusCompartilhada).getSum();
-//            } else {
-//                valorCompatilhado = 0d;
-//            }
-//
-//            var valoresRateioPorPessoa = consultarListaRateio(rateioPessoa);
-//
-//            if (valoresRateioPorPessoa.isEmpty()) {
-//                cadastraRateioPadrao(mes, ano);
-//                valoresRateioPorPessoa = consultarListaRateio(rateioPessoa);
-//            }
-//
-//
-//            valoresRateioPorPessoa.forEach(rp -> {
-//                Double valorSoma;
-//                try {
-//                    valorSoma = sumarizadoPorTipoRateio.get(rp.getPessoaRateio().toUpperCase()).getSum();
-//                } catch (NullPointerException e) {
-//                    valorSoma = 0d;
-//                }
-//                final var valorTotal = (valorCompatilhado * rp.getValorRateio()) + valorSoma;
-//                final var valorCompartilhado = (valorCompatilhado * rp.getValorRateio());
-//                final var valorTotalIndividual = valorSoma;
-//
-//                despesasAPagar.put(rp.getPessoaRateio().toUpperCase(), new DespesaPessoaConsolidada(valorTotal, valorTotalIndividual, valorCompartilhado, rp.getValorRateio(),rp.getValorSalario()));
-//            });
-//        }
+        var sumarizadoPorTipoRateio = dash.retornaTotalDespesaPorTipoRateio(
+                despesaService.buscaPorMesAnoPaginado(mes, ano, -1,0).getTransacoes()
+        );
+
+        if (!sumarizadoPorTipoRateio.isEmpty()) {
+
+            //TODO da pra fazer melhor? Sem repetir o try catch?
+            final Double valorCompatilhado;
+            Double compartilhada;
+
+            if (sumarizadoPorTipoRateio.containsKey(statusCompartilhada)) {
+                valorCompatilhado = sumarizadoPorTipoRateio.get(statusCompartilhada).getSum();
+            } else {
+                valorCompatilhado = 0d;
+            }
+
+            var valoresRateioPorPessoa = consultarListaRateio(rateioPessoa);
+
+            if (valoresRateioPorPessoa.isEmpty()) {
+                cadastraRateioPadrao(mes, ano);
+                valoresRateioPorPessoa = consultarListaRateio(rateioPessoa);
+            }
+
+
+            valoresRateioPorPessoa.forEach(rp -> {
+                Double valorSoma;
+                try {
+                    valorSoma = sumarizadoPorTipoRateio.get(rp.getPessoaRateio().toUpperCase()).getSum();
+                } catch (NullPointerException e) {
+                    valorSoma = 0d;
+                }
+                final var valorTotal = (valorCompatilhado * rp.getValorRateio()) + valorSoma;
+                final var valorCompartilhado = (valorCompatilhado * rp.getValorRateio());
+                final var valorTotalIndividual = valorSoma;
+
+                despesasAPagar.put(rp.getPessoaRateio().toUpperCase(), new DespesaPessoaConsolidada(valorTotal, valorTotalIndividual, valorCompartilhado, rp.getValorRateio(),rp.getValorSalario()));
+            });
+        }
         return despesasAPagar;
     }
 
