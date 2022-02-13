@@ -4,21 +4,25 @@ import br.com.mcf.controlefinanceiro.model.dominio.TipoTransacao;
 import br.com.mcf.controlefinanceiro.model.entity.TransacaoEntity;
 import br.com.mcf.controlefinanceiro.model.exceptions.TransacaoNaoEncontradaException;
 import br.com.mcf.controlefinanceiro.model.repository.TransacaoRepository;
+import br.com.mcf.controlefinanceiro.model.repository.specification.QueryOperator;
+import br.com.mcf.controlefinanceiro.model.repository.specification.SearchCriteria;
+import br.com.mcf.controlefinanceiro.model.repository.specification.TransacaoSpecification;
 import br.com.mcf.controlefinanceiro.model.transacao.Despesa;
 import br.com.mcf.controlefinanceiro.model.transacao.PaginaTransacao;
 import br.com.mcf.controlefinanceiro.model.transacao.Transacao;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DespesaService implements TransacaoImplementator{
@@ -177,85 +181,38 @@ public class DespesaService implements TransacaoImplementator{
         return listaDespesaIncluida;
     }
 
-//
-//    @Transactional
-//    public Despesa inserir(Despesa despesa){
-//
-//        Despesa despesaInserida = null;
-//
-//       try {
-//           despesaInserida = service.inserir(despesa);
-//       }catch (NoSuchMethodException | InvocationTargetException |
-//               InstantiationException | IllegalAccessException e){
-//           e.printStackTrace();
-//       }
-//
-//        return despesaInserida;
-//    }
-//
-//    @Transactional
-//    public Optional<Despesa> alterar(Despesa despesa) throws DespesaNaoEncontradaException {
-//        try {
-//            return service.alterar(despesa);
-//        } catch (TransacaoNaoEncontradaException e) {
-//            e.printStackTrace();
-//            throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
-//        }
-//    }
-//
-//    @Transactional
-//    public void apagar(Despesa despesa) throws DespesaNaoEncontradaException {
-//        try{
-//            service.apagar(despesa);
-//        }catch (TransacaoNaoEncontradaException e){
-//            throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public Optional<Despesa> buscarPorID(Long id) throws DespesaNaoEncontradaException {
-//        try {
-//            return service.buscarPorID(id);
-//        }catch (TransacaoNaoEncontradaException e){
-//            throw new DespesaNaoEncontradaException(ConstantMessages.DESPESA_NAO_ENCONTRADA);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        return  Optional.empty();
-//    }
-//
-//    public List<Despesa> buscarTodas(){
-//        return service.buscarTodas(TipoTransacao.DESPESA);
-//    }
-//
-//    public List<Despesa> buscarTodasPor(Integer ano){
-//                return service.buscarTodasPor(ano,TipoTransacao.DESPESA);
-//    }
-//
-//    public List<Despesa> inserirEmLista(List<Despesa> despesaList){
-//
-//        List<Despesa> listaDespesaIncluida = new ArrayList<>();
-//
-//        if(despesaList!=null)
-//            despesaList.forEach(d -> listaDespesaIncluida.add(inserir(d)));
-//
-//        return listaDespesaIncluida;
-//    }
-//
-//    public ListaTransacao<Despesa> buscarPorPeriodo(int mes, int ano, int pagina, Integer tamanhoPagina){
-//
-//        /**
-//         *  O dia inicial do mês é definido dentro da propriedade 'controle-financeiro.inicio-mes.dia' no application.properties
-//         *  Não defina a propriedade 'controle-financeiro.inicio-mes.dia', caso não deseje customizar o  periodo de competencia do mes.
-//         */
-//
-//        final LocalDate dataInicial = periodoMes.getDataInicioMes(mes,ano);
-//        final LocalDate dataFinal = periodoMes.getDataFimMes(mes,ano);
-//
-//        return service.buscarPorPeriodo(dataInicial,dataFinal, TipoTransacao.DESPESA,pagina, tamanhoPagina);
-//    }
+    public PaginaTransacao buscarDespesaPorParametros(List<SearchCriteria> criterios, Integer pagina, Integer tamanhoPagina){
 
+        PaginaTransacao paginaRetorno = new PaginaTransacao();
+        Integer tamanhoDaPagina = tamanhoPagina>0?tamanhoPagina:tamanhoPadraoPagina;
+        Pageable page = PageRequest.of(pagina-1, tamanhoDaPagina, Sort.by("id"));
+        criterios.add(new SearchCriteria("tipoTransacao", QueryOperator.EQUAL, TipoTransacao.DESPESA.getDescricao()));
+        Specification<TransacaoEntity> finalSpecification = getTransacaoEntitySpecification(criterios);
 
+        final var result = repository.findAll(finalSpecification, page);
+
+        if(result.hasContent()){
+            paginaRetorno.setTransacoes(toList(result.toList()));
+            paginaRetorno.setPaginaAnterior(result.hasPrevious() ? pagina - 1 : null);
+            paginaRetorno.setProximaPagina(result.hasNext() ? pagina + 1 : null);
+            paginaRetorno.setTotalPaginas(result.getTotalPages());
+        }
+
+        return paginaRetorno;
+
+    }
+
+    private Specification<TransacaoEntity> getTransacaoEntitySpecification(List<SearchCriteria> criterios) {
+
+        if (criterios.size()<=0) return null;
+
+        Specification<TransacaoEntity> finalSpecification = Specification.where(new TransacaoSpecification(criterios.get(0)));
+        criterios.remove(0);
+
+        for (var sc: criterios) {
+            finalSpecification = finalSpecification.and(new TransacaoSpecification(sc));
+        }
+        return finalSpecification;
+    }
 
 }
