@@ -5,8 +5,8 @@ import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespe
 import br.com.mcf.controlefinanceiro.controller.dash.dto.DashDTO;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.DespesaMesDTO;
 import br.com.mcf.controlefinanceiro.controller.dash.dto.ListaDespesaPorDonoDTO;
-import br.com.mcf.controlefinanceiro.service.ControleDespesaService;
-import br.com.mcf.controlefinanceiro.service.RateioPessoaService;
+import br.com.mcf.controlefinanceiro.service.transacao.ControleDespesaService;
+import br.com.mcf.controlefinanceiro.service.rateio.RateioPessoaService;
 import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
 import br.com.mcf.controlefinanceiro.util.ConstantMonths;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +51,7 @@ public class ControleDespesaController {
             final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
 
             if(validate.isValid()) {
-                var despesas = despesaService.buscarPorPeriodo(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina),0);
+                var despesas = despesaService.buscaPorMesAnoPaginado(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina),0);
                 final var valoresConsolidados = controleDespesaService.retornaDadosDespesaDash(despesas.getTransacoes());
                 final var despesaConsolidadaDTO = new DashDTO();
                 despesaConsolidadaDTO.setItensPorCategoria(valoresConsolidados.get(0));
@@ -88,7 +88,7 @@ public class ControleDespesaController {
     public ResponseEntity consultaDespesaConsolidadaPorMes(@RequestParam Integer ano){
 
         final List<DespesaMesDTO> despesas = new ArrayList<>();
-        final var despesaList = despesaService.buscarTodasPor(ano);
+        final var despesaList = despesaService.buscarPorAno(ano);
         final var totalDespesaAno = controleDespesaService.retornaTotalDespesaAno(despesaList);
 
         totalDespesaAno.forEach(item -> despesas.add(

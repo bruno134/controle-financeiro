@@ -6,19 +6,29 @@ import br.com.mcf.controlefinanceiro.controller.cadastro.dto.ListaDespesaDTO;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.ConsultaDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.cadastro.validator.InsereDespesaValidator;
 import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
-import br.com.mcf.controlefinanceiro.exceptions.DespesaNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.exceptions.TransactionBusinessException;
-import br.com.mcf.controlefinanceiro.model.Despesa;
-import br.com.mcf.controlefinanceiro.model.ListaTransacao;
-import br.com.mcf.controlefinanceiro.service.ImportArquivoService;
+import br.com.mcf.controlefinanceiro.model.exceptions.DespesaNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.exceptions.TransacaoNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.exceptions.TransactionBusinessException;
+import br.com.mcf.controlefinanceiro.model.repository.specification.QueryOperator;
+import br.com.mcf.controlefinanceiro.model.repository.specification.SearchCriteria;
+import br.com.mcf.controlefinanceiro.model.transacao.Despesa;
+import br.com.mcf.controlefinanceiro.model.transacao.PaginaTransacao;
+import br.com.mcf.controlefinanceiro.model.transacao.Transacao;
+import br.com.mcf.controlefinanceiro.service.transacao.ImportArquivoService;
 import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
+import br.com.mcf.controlefinanceiro.service.transacao.PeriodoMes;
+import org.apache.regexp.RE;
+import org.bouncycastle.pqc.crypto.newhope.NHSecretKeyProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -33,6 +43,8 @@ public class DespesaController {
     InsereDespesaValidator validator;
     @Autowired
     ConsultaDespesaValidator consultaValidator;
+    @Autowired
+    PeriodoMes periodoMes;
 
     public DespesaController(DespesaService service, ImportArquivoService arquivoService) {
         this.service = service;
@@ -40,15 +52,17 @@ public class DespesaController {
     }
 
     @GetMapping("/consultar/{id}")
-    public ResponseEntity buscaDespesa(@PathVariable Long id) {
+    public ResponseEntity buscaDespesa(@PathVariable Integer id) {
 
 
 
         try {
-            final Optional<Despesa> despesaEncontrada = service.buscarPorID(id);
-            return ResponseEntity.ok(new DespesaDTO(despesaEncontrada.get()));
-        }   catch (DespesaNaoEncontradaException e){
-            return ResponseEntity.notFound().build();
+            final Optional<Transacao> despesaEncontrada = service.buscarPorID(id);
+
+            if (despesaEncontrada.isPresent()){
+                return ResponseEntity.ok(new DespesaDTO((Despesa) despesaEncontrada.get()));
+            } else
+                return ResponseEntity.notFound().build();
         }
             catch (Exception e) {
             e.printStackTrace();
@@ -58,18 +72,32 @@ public class DespesaController {
     }
 
     @GetMapping("/consultar")
-    public ResponseEntity buscaDespesaPorMes(@RequestParam(value = "mes", required = false, defaultValue = "0") String mes,
-                                             @RequestParam(value = "ano", required = false, defaultValue = "0") String ano,
-                                             @RequestParam(value = "pagina", required = false, defaultValue = "0") String pagina,
-                                             @RequestParam(value = "tamanhoPagina", required = false, defaultValue = "0") String tamanhoPagina) {
+    public ResponseEntity buscaDespesaPorMes(@RequestParam Map<String,String> allParams) {
 
         try {
-            ListaTransacao<Despesa> despesas;
+
+            String ano = allParams.remove("ano");
+            String mes = allParams.remove("mes");
+            String pagina = allParams.remove("pagina");
+            String tamanhoPagina = allParams.remove("tamanhoPagina");
+
+
+            PaginaTransacao despesas;
             final var dadosConsultaDespesaDTO = new DadosConsultaDespesaDTO(ano, mes, pagina, tamanhoPagina);
             final var validate = consultaValidator.validate(dadosConsultaDespesaDTO);
 
             if (validate.isValid()) {
-                despesas = service.buscarPorPeriodo(Integer.parseInt(mes), Integer.parseInt(ano), Integer.parseInt(pagina), Integer.parseInt(tamanhoPagina));
+
+                final LocalDate dataInicial = periodoMes.getDataInicioMes(Integer.parseInt(mes),Integer.parseInt(ano));
+                final LocalDate dataFinal = periodoMes.getDataFimMes(Integer.parseInt(mes),Integer.parseInt(ano));
+
+                List<SearchCriteria> criterios = new ArrayList<>();
+                criterios.add(new SearchCriteria("dataCompetencia", QueryOperator.GREATER_OR_EQUAL_THAN,String.valueOf(dataInicial)));
+                criterios.add(new SearchCriteria("dataCompetencia", QueryOperator.LESS_OR_EQUAL_THAN,String.valueOf(dataFinal)));
+                allParams.forEach((k,v) -> criterios.add(new SearchCriteria(k,QueryOperator.EQUAL,v)));
+
+                despesas = service.buscarDespesaPorParametros(criterios,Integer.parseInt(pagina),Integer.parseInt(tamanhoPagina));
+
                 if(!despesas.getTransacoes().isEmpty())
                     return ResponseEntity.ok().body(new ListaDespesaDTO(despesas));
                 else
@@ -108,16 +136,15 @@ public class DespesaController {
         if (validate.isValid()) {
             try {
                 despesaDTO.setId(id);
-                final Optional<Despesa> despesaAlterada = service.alterar(despesaDTO.toObject());
+                final Optional<Transacao> despesaAlterada = service.alterar(despesaDTO.toObject());
 
                 if (despesaAlterada.isPresent()) {
-                    final DespesaDTO despesaRespostaDTO = new DespesaDTO(despesaAlterada.get());
+                    //TODO tirar o cast
+                    final DespesaDTO despesaRespostaDTO = new DespesaDTO((Despesa) despesaAlterada.get());
                     return ResponseEntity.ok(despesaRespostaDTO);
                 } else {
                     return ResponseEntity.notFound().build();
                 }
-            } catch (DespesaNaoEncontradaException e) {
-                return ResponseEntity.notFound().build();
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.internalServerError().build();
@@ -135,11 +162,14 @@ public class DespesaController {
             despesaParaApagar.setId(id);
             service.apagar(despesaParaApagar);
             return ResponseEntity.ok().build();
+        }catch (TransacaoNaoEncontradaException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.internalServerError().build();
     }
+//TODO arrumar o importar
 
     @PostMapping("/import")
     public ResponseEntity importaExcel (@RequestParam("file") MultipartFile dataFile,
@@ -158,7 +188,7 @@ public class DespesaController {
 
             return ResponseEntity.ok(dtoList);
 
-        }catch (Exception | TransactionBusinessException e){
+        }catch (Exception  | TransactionBusinessException e){
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -175,8 +205,7 @@ public class DespesaController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
-
-
-
     }
+
+
 }

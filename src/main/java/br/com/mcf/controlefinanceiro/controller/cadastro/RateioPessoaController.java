@@ -1,12 +1,11 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro;
 
-import br.com.fluentvalidator.context.Error;
 import br.com.mcf.controlefinanceiro.controller.cadastro.dto.RateioPessoaDTO;
 import br.com.mcf.controlefinanceiro.controller.dto.ErrorsDTO;
-import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaBusinessException;
-import br.com.mcf.controlefinanceiro.exceptions.RateioPessoaNaoEncontradaException;
-import br.com.mcf.controlefinanceiro.model.RateioPessoa;
-import br.com.mcf.controlefinanceiro.service.RateioPessoaService;
+import br.com.mcf.controlefinanceiro.model.exceptions.RateioPessoaBusinessException;
+import br.com.mcf.controlefinanceiro.model.exceptions.RateioPessoaNaoEncontradaException;
+import br.com.mcf.controlefinanceiro.model.rateio.RateioPessoa;
+import br.com.mcf.controlefinanceiro.service.rateio.RateioPessoaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

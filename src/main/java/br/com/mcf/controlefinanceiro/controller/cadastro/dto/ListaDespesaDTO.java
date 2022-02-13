@@ -1,7 +1,7 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
-import br.com.mcf.controlefinanceiro.model.Despesa;
-import br.com.mcf.controlefinanceiro.model.ListaTransacao;
+import br.com.mcf.controlefinanceiro.model.transacao.Despesa;
+import br.com.mcf.controlefinanceiro.model.transacao.PaginaTransacao;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -31,7 +31,7 @@ public class ListaDespesaDTO {
         this.despesas = new ArrayList<>();
     }
 
-    public ListaDespesaDTO(ListaTransacao<Despesa> despesas) {
+    public ListaDespesaDTO(PaginaTransacao despesas) {
         this.despesas = DespesaDTO.dtoList(despesas.getTransacoes());
         this.paginaAnterior = despesas.getPaginaAnterior();
         this.proximaPagina = despesas.getProximaPagina();

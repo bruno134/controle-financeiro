@@ -1,6 +1,6 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
-import br.com.mcf.controlefinanceiro.model.TipoRateio;
+import br.com.mcf.controlefinanceiro.model.dominio.TipoRateio;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

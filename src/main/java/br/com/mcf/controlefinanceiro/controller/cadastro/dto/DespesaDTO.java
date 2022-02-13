@@ -1,20 +1,13 @@
 package br.com.mcf.controlefinanceiro.controller.cadastro.dto;
 
-import br.com.mcf.controlefinanceiro.model.Despesa;
-import br.com.mcf.controlefinanceiro.model.Receita;
-import br.com.mcf.controlefinanceiro.model.TipoTransacao;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import br.com.mcf.controlefinanceiro.model.transacao.Despesa;
+import br.com.mcf.controlefinanceiro.model.transacao.Transacao;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-
-import static br.com.mcf.controlefinanceiro.util.ConstantFormat.format;
 
 @Getter
 @Setter
@@ -48,7 +41,7 @@ public class DespesaDTO extends TransacaoDTO{
         return super.toObject(Despesa.class);
     }
 
-    public static List<DespesaDTO> dtoList(List<Despesa> list){
+    public static List<DespesaDTO> dtoList(List<Transacao> list){
 
         return TransacaoDTO.listaDto(list,DespesaDTO.class);
     }
