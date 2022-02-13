@@ -1,244 +1,146 @@
-//package br.com.mcf.controlefinanceiro.service;
-//
-//import br.com.mcf.controlefinanceiro.config.PeriodoMesConfig;
-//import br.com.mcf.controlefinanceiro.model.exceptions.DespesaNaoEncontradaException;
-//import br.com.mcf.controlefinanceiro.model.exceptions.RateioPessoaBusinessException;
-//import br.com.mcf.controlefinanceiro.model.exceptions.RateioPessoaNaoEncontradaException;
-//import br.com.mcf.controlefinanceiro.model.transacao.Despesa;
-//import br.com.mcf.controlefinanceiro.model.rateio.RateioPessoa;
-//import br.com.mcf.controlefinanceiro.service.rateio.RateioPessoaService;
-//import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
-//import org.junit.jupiter.api.Test;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//
-//import java.time.LocalDate;
-//
-//@SpringBootTest
-//class CadastroDespesaServiceTests {
-//	private static final Logger LOG = LoggerFactory.getLogger(CadastroDespesaServiceTests.class);
-//	@Autowired
-//	private DespesaService service;
-//
-//	@Autowired
-//	private RateioPessoaService rateioService;
-//
-//	@Autowired
-//	private PeriodoMesConfig mesConfig;
-//
-//	@Test
-//	public void testa(){
-//
-////		var despesaList = service.buscarPorPeriodo(11,2021,-1);
-////		despesaList.getTransacoes().forEach(despesa -> System.out.println(despesa.toString()));
-//
-////		Integer page = 0;
-////		while (despesaList.size()>0) {
-////			despesaList.forEach(despesa -> System.out.println(despesa.toString()));
-////			System.out.println("------------------------");
-////			despesaList = service.buscarTodas(++page);
-////		}
-//	}
-//
-//	@Test
-//	public void testaCalculo(){
-//
-//		RateioPessoa r1 = new RateioPessoa(10,2021,0.7,0D,"BRUNO");
-//		RateioPessoa r2 = new RateioPessoa(10,2021,0.3,0D,"PRI");
-//
-//		Despesa d1 = new Despesa(1,LocalDate.now(),93d, "", "", "BRUNO", "",LocalDate.now());
-//		Despesa d2 = new Despesa(1,LocalDate.now(),150d, "", "", "COMPARTILHADA", "",LocalDate.now());
-//		Despesa d3 = new Despesa(1,LocalDate.now(),41d, "", "", "PRI", "",LocalDate.now());
-//		Despesa d4 = new Despesa(1,LocalDate.now(),160d, "", "", "COMPARTILHADA", "",LocalDate.now());
-//
-//		service.inserir(d1);
-//		service.inserir(d2);
-//		service.inserir(d3);
-//		service.inserir(d4);
-//
-//		try {
-//			rateioService.inserir(r1);
-//			rateioService.inserir(r2);
-//		} catch (RateioPessoaBusinessException | RateioPessoaNaoEncontradaException e) {
-//			e.printStackTrace();
-//		}
-//
-//		rateioService.calculaRateio(10,2021);
-//
-//	}
-//
-//	@Test
-//	public void testar() throws DespesaNaoEncontradaException {
-//
-//		Despesa despesa = new Despesa(1,LocalDate.now(),100d, "", "", "", "",LocalDate.now());
-//
-//		service.inserir(despesa);
-//
-//		service.buscarTodas().forEach(d -> System.out.println("Result ==> " + d.getValor()));
-//
-//
-//	}
-//
-////	@Test
-////	void cadastrarDespesaComSucessoPorParametro() {
-////
-////		service.apagarTodasDespesas();
-////		final LocalDate data = LocalDate.now();
-////		final Double valor = Double.valueOf(10d);
-////		final String descricao = "Compra na loja Americanas";
-////		final String categoria = "Compras";
-////		final String origem = "Cartão de Crédito";
-////		final String tipo = "Compartilhada";
-////
-////
-////			service.insere(data,
-////					valor,
-////					descricao,
-////					categoria,
-////					origem,
-////					tipo);
-////
-////		final List<Despesa> list = service.buscarTodasDespesas();
-////		assertEquals(1,list.size());
-////	}
-////
-////	@Test
-////	void cadastrarDespesaComSucessoPorObjeto() {
-////
-////		service.apagarTodasDespesas();
-////		final LocalDate data = LocalDate.now();
-////		final Double valor = Double.valueOf(10d);
-////		final String descricao = "Compra na loja Americanas";
-////		final String categoria = "Compras";
-////		final String origem = "Cartão de Crédito";
-////		final String tipo = "Compartilhada";
-////
-////		final Despesa despesa = new Despesa(1,
-////				data,
-////				valor,
-////				descricao,
-////				categoria,
-////				origem,
-////				tipo);
-////		service.apagarTodasDespesas();
-////
-////		service.insere(despesa);
-////
-////		final List<Despesa> list = service.buscarTodasDespesas();
-////		assertEquals(1,list.size());
-////
-////	}
-////
-////	@Test
-////	void deveApagarTodosElementosDaLista(){
-////		inicializaListDeDespesa();
-////		service.apagarTodasDespesas();
-////		final List<Despesa> list = service.buscarTodasDespesas();
-////		assertEquals(0,list.size());
-////	}
-////
-////	@Test
-////	void consultaDeveRetornarListaPreenchidaComCincoElementos(){
-////		inicializaListDeDespesa();
-////		final List<Despesa> despesas = service.buscarTodasDespesas();
-////		assertEquals(5,despesas.size());
-////	}
-////
-////	@Test
-////	void despesaPorIdDeveSerApagada(){
-////		try {
-////			inicializaListDeDespesa();
-////
-////			final List<Despesa> todasDespesas = service.buscarTodasDespesas();
-////			service.apagarDespesa(todasDespesas.get(0).getId());
-////			final Optional<Despesa> optionalDespesa = service.buscaDespesaPorID(todasDespesas.get(0).getId());
-////			assertTrue(optionalDespesa.isEmpty());
-////
-////		} catch (DespesaNaoEncontradaException e) {
-////			fail();
-////		}
-////	}
-////
-////	@Test
-////	void despesaNaoDeveSerApagadaQuandoNaoInformada(){
-////		try {
-////			inicializaListDeDespesa();
-////
-////			final List<Despesa> todasDespesas = service.buscarTodasDespesas();
-////			service.apagarDespesa(todasDespesas.get(0).getId());
-////			for (int i = 1; i < todasDespesas.size(); i++) {
-////				Optional<Despesa> optionalDespesa = service.buscaDespesaPorID(todasDespesas.get(1).getId());
-////				assertFalse(optionalDespesa.isEmpty());
-////			}
-////		} catch (DespesaNaoEncontradaException e) {
-////			fail();
-////		}
-////	}
-////
-////	@Test
-////	void despesaAlteradaComSucesso(){
-////		inicializaListDeDespesa();
-////
-////		final LocalDate data = LocalDate.now();
-////		final Double valor = Double.valueOf(4d);
-////		final String descricao = "Compra na Coop";
-////		final String categoria = "SuperMercado";
-////		final String tipoRateio = "Conta Corrente";
-////		final String instrumento = "Particular";
-////
-////		final Despesa despesa = new Despesa(1,
-////				data,
-////				valor,
-////				descricao,
-////				categoria,
-////				tipoRateio,
-////				instrumento);
-////
-////		try {
-////			Optional<Despesa> despesaAlterada = service.alterarDespesa(despesa);
-////			if(despesaAlterada.isPresent()) {
-////				assertEquals(Double.valueOf(4d), despesaAlterada.get().getValor());
-////				assertEquals("Compra na Coop", despesaAlterada.get().getDescricao());
-////				assertEquals("SuperMercado", despesaAlterada.get().getCategoria());
-////				assertEquals("Conta Corrente", despesaAlterada.get().getTipoRateio());
-////				assertEquals("Particular", despesaAlterada.get().getInstrumento());
-////			}else{
-////				Assertions.fail();
-////			}
-////		} catch (Exception e) {
-////			e.printStackTrace();
-////		}
-////
-////	}
-////
-////	@Test
-////	void buscaDespesaPorMes(){
-////		//TODO montar o teste
-////		inicializaListDeDespesa();
-////		final List<Despesa> despesas = service.buscaDespesaPorParametros(9, 2021);
-////
-////
-////		despesas.forEach(despesa -> System.out.println(despesa.getData()));
-////
-////	}
-////
-////	private void inicializaListDeDespesa(){
-////		service.apagarTodasDespesas();
-////		for (int i = 0; i < 5; i++) {
-////			Despesa despesa = new Despesa(i,
-//////										  LocalDate.now(),
-////					LocalDate.of(2021,7+i,11),
-////					 						Double.valueOf(i*12),
-////											"Descrição de Compra " + i,
-////											"Compras",
-////											"Cartão de Crédito",
-////											"Compartilhada");
-////
-////			service.insere(despesa);
-////		}
-////	}
-////
-////	//TODO Criar teste de Despesa nao encontrada
-//}
+package br.com.mcf.controlefinanceiro.service;
+
+import br.com.mcf.controlefinanceiro.model.dominio.TipoTransacao;
+import br.com.mcf.controlefinanceiro.model.repository.specification.QueryOperator;
+import br.com.mcf.controlefinanceiro.model.repository.specification.SearchCriteria;
+import br.com.mcf.controlefinanceiro.service.transacao.DespesaService;
+import org.hamcrest.collection.IsEmptyCollection;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@SpringBootTest
+class CadastroDespesaServiceTests {
+
+    @Autowired
+    private DespesaService despesaService;
+
+
+//        criterios.add(new SearchCriteria("data",QueryOperator.GREATER_OR_EQUAL_THAN,"2021-12-01"));
+//        criterios.add(new SearchCriteria("data",QueryOperator.LESS_OR_EQUAL_THAN,"2022-02-01"));
+//          criterios.add(new SearchCriteria("categoria",QueryOperator.EQUAL,"JOGOS"));
+//        criterios.add(new SearchCriteria("tipoRateio",QueryOperator.EQUAL, "BRUNO"));
+
+    @Test
+    public void buscaPorParametrosRetornaSomenteCategoriaJogos(){
+
+        List<SearchCriteria> criterios = new ArrayList<>();
+        criterios.add(new SearchCriteria("categoria", QueryOperator.EQUAL,"JOGOS"));
+
+        final var busca = despesaService.buscarDespesaPorParametros
+                (criterios, 1, 50);
+
+        final var transacaoList = busca.getTransacoes();
+        assertThat(transacaoList, not(IsEmptyCollection.empty()));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("categoria", is("JOGOS"))));
+    }
+
+    @Test
+    public void buscaPorParametrosRetornaSomenteRateioCompartilhada(){
+
+        List<SearchCriteria> criterios = new ArrayList<>();
+
+        criterios.add(new SearchCriteria("tipoRateio",QueryOperator.EQUAL, "COMPARTILHADA"));
+
+        final var busca = despesaService.buscarDespesaPorParametros
+                (criterios, 1, 50);
+
+        final var transacaoList = busca.getTransacoes();
+        assertThat(transacaoList, not(IsEmptyCollection.empty()));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("tipoRateio", is("COMPARTILHADA"))));
+
+    }
+
+    @Test
+    public void buscaPorParametrosRetornaSomenteInstrumentoDebito(){
+
+        List<SearchCriteria> criterios = new ArrayList<>();
+        criterios.add(new SearchCriteria("instrumento",QueryOperator.EQUAL,"DEBITO"));
+
+        final var busca = despesaService.buscarDespesaPorParametros
+                (criterios, 1, 50);
+
+        final var transacaoList = busca.getTransacoes();
+        assertThat(transacaoList, not(IsEmptyCollection.empty()));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("instrumento", is("DEBITO"))));
+    }
+
+    @Test
+    public void buscaSemParametrosTrazDespesas(){
+        List<SearchCriteria> criterios = new ArrayList<>();
+        final var busca = despesaService.buscarDespesaPorParametros
+                (criterios, 1, 50);
+
+        final var transacaoList = busca.getTransacoes();
+        assertThat(transacaoList, not(IsEmptyCollection.empty()));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("tipoTransacao", is(TipoTransacao.DESPESA))));
+
+    }
+
+
+    @Test
+    public void buscaComParametrosdeData(){
+        List<SearchCriteria> criterios = new ArrayList<>();
+        criterios.add(new SearchCriteria("data",QueryOperator.GREATER_OR_EQUAL_THAN,"2021-12-19"));
+        criterios.add(new SearchCriteria("data",QueryOperator.LESS_OR_EQUAL_THAN,"2021-12-19"));
+
+        final var busca = despesaService.buscarDespesaPorParametros
+                (criterios, 1, 50);
+
+        final var transacaoList = busca.getTransacoes();
+
+        assertEquals(4,transacaoList.size());
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("data",is(LocalDate.of(2021,12,19)))));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("data",not(is(LocalDate.of(2021,12,22))))));
+       transacaoList.forEach(System.out::println);
+
+    }
+
+    @Test
+    public void buscaComParametrosdeDataMaiorQueDezembro(){
+        List<SearchCriteria> criterios = new ArrayList<>();
+        criterios.add(new SearchCriteria("data",QueryOperator.GREATER_OR_EQUAL_THAN,"2021-12-01"));
+
+
+        final var busca = despesaService.buscarDespesaPorParametros
+                (criterios, 1, 50);
+
+        final var transacaoList = busca.getTransacoes();
+        assertThat(transacaoList, not(IsEmptyCollection.empty()));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("data",greaterThanOrEqualTo(LocalDate.of(2021,12,1)))));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("data",not(lessThan(LocalDate.of(2021,12,1))))));
+    }
+
+    @Test
+    public void buscaComVariosParametros(){
+        List<SearchCriteria> criterios = new ArrayList<>();
+        criterios.add(new SearchCriteria("data",QueryOperator.GREATER_OR_EQUAL_THAN,"2021-12-01"));
+        criterios.add(new SearchCriteria("data",QueryOperator.LESS_OR_EQUAL_THAN,"2022-02-01"));
+        criterios.add(new SearchCriteria("categoria",QueryOperator.EQUAL,"JOGOS"));
+        criterios.add(new SearchCriteria("instrumento",QueryOperator.EQUAL, "CARTAO CREDITO"));
+        criterios.add(new SearchCriteria("tipoRateio",QueryOperator.EQUAL, "COMPARTILHADA"));
+
+
+        final var busca = despesaService.buscarDespesaPorParametros
+                (criterios, 1, 50);
+
+        final var transacaoList = busca.getTransacoes();
+
+        assertThat(transacaoList, not(IsEmptyCollection.empty()));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("data",greaterThanOrEqualTo(LocalDate.of(2021,12,1)))));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("data",not(lessThan(LocalDate.of(2021,12,1))))));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("categoria", is("JOGOS"))));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("instrumento", is("CARTAO CREDITO"))));
+        assertThat(transacaoList,containsInRelativeOrder(hasProperty("tipoRateio", is("COMPARTILHADA"))));
+    }
+}
