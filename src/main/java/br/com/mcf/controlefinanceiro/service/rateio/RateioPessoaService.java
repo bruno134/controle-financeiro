@@ -144,14 +144,13 @@ public class RateioPessoaService {
 
 
         var sumarizadoPorTipoRateio = dash.retornaTotalDespesaPorTipoRateio(
-                despesaService.buscaPorMesAnoPaginado(mes, ano, -1,0).getTransacoes()
+                despesaService.buscaPorMesAnoPaginado(mes, ano, 1,0).getTransacoes()
         );
 
         if (!sumarizadoPorTipoRateio.isEmpty()) {
 
             //TODO da pra fazer melhor? Sem repetir o try catch?
             final Double valorCompatilhado;
-            Double compartilhada;
 
             if (sumarizadoPorTipoRateio.containsKey(statusCompartilhada)) {
                 valorCompatilhado = sumarizadoPorTipoRateio.get(statusCompartilhada).getSum();

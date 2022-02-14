@@ -18,11 +18,18 @@ import java.util.List;
 public class ListaDespesaDTO {
 
     @JsonProperty("paginaAnterior")
-    public Integer paginaAnterior;
+    private Integer paginaAnterior;
     @JsonProperty("proximaPagina")
-    public Integer proximaPagina;
+    private Integer proximaPagina;
     @JsonProperty("totalPaginas")
-    public Integer totalPaginas;
+    private Integer totalPaginas;
+
+    @JsonProperty("totalQuantidaDeItens")
+    private Integer totalQuantidadeDeItens;
+
+    @JsonProperty("totalSomaDosItens")
+    private Double totalSomaDosItens;
+
     @JsonProperty("despesas")
     public List<DespesaDTO> despesas;
 
@@ -36,6 +43,8 @@ public class ListaDespesaDTO {
         this.paginaAnterior = despesas.getPaginaAnterior();
         this.proximaPagina = despesas.getProximaPagina();
         this.totalPaginas = despesas.getTotalPaginas();
+        this.totalQuantidadeDeItens = despesas.getTotalQuantidadeDeItens();
+        this.totalSomaDosItens = despesas.getTotalSomaDeItens();
 
     }
 }

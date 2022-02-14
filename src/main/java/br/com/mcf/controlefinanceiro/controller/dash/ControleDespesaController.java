@@ -42,7 +42,7 @@ public class ControleDespesaController {
     @GetMapping("/consultar")
     public ResponseEntity consultaDadosDash(@RequestParam(value = "mes", required = false, defaultValue = "0") String mes,
                                             @RequestParam(value = "ano", required = false, defaultValue = "0") String ano,
-                                            @RequestParam(value = "pagina", required = false, defaultValue = "0") String pagina) {
+                                            @RequestParam(value = "pagina", required = false, defaultValue = "1") String pagina) {
 
 
         try {
