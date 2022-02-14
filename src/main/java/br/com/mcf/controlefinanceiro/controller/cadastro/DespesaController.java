@@ -177,15 +177,17 @@ public class DespesaController {
                                         @RequestParam("mes") Integer mes,
                                         @RequestParam("ano") Integer ano) {
 
-
-
-
         //TODO Testar/tratar se planilha excel vier zerada, fora do formato, em xlsx
         try{
-            List<DespesaDTO> dtoList = DespesaDTO.dtoList(
-                    arquivoService.importaDespesaDoExcel(dataFile.getInputStream(), instrumento, mes,ano)
-            );
+            ListaDespesaDTO dtoList = new ListaDespesaDTO();
 
+            //Extrai a lista de transações em separado para poder depois somar o total.
+            final var transacaoList = arquivoService.importaDespesaDoExcel(dataFile.getInputStream(), instrumento, mes, ano);
+            final var listaDeDespesas = DespesaDTO.dtoList(transacaoList);
+
+            dtoList.setDespesas(listaDeDespesas);
+            dtoList.setTotalQuantidadeDeItens(listaDeDespesas.size());
+            dtoList.setTotalSomaDosItens(service.somaTotal(transacaoList));
             return ResponseEntity.ok(dtoList);
 
         }catch (Exception  | TransactionBusinessException e){

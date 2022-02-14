@@ -13,7 +13,6 @@ import br.com.mcf.controlefinanceiro.model.transacao.Transacao;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,8 +20,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import static br.com.mcf.controlefinanceiro.util.ConstantFormat.dbDateFormat;
 
 @Service
 public class DespesaService implements TransacaoImplementator{
@@ -30,9 +34,7 @@ public class DespesaService implements TransacaoImplementator{
     @Autowired
     private PeriodoMes periodoMes;
     private final TransacaoRepository repository;
-    private static final Integer tamanhoPadraoPagina = 50;
-
-//    private final TransacaoService<Despesa> service;
+    private static final Integer tamanhoPadraoPagina = 99999;
 
     public DespesaService(TransacaoRepository repository) {
        this.repository = repository;
@@ -42,6 +44,12 @@ public class DespesaService implements TransacaoImplementator{
     @Override
     public Transacao inserir(Transacao transacao) {
         return new Despesa(repository.save(toEntity(transacao)));
+    }
+
+    public void inserirEmLista(List<Despesa> listaDespesas) {
+        if(listaDespesas!=null)
+            listaDespesas.forEach(this::inserir);
+
     }
 
     @Transactional
@@ -65,16 +73,6 @@ public class DespesaService implements TransacaoImplementator{
         else return Optional.empty();
     }
 
-
-    @Override
-    public Optional<Transacao> buscarPorID(Integer id)  {
-
-        final var tipoTransacaoEncontrada = repository.findByIdAndTipoTransacao(id, TipoTransacao.DESPESA.getDescricao());
-
-        return tipoTransacaoEncontrada.map(Despesa::new);
-
-    }
-
     @Transactional
     @Override
     public void apagar(Transacao transacao) throws TransacaoNaoEncontradaException{
@@ -87,98 +85,34 @@ public class DespesaService implements TransacaoImplementator{
             throw new TransacaoNaoEncontradaException(ConstantMessages.TRANSACAO_NAO_ENCONTRADA + " para id:" + transacao.getId());
     }
 
+    @Override
+    public Optional<Transacao> buscarPorID(Integer id)  {
+
+        final var tipoTransacaoEncontrada = repository.findByIdAndTipoTransacao(id, TipoTransacao.DESPESA.getDescricao());
+
+        return tipoTransacaoEncontrada.map(Despesa::new);
+
+    }
 
     public PaginaTransacao buscarPorPeriodoPaginado(LocalDate dataInicio, LocalDate dataFim, Integer pagina, Integer tamanhoDaPagina) {
-
-        PaginaTransacao paginaRetorno = new PaginaTransacao();
-        Pageable page;
-        Integer tamanhoPagina = tamanhoDaPagina>0?tamanhoDaPagina:tamanhoPadraoPagina;
-
-        try{
-            if(pagina>0){
-                page = PageRequest.of(pagina-1, tamanhoPagina, Sort.by("id"));
-                final var despesaPage = repository
-                        .findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaDesc(dataInicio, dataFim,
-                                TipoTransacao.DESPESA.getDescricao(), page);
-                if(despesaPage.hasContent()){
-                    paginaRetorno.setTransacoes(toList(despesaPage.toList()));
-                    paginaRetorno.setPaginaAnterior(despesaPage.hasPrevious() ? pagina - 1 : null);
-                    paginaRetorno.setProximaPagina(despesaPage.hasNext() ? pagina + 1 : null);
-                    paginaRetorno.setTotalPaginas(despesaPage.getTotalPages());
-
-                }
-            } else {
-                paginaRetorno.setTransacoes(toList(repository.findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaDesc(dataInicio, dataFim, TipoTransacao.DESPESA.getDescricao())));
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return paginaRetorno;
+        return buscarDespesaPorParametros(getSearchCriteriaDoPeriodo(dataInicio,dataFim),pagina,tamanhoDaPagina);
     }
 
     @Override
     public List<Transacao> buscarPorPeriodo(LocalDate dataInicio, LocalDate dataFim) {
-        return toList(repository
-                 .findAllByDataCompetenciaBetweenAndTipoTransacaoOrderByDataCompetenciaDesc(
-                         dataInicio, dataFim, TipoTransacao.DESPESA.getDescricao())
-                 );
+        return buscarDespesaPorParametros(getSearchCriteriaDoPeriodo(dataInicio,dataFim),1,0).getTransacoes();
     }
 
     public List<Transacao> buscaPorMesAno(Integer mes, Integer ano) {
-
-        final LocalDate dataInicial = periodoMes.getDataInicioMes(mes,ano);
-        final LocalDate dataFinal = periodoMes.getDataFimMes(mes,ano);
-
-        return buscarPorPeriodo(dataInicial,dataFinal);
+        return buscarDespesaPorParametros(getSearchCriteriaMesEAno(mes, ano),1,0).getTransacoes();
     }
 
     public PaginaTransacao buscaPorMesAnoPaginado(Integer mes, Integer ano, Integer pagina, Integer tamanhoPagina) {
-
-        final LocalDate dataInicial = periodoMes.getDataInicioMes(mes,ano);
-        final LocalDate dataFinal = periodoMes.getDataFimMes(mes,ano);
-
-        return buscarPorPeriodoPaginado(dataInicial,dataFinal, pagina,tamanhoPagina);
+        return buscarDespesaPorParametros(getSearchCriteriaMesEAno(mes, ano),pagina,tamanhoPagina);
     }
 
     public List<Transacao> buscarPorAno(Integer ano){
-
-        LocalDate dataInicio = LocalDate.of(ano,1,1);
-        LocalDate dataFim = LocalDate.of(ano,12,31);
-
-        return buscarPorPeriodo(dataInicio,dataFim);
-
-    }
-
-    private List<Transacao> toList(List<TransacaoEntity> entityList){
-        List<Transacao> transacoes = new ArrayList<>();
-
-        if(entityList!=null)
-           entityList.forEach(t -> transacoes.add(new Despesa(t)));
-
-        return transacoes;
-
-    }
-
-    private TransacaoEntity toEntity(Transacao transacao){
-        return new TransacaoEntity(transacao.getData(),
-                                   transacao.getValor(),
-                                   transacao.getDescricao(),
-                                   transacao.getCategoria(),
-                                   transacao.getTipoRateio(),
-                                   transacao.getInstrumento(),
-                                   transacao.getTipoTransacao().getDescricao(),
-                                   transacao.getDataCompetencia());
-    }
-
-    public List<Transacao> inserirEmLista(List<Despesa> listaDespesas) {
-
-        List<Transacao> listaDespesaIncluida = new ArrayList<>();
-
-        if(listaDespesas!=null)
-            listaDespesas.forEach(d -> listaDespesaIncluida.add(inserir(d)));
-
-        return listaDespesaIncluida;
+        return buscarDespesaPorParametros(getSearchCriteriaAno(ano),1,0).getTransacoes();
     }
 
     public PaginaTransacao buscarDespesaPorParametros(List<SearchCriteria> criterios, Integer pagina, Integer tamanhoPagina){
@@ -196,10 +130,24 @@ public class DespesaService implements TransacaoImplementator{
             paginaRetorno.setPaginaAnterior(result.hasPrevious() ? pagina - 1 : null);
             paginaRetorno.setProximaPagina(result.hasNext() ? pagina + 1 : null);
             paginaRetorno.setTotalPaginas(result.getTotalPages());
+            paginaRetorno.setTotalSomaDeItens(somaTotal(paginaRetorno.getTransacoes()));
         }
 
         return paginaRetorno;
 
+    }
+
+    public Double somaTotal(List<? extends Transacao> lista){
+
+        Double somaTotalDaLista = 0d;
+        if(lista!=null) {
+            for (Transacao transacao : lista) {
+                somaTotalDaLista += transacao.getValor();
+            }
+        }
+        BigDecimal valorFinal = new BigDecimal(somaTotalDaLista);
+
+        return valorFinal.setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     private Specification<TransacaoEntity> getTransacaoEntitySpecification(List<SearchCriteria> criterios) {
@@ -213,6 +161,64 @@ public class DespesaService implements TransacaoImplementator{
             finalSpecification = finalSpecification.and(new TransacaoSpecification(sc));
         }
         return finalSpecification;
+    }
+
+    private List<Transacao> toList(List<TransacaoEntity> entityList){
+        List<Transacao> transacoes = new ArrayList<>();
+
+        if(entityList!=null)
+            entityList.forEach(t -> transacoes.add(new Despesa(t)));
+
+        return transacoes;
+
+    }
+
+    private TransacaoEntity toEntity(Transacao transacao){
+        return new TransacaoEntity(transacao.getData(),
+                transacao.getValor(),
+                transacao.getDescricao(),
+                transacao.getCategoria(),
+                transacao.getTipoRateio(),
+                transacao.getInstrumento(),
+                transacao.getTipoTransacao().getDescricao(),
+                transacao.getDataCompetencia());
+    }
+
+    @NotNull
+    private List<SearchCriteria> getSearchCriteriaAno(Integer ano) {
+        return getSearchCriteriaMesEAno(0, ano);
+    }
+
+    @NotNull
+    private List<SearchCriteria> getSearchCriteriaMesEAno(Integer mes, Integer ano) {
+
+        final LocalDate dataInicio;
+        final LocalDate dataFim;
+        List<SearchCriteria> criteriaList = new ArrayList<>();
+
+        if(ano !=null && ano>0) {
+            if (mes!=null && mes>0) {
+                dataInicio = periodoMes.getDataInicioMes(mes, ano);
+                dataFim = periodoMes.getDataFimMes(mes, ano);
+            } else {
+                dataInicio = LocalDate.of(ano, 1, 1);
+                dataFim = LocalDate.of(ano, 12, 31);
+            }
+            criteriaList.add(new SearchCriteria("dataCompetencia", QueryOperator.GREATER_OR_EQUAL_THAN,dataInicio.format(dbDateFormat)));
+            criteriaList.add(new SearchCriteria("dataCompetencia",QueryOperator.LESS_OR_EQUAL_THAN,dataFim.format(dbDateFormat)));
+        }
+
+        return criteriaList;
+    }
+
+    @NotNull
+    private List<SearchCriteria> getSearchCriteriaDoPeriodo(LocalDate dataInicio, LocalDate dataFim) {
+        List<SearchCriteria> criteriaList = new ArrayList<>();
+        if(dataInicio!=null && dataFim!=null) {
+            criteriaList.add(new SearchCriteria("dataCompetencia", QueryOperator.GREATER_OR_EQUAL_THAN, dataInicio.format(dbDateFormat)));
+            criteriaList.add(new SearchCriteria("dataCompetencia", QueryOperator.LESS_OR_EQUAL_THAN, dataFim.format(dbDateFormat)));
+        }
+        return criteriaList;
     }
 
 }
