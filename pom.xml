@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.mcf</groupId>
 	<artifactId>controle-financeiro</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>controle-financeiro</name>
 	<description>Aplicação para realizar controle financeiro</description>
 	<properties>
@@ -44,7 +44,6 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
@@ -68,11 +67,19 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+ 
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+	<!--	
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+	-->	
 	</dependencies>
 
 	<build>

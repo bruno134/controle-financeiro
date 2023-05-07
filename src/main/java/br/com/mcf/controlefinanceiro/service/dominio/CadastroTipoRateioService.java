@@ -41,7 +41,6 @@ public class CadastroTipoRateioService {
                     tipoRateio.get().setAtivo(false);
                     alterar(tipoRateio.get());
                 }
-
             }catch (EmptyResultDataAccessException e){
                 throw new TipoRateioNaoEncontradaException(ConstantMessages.TIPO_RATEIO_NAO_ENCONTRADO);
             }catch (Exception e){
