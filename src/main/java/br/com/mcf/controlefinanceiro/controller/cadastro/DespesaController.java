@@ -200,7 +200,7 @@ public class DespesaController {
             switch (instrumento){
                 case "Conta Corrente" -> carregaArquivo = new CarregaArquivoBoFa((FileInputStream) dataFile.getInputStream());
                 case "Cartão de Crédito - Bofa" -> carregaArquivo = new CarregaCCreditoBofa((FileInputStream) dataFile.getInputStream());
-                case "Cartão de Crédito" -> carregaArquivo = new CarregaCCreditoCapitalOne((FileInputStream) dataFile.getInputStream());
+                case "Cartão de Crédito - Capital One" -> carregaArquivo = new CarregaCCreditoCapitalOne((FileInputStream) dataFile.getInputStream());
                 default -> carregaArquivo = null;
             }
 

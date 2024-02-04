@@ -61,7 +61,7 @@ public class CarregaCCreditoBofa implements CarregarArquivo{
 
             if(transactionValue < 0){
                  return new Despesa(dateValue, 
-                                    transactionValue, 
+                                    transactionValue*-1, 
                                     description,
                                     UNDEFINED,
                                     COMPARTILHADA,
