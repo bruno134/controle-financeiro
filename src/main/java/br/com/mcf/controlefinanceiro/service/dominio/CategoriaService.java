@@ -6,6 +6,8 @@ import br.com.mcf.controlefinanceiro.model.dominio.Categoria;
 import br.com.mcf.controlefinanceiro.model.dominio.TipoTransacao;
 import br.com.mcf.controlefinanceiro.model.repository.dominio.CategoriaRepository;
 import br.com.mcf.controlefinanceiro.util.ConstantMessages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.util.Optional;
 @Service
 public class CategoriaService {
 
+   //create Log of L4J
+   private static final Logger LOG = LoggerFactory.getLogger(CategoriaService.class);
     private final CategoriaRepository repository;
 
     //TODO criar testes automatizados
@@ -27,6 +31,12 @@ public class CategoriaService {
     public void cadastrarClassificao(String nome){
 
         Categoria categoria = new Categoria(nome);
+
+        if(categoria.getTipoTransacao()==null) {
+            LOG.warn("Type of category not informed, setting DESPESA as default");
+            categoria.setTipoTransacao(TipoTransacao.DESPESA);
+        }
+
 
         try {
             repository.save(new CategoriaEntity(categoria));
@@ -115,5 +125,9 @@ public class CategoriaService {
         }
 
         return Optional.ofNullable(categoriaEncontrada);
+    }
+
+    public Categoria consultarCategoriaPorNome(String categoryToFind) {
+        return null;
     }
 }
