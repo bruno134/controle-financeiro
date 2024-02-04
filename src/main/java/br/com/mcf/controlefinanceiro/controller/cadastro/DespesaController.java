@@ -192,23 +192,16 @@ public class DespesaController {
         //TODO Testar/tratar se planilha excel vier zerada, fora do formato, em xlsx
         try{
             ListaDespesaDTO dtoList = new ListaDespesaDTO();
-            List< Transacao> transacaoList = new ArrayList<>();
+            List< Transacao> transacaoList;
             //Extrai a lista de transações em separado para poder depois somar o total.
 
-            CarregarArquivo carregaArquivo = null;
-            
+            CarregarArquivo carregaArquivo;
+
             switch (instrumento){
-                case "Conta Corrente":
-                   carregaArquivo = new CarregaArquivoBoFa((FileInputStream) dataFile.getInputStream());
-                    break;
-                case "Cartão de Crédito - Bofa":
-                    carregaArquivo = new CarregaCCreditoBofa((FileInputStream) dataFile.getInputStream());
-                    break;
-                case "Cartão de Crédito":
-                    carregaArquivo = new CarregaCCreditoCapitalOne((FileInputStream) dataFile.getInputStream());
-                    break;
-                default:
-                    break;
+                case "Conta Corrente" -> carregaArquivo = new CarregaArquivoBoFa((FileInputStream) dataFile.getInputStream());
+                case "Cartão de Crédito - Bofa" -> carregaArquivo = new CarregaCCreditoBofa((FileInputStream) dataFile.getInputStream());
+                case "Cartão de Crédito" -> carregaArquivo = new CarregaCCreditoCapitalOne((FileInputStream) dataFile.getInputStream());
+                default -> carregaArquivo = null;
             }
 
 
